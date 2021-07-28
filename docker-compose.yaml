@@ -1,0 +1,55 @@
+version: '3.8'
+
+services: 
+
+    app_rdb:
+        restart: always
+        image: percona:8.0.20-11-centos
+        command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+        env_file:
+            - ./env/app_rdb.env
+        networks:
+            - _net
+        ports:
+            - 3306:3306
+        volumes:
+            - account_management_mysqld:/var/lib/mysql:delegated  # :delegated will substantially improve psql perf on mac
+
+    app:
+        restart: always
+        build: 
+            context: .
+        command: ["server"]
+        networks:
+            - _pub
+            - _net
+        env_file:
+            - ./env/app.env
+        ports:
+            - 8080:8080
+        depends_on:
+            - app_rdb   
+            
+    app_rdb_migrations:
+        restart: on-failure
+        build: 
+            context: .
+        command: ["migrate", "up", "2"]
+        networks:
+            - _net
+        env_file:
+            - ./env/app.env
+        depends_on:
+            - app_rdb   
+        volumes:
+            - ./migrations:/migrations
+
+volumes:
+    account_management_mysqld:
+
+
+networks:
+    _pub: # open network access, please use only when necessary
+        internal: false
+    _net: # private, inter-system channel
+        internal: true
