@@ -1,4 +1,4 @@
-# Boilerplate code for Golang application
+# Account Management Service
 
 
 

@@ -3,6 +3,7 @@ version: '3.8'
 services: 
 
     app_rdb:
+        container_name: accounts_db
         restart: always
         image: percona:8.0.20-11-centos
         command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
@@ -13,9 +14,10 @@ services:
         ports:
             - 3306:3306
         volumes:
-            - account_management_mysqld:/var/lib/mysql:delegated  # :delegated will substantially improve psql perf on mac
+            - accounts_mysqld:/var/lib/mysql:delegated  # :delegated will substantially improve psql perf on mac
 
     app:
+        container_name: accounts
         restart: always
         build: 
             context: .
@@ -31,6 +33,7 @@ services:
             - app_rdb   
             
     app_rdb_migrations:
+        container_name: accounts_db_migrations
         restart: on-failure
         build: 
             context: .
@@ -45,7 +48,7 @@ services:
             - ./migrations:/migrations
 
 volumes:
-    account_management_mysqld:
+    accounts_mysqld:
 
 
 networks:

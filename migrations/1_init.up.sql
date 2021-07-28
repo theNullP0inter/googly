@@ -1,3 +1,5 @@
-CREATE TABLE IF NOT EXISTS test (
-  firstname VARCHAR(16)
+CREATE TABLE IF NOT EXISTS accounts (
+  i id BINARY(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
+  username VARCHAR(320)
+  is_active BOOLEAN
 );
