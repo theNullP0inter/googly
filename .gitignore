@@ -135,4 +135,4 @@ output/
 
 proto/.DS_Store
 .DS_Store
-.tmp
+*.tmp
