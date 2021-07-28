@@ -49,7 +49,7 @@ else
     AUTH_USER=admin
     AUTH_PASSWORD=$(head -c 18 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 12)
 
-    echo "DB_URL=${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${APP_RDB_HOST}:3306)/${MYSQL_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local" > "${PATH_ENV_APP}"
+    echo "RDB_URL=${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${APP_RDB_HOST}:3306)/${MYSQL_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local" > "${PATH_ENV_APP}"
 
     echo "APP configuration created."
 fi
