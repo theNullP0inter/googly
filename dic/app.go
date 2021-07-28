@@ -3,7 +3,7 @@ package dic
 import (
 	"github.com/sarulabs/di/v2"
 	"github.com/theNullP0inter/boilerplate-go/logger"
-	"github.com/theNullP0inter/boilerplate-go/model/db"
+	"github.com/theNullP0inter/boilerplate-go/rdb"
 )
 
 var Builder *di.Builder
@@ -43,7 +43,7 @@ func RegisterServices(builder *di.Builder) {
 	builder.Add(di.Def{
 		Name: Rdb,
 		Build: func(ctn di.Container) (interface{}, error) {
-			return db.NewDb(), nil
+			return rdb.NewDb(), nil
 		},
 	})
 

@@ -1,4 +1,4 @@
-package db
+package rdb
 
 import (
 	"github.com/spf13/viper"

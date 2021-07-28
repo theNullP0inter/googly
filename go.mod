@@ -40,6 +40,8 @@ replace github.com/theNullP0inter/boilerplate-go/logger => ./logger
 
 replace github.com/theNullP0inter/boilerplate-go/model => ./model
 
+replace github.com/theNullP0inter/boilerplate-go/rdb => ./rdb
+
 replace github.com/theNullP0inter/boilerplate-go/route => ./route
 
 replace github.com/theNullP0inter/boilerplate-go/tests => ./tests
