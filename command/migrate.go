@@ -20,7 +20,7 @@ func init() {
 }
 
 func getMigration() *migrate.Migrate {
-	db, err := sql.Open("mysql", viper.GetString("DB_URL"))
+	db, err := sql.Open("mysql", viper.GetString("RDB_URL"))
 	if err != nil {
 		panic(err)
 	}

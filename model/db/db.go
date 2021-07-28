@@ -7,7 +7,7 @@ import (
 )
 
 func NewDb() *gorm.DB {
-	dbUrl := viper.GetString("DB_URL")
+	dbUrl := viper.GetString("RDB_URL")
 	db, err := gorm.Open(mysql.Open(dbUrl))
 	if err != nil {
 		panic("failed to connect to the database")
@@ -19,8 +19,8 @@ func NewDb() *gorm.DB {
 		panic("failed to configure the database")
 	}
 
-	sqlDB.SetMaxIdleConns(viper.GetInt("DB_MAX_CONNECTIONS"))
-	sqlDB.SetMaxOpenConns(viper.GetInt("DB_MAX_CONNECTIONS"))
+	sqlDB.SetMaxIdleConns(viper.GetInt("RDB_MAX_CONNECTIONS"))
+	sqlDB.SetMaxOpenConns(viper.GetInt("RDB_MAX_CONNECTIONS"))
 
 	return db
 }
