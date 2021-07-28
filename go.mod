@@ -1,6 +1,6 @@
 module github.com/theNullP0inter/boilerplate-go
 
-go 1.13
+go 1.16
 
 require (
 	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
@@ -12,7 +12,7 @@ require (
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/validator/v10 v10.8.0 // indirect
-	github.com/golang-migrate/migrate v3.5.4+incompatible
+	github.com/golang-migrate/migrate v3.5.4+incompatible // indirect
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/lib/pq v1.10.2
@@ -31,3 +31,16 @@ require (
 	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
 )
+
+
+replace github.com/theNullP0inter/boilerplate-go/command => ./command
+
+replace github.com/theNullP0inter/boilerplate-go/dic => ./dic
+
+replace github.com/theNullP0inter/boilerplate-go/logger => ./logger
+
+replace github.com/theNullP0inter/boilerplate-go/model => ./model
+
+replace github.com/theNullP0inter/boilerplate-go/route => ./route
+
+replace github.com/theNullP0inter/boilerplate-go/tests => ./tests
