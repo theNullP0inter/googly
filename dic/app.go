@@ -2,8 +2,11 @@ package dic
 
 import (
 	"github.com/sarulabs/di/v2"
-	"github.com/theNullP0inter/boilerplate-go/logger"
-	"github.com/theNullP0inter/boilerplate-go/rdb"
+	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
+	"github.com/theNullP0inter/account-management/rdb"
+	account_service "github.com/theNullP0inter/account-management/service_repository/account"
+	"gorm.io/gorm"
 )
 
 var Builder *di.Builder
@@ -12,6 +15,8 @@ var Container di.Container
 const SentryClient = "sentry_client"
 const Logger = "logger"
 const Rdb = "rdb"
+
+const AccountService = "account_service"
 
 func InitContainer() di.Container {
 	builder := InitBuilder()
@@ -44,6 +49,16 @@ func RegisterServices(builder *di.Builder) {
 		Name: Rdb,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return rdb.NewDb(), nil
+		},
+	})
+
+	builder.Add(di.Def{
+		Name: AccountService,
+		Build: func(ctn di.Container) (interface{}, error) {
+			return account_service.NewAccountService(
+				ctn.Get(Rdb).(*gorm.DB),
+				ctn.Get(Logger).(*logrus.Logger),
+			), nil
 		},
 	})
 

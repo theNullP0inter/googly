@@ -11,11 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type LoggerInterface interface {
-	Error(args ...interface{})
-}
-
-func NewLogger() LoggerInterface {
+func NewLogger() *logrus.Logger {
 	logger := logrus.Logger{
 		Out:       os.Stdout,
 		Formatter: &logrus.TextFormatter{ForceColors: true},

@@ -37,7 +37,7 @@ services:
         restart: on-failure
         build: 
             context: .
-        command: ["migrate", "up", "2"]
+        command: ["migrate", "up"]
         networks:
             - _net
         env_file:

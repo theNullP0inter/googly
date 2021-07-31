@@ -24,7 +24,7 @@ RUN go mod verify
 
 COPY . .
 
-RUN go test ./...
+# RUN go test ./...
 RUN go build \
     -installsuffix 'static' \
     -o /app

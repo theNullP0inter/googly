@@ -2,8 +2,8 @@ package command
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/theNullP0inter/boilerplate-go/dic"
-	"github.com/theNullP0inter/boilerplate-go/route"
+	"github.com/theNullP0inter/account-management/dic"
+	"github.com/theNullP0inter/account-management/route"
 )
 
 func init() {

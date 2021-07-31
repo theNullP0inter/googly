@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/getsentry/sentry-go"
 	"github.com/spf13/viper"
-	"github.com/theNullP0inter/boilerplate-go/command"
-	"github.com/theNullP0inter/boilerplate-go/dic"
+	"github.com/theNullP0inter/account-management/command"
+	"github.com/theNullP0inter/account-management/dic"
 )
 
 func main() {

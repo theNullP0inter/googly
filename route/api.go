@@ -27,30 +27,31 @@ import (
 	"github.com/spf13/viper"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"github.com/theNullP0inter/boilerplate-go/dic"
+	"github.com/theNullP0inter/account-management/dic"
+	"github.com/theNullP0inter/account-management/service"
 )
 
 func Setup(builder *di.Builder) *gin.Engine {
 	gin.SetMode(viper.GetString("GIN_MODE"))
 
-	r := gin.New()
-	r.Use(gin.Recovery())
+	router := gin.New()
+	router.Use(gin.Recovery())
 
 	client := dic.Container.Get(dic.SentryClient).(*sentry.Client)
 
 	if client != nil {
-		r.Use(sentrygin.New(sentrygin.Options{
+		router.Use(sentrygin.New(sentrygin.Options{
 			Repanic: true,
 		}))
 	}
 
 	// Display Swagger documentation
-	r.StaticFile("doc/swagger.json", "/doc/swagger.json")
+	router.StaticFile("doc/swagger.json", "/doc/swagger.json")
 	config := &ginSwagger.Config{
 		URL: "/doc/swagger.json", //The url pointing to API definition
 	}
 	// use ginSwagger middleware to
-	r.GET("/swagger/*any", ginSwagger.CustomWrapHandler(config, swaggerFiles.Handler))
+	router.GET("/swagger/*any", ginSwagger.CustomWrapHandler(config, swaggerFiles.Handler))
 
 	// swagger:route GET /ping common getPing
 	//
@@ -60,9 +61,17 @@ func Setup(builder *di.Builder) *gin.Engine {
 	//
 	//     Responses:
 	//       200:
-	r.GET("/ping", func(c *gin.Context) {
+	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 
-	return r
+	// V1 router
+	v1_router := router.Group("/v1")
+
+	// Adding accounts service
+	v1_accounts_service := dic.Container.Get(dic.AccountService).(service.HttpServiceInterface)
+	v1_accounts_router := v1_router.Group("/account")
+	v1_accounts_service.AddRoutes(v1_accounts_router)
+
+	return router
 }
