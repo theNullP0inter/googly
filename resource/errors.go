@@ -1,4 +1,4 @@
-package resource_manager
+package resource
 
 const (
 	INTERNAL_ERROR          = "internal error"

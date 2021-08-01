@@ -1,4 +1,4 @@
-package resource_manager
+package resource
 
 import "github.com/sirupsen/logrus"
 
@@ -15,9 +15,9 @@ type ResourceManager struct {
 func (s *ResourceManager) GetResource() ResourceInterface {
 	return s.Resource
 }
-func NewResourceManager(logger *logrus.Logger, resource ResourceInterface) *ResourceManager {
+func NewResourceManager(logger *logrus.Logger, r ResourceInterface) *ResourceManager {
 	return &ResourceManager{
 		Logger:   logger,
-		Resource: resource,
+		Resource: r,
 	}
 }

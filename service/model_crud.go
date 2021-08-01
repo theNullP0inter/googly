@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/theNullP0inter/account-management/model"
-	"github.com/theNullP0inter/account-management/resource_manager"
+	"github.com/theNullP0inter/account-management/resource"
 )
 
 type ModelCrudServiceInterface interface {
@@ -19,7 +19,7 @@ type ModelCrudServiceInterface interface {
 
 type ModelCrudService struct {
 	*Service
-	ResourceManager resource_manager.ModelResourceManagerInterface
+	ResourceManager resource.ModelResourceManagerInterface
 }
 
 func (s *ModelCrudService) GetModel() DataInterface {
@@ -49,7 +49,7 @@ func (s *ModelCrudService) Update(item DataInterface) (DataInterface, error) {
 	return s.ResourceManager.Update(item)
 }
 
-func NewModelCrudService(logger *logrus.Logger, rm resource_manager.ModelResourceManagerInterface) *ModelCrudService {
+func NewModelCrudService(logger *logrus.Logger, rm resource.ModelResourceManagerInterface) *ModelCrudService {
 	service := NewService(logger)
 	return &ModelCrudService{
 		Service:         service,

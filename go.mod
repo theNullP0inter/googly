@@ -54,4 +54,4 @@ replace github.com/theNullP0inter/account-management/service => ./service
 
 replace github.com/theNullP0inter/account-management/service_repository => ./service_repository
 
-replace github.com/theNullP0inter/account-management/resource_repository => ./resource_repository
+replace github.com/theNullP0inter/account-management/resource => ./resource
