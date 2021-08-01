@@ -1,4 +1,4 @@
-package controller_repository
+package accounts
 
 import (
 	"github.com/gin-gonic/gin"
@@ -51,7 +51,7 @@ func NewAccountController(s service.ModelCrudServiceInterface, logger *logrus.Lo
 		create_request, nil, nil, nil,
 
 		// Continution from above => comment the nil in the above line and uncomment below
-		// update_request,
+		// update_request, // This is required for PUT update request to be active
 		// list_serializer,
 		// detail_serializer,
 	)

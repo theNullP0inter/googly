@@ -1,8 +1,7 @@
-package resource_repository
+package accounts
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/theNullP0inter/account-management/model"
 	"github.com/theNullP0inter/account-management/resource"
 	"gorm.io/gorm"
 )
@@ -16,7 +15,7 @@ type AccountResourceManager struct {
 }
 
 func NewAccountResourceManager(rdb *gorm.DB, logger *logrus.Logger) AccountResourceManagerInterface {
-	var model model.Account
+	var model Account
 	query_builder := resource.NewBaseListQueryBuilder(rdb, logger)
 	rm := resource.NewModelResourceManager(rdb, logger, model, query_builder)
 	return &AccountResourceManager{rm}

@@ -27,7 +27,6 @@ import (
 	"github.com/spf13/viper"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"github.com/theNullP0inter/account-management/controller"
 	"github.com/theNullP0inter/account-management/dic"
 )
 
@@ -64,14 +63,5 @@ func Setup(builder *di.Builder) *gin.Engine {
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
-
-	// V1 router
-	v1_router := router.Group("/v1")
-
-	// Adding accounts service
-	v1_accounts_service := dic.Container.Get(dic.AccountController).(controller.HttpConnectorInterface)
-	v1_accounts_router := v1_router.Group("/account")
-	v1_accounts_service.AddRoutes(v1_accounts_router)
-
 	return router
 }

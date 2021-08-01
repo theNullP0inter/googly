@@ -23,6 +23,7 @@ require (
 	github.com/lib/pq v1.10.2
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/sarulabs/di v2.0.0+incompatible
 	github.com/sarulabs/di/v2 v2.4.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
@@ -55,3 +56,9 @@ replace github.com/theNullP0inter/account-management/service => ./service
 replace github.com/theNullP0inter/account-management/service_repository => ./service_repository
 
 replace github.com/theNullP0inter/account-management/resource => ./resource
+
+replace github.com/theNullP0inter/account-management/app => ./app
+
+replace github.com/theNullP0inter/account-management/app_repository => ./app_repository
+
+replace github.com/theNullP0inter/account-management/app_repository/accounts => ./app_repository/accounts

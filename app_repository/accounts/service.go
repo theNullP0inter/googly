@@ -1,4 +1,4 @@
-package service_repository
+package accounts
 
 import (
 	"github.com/sirupsen/logrus"

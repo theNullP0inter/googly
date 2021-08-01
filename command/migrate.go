@@ -52,7 +52,9 @@ var migrateUpCmd = &cobra.Command{
 	Short: "Ups all the migrations",
 	Run: func(cmd *cobra.Command, args []string) {
 		m := getMigration()
-		m.Steps(2)
+		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+			panic(err)
+		}
 	},
 }
 
@@ -61,6 +63,8 @@ var migrateDownCmd = &cobra.Command{
 	Short: "Downs all the migrations",
 	Run: func(cmd *cobra.Command, args []string) {
 		m := getMigration()
-		m.Steps(-2)
+		if err := m.Down(); err != nil && err != migrate.ErrNoChange {
+			panic(err)
+		}
 	},
 }
