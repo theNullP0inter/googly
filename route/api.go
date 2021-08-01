@@ -27,8 +27,8 @@ import (
 	"github.com/spf13/viper"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"github.com/theNullP0inter/account-management/controller"
 	"github.com/theNullP0inter/account-management/dic"
-	"github.com/theNullP0inter/account-management/service"
 )
 
 func Setup(builder *di.Builder) *gin.Engine {
@@ -69,7 +69,7 @@ func Setup(builder *di.Builder) *gin.Engine {
 	v1_router := router.Group("/v1")
 
 	// Adding accounts service
-	v1_accounts_service := dic.Container.Get(dic.AccountService).(service.HttpServiceInterface)
+	v1_accounts_service := dic.Container.Get(dic.AccountController).(controller.HttpConnectorInterface)
 	v1_accounts_router := v1_router.Group("/account")
 	v1_accounts_service.AddRoutes(v1_accounts_router)
 

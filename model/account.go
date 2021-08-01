@@ -2,5 +2,5 @@ package model
 
 type Account struct {
 	BaseModel
-	Username string `gorm:"unique"`
+	Username string `gorm:"unique" json:"username"`
 }
