@@ -25,6 +25,7 @@ type AccountController struct {
 type AccountCrudHttpConnector struct {
 }
 
+// Add Custom Actions
 func (s *AccountCrudHttpConnector) AddActions(router *gin.RouterGroup) {
 
 }
