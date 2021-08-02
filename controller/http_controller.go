@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 )
 
 type HttpControllerConnectorInterface interface {
@@ -35,7 +35,7 @@ func (c HttpController) HttpResponse(context *gin.Context, obj interface{}, code
 	context.JSON(code, obj)
 }
 
-func NewHttpController(logger *logrus.Logger) *HttpController {
+func NewHttpController(logger logger.LoggerInterface) *HttpController {
 	controller := NewController(logger)
 	return &HttpController{
 		Controller: controller,

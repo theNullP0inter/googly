@@ -1,36 +1,21 @@
 package command
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/mysql"
+	"github.com/golang-migrate/migrate/v4/database"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-func init() {
-	migrateCmd.AddCommand(migrateUpCmd)
-	migrateCmd.AddCommand(migrateDownCmd)
-	rootCmd.AddCommand(migrateCmd)
-}
+func getMigration(path string, driver_name string, driver database.Driver) *migrate.Migrate {
 
-func getMigration() *migrate.Migrate {
-	db, err := sql.Open("mysql", viper.GetString("RDB_URL"))
-	if err != nil {
-		panic(err)
-	}
-	driver, err := mysql.WithInstance(db, &mysql.Config{})
-	if err != nil {
-		panic(err)
-	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file:///migrations",
-		"mysql",
+		path,
+		driver_name,
 		driver,
 	)
 	if err != nil {
@@ -39,32 +24,41 @@ func getMigration() *migrate.Migrate {
 	return m
 }
 
-var migrateCmd = &cobra.Command{
-	Use:   "migrate",
-	Short: "Migration Lib",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(("Running Migrations"))
-	},
-}
+func NewMigrateCommand(config *CommandConfig, path string, driver_name string, driver database.Driver) *cobra.Command {
 
-var migrateUpCmd = &cobra.Command{
-	Use:   "up",
-	Short: "Ups all the migrations",
-	Run: func(cmd *cobra.Command, args []string) {
-		m := getMigration()
-		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-			panic(err)
-		}
-	},
-}
+	var migrateCmd = &cobra.Command{
+		Use:   "migrate",
+		Short: "Migration Lib",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println(("Running Migrations"))
+		},
+	}
 
-var migrateDownCmd = &cobra.Command{
-	Use:   "down",
-	Short: "Downs all the migrations",
-	Run: func(cmd *cobra.Command, args []string) {
-		m := getMigration()
-		if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-			panic(err)
-		}
-	},
+	var migrateUpCmd = &cobra.Command{
+		Use:   "up",
+		Short: "Ups all the migrations",
+		Run: func(cmd *cobra.Command, args []string) {
+			m := getMigration(path, driver_name, driver)
+			if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+				panic(err)
+			}
+		},
+	}
+
+	var migrateDownCmd = &cobra.Command{
+		Use:   "down",
+		Short: "Downs all the migrations",
+		Run: func(cmd *cobra.Command, args []string) {
+			m := getMigration(path, driver_name, driver)
+			if err := m.Down(); err != nil && err != migrate.ErrNoChange {
+				panic(err)
+			}
+		},
+	}
+
+	migrateCmd.AddCommand(migrateUpCmd)
+	migrateCmd.AddCommand(migrateDownCmd)
+
+	return migrateCmd
+
 }

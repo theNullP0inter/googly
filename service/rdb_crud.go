@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/resource"
 )
 
@@ -42,7 +42,7 @@ func (s *RdbCrudImplementor) Update(item DataInterface) (DataInterface, error) {
 	return s.ResourceManager.Update(item)
 }
 
-func NewRdbCrudImplementor(logger *logrus.Logger, rm resource.RdbCrudResourceManagerIntereface) *RdbCrudImplementor {
+func NewRdbCrudImplementor(logger logger.LoggerInterface, rm resource.RdbCrudResourceManagerIntereface) *RdbCrudImplementor {
 	service := NewService(logger)
 	return &RdbCrudImplementor{
 		Service:         service,

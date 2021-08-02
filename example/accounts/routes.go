@@ -1,48 +1,28 @@
-// App worker
-//
-//
-//     Schemes: http
-//     Host: localhost:8080
-//     BasePath: /
-//     Version: 0.0.1
-//
-//     Consumes:
-//     - application/json
-//     - application/xml
-//
-//     Produces:
-//     - application/json
-//     - application/xml
-//
-// swagger:meta
-package route
+package main
 
 import (
 	"net/http"
 
-	"github.com/getsentry/sentry-go"
-	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/sarulabs/di/v2"
-	"github.com/spf13/viper"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"github.com/theNullP0inter/account-management/dic"
+	"github.com/theNullP0inter/account-management/controller"
 )
 
-func Setup(builder *di.Builder) *gin.Engine {
-	gin.SetMode(viper.GetString("GIN_MODE"))
+func RouteSetup(router *gin.Engine, cnt di.Container) *gin.Engine {
+	// gin.SetMode(viper.GetString("GIN_MODE"))
 
-	router := gin.New()
+	// router := gin.New()
 	router.Use(gin.Recovery())
 
-	client := dic.Container.Get(dic.SentryClient).(*sentry.Client)
+	// client := gogeta.Container.Get(gogeta.SentryClient).(*sentry.Client)
 
-	if client != nil {
-		router.Use(sentrygin.New(sentrygin.Options{
-			Repanic: true,
-		}))
-	}
+	// if client != nil {
+	// 	router.Use(sentrygin.New(sentrygin.Options{
+	// 		Repanic: true,
+	// 	}))
+	// }
 
 	// Display Swagger documentation
 	router.StaticFile("doc/swagger.json", "/doc/swagger.json")
@@ -63,5 +43,11 @@ func Setup(builder *di.Builder) *gin.Engine {
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
+
+	// Adding accounts
+	accounts_controller := cnt.Get(AccountsControllerName).(controller.HttpControllerConnectorInterface)
+	accounts_router := router.Group("/account")
+	accounts_controller.AddRoutes(accounts_router)
+
 	return router
 }

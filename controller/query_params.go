@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/resource"
 )
 
@@ -11,7 +11,7 @@ type QueryParametersHydratorInterface interface {
 }
 
 type CrudParametersHydrator struct {
-	Logger *logrus.Logger
+	Logger logger.LoggerInterface
 	QueryParametersHydratorInterface
 }
 
@@ -21,6 +21,6 @@ func (c CrudParametersHydrator) Hydrate(context *gin.Context) (resource.ListPara
 	return &parameters, err
 }
 
-func NewBaseParametersHydrator(logger *logrus.Logger) *CrudParametersHydrator {
+func NewBaseParametersHydrator(logger logger.LoggerInterface) *CrudParametersHydrator {
 	return &CrudParametersHydrator{Logger: logger}
 }

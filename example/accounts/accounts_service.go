@@ -1,7 +1,7 @@
-package accounts
+package main
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/service"
 )
 
@@ -13,7 +13,7 @@ type AccountService struct {
 	*service.CrudService
 }
 
-func NewAccountService(logger *logrus.Logger, rm AccountResourceManagerInterface) *AccountService {
+func NewAccountService(logger logger.LoggerInterface, rm AccountResourceManagerInterface) *AccountService {
 	rdb_crud_implementor := service.NewRdbCrudImplementor(logger, rm)
 	crud_service := service.NewCrudService(logger, rm, rdb_crud_implementor)
 	return &AccountService{

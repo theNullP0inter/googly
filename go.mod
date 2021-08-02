@@ -41,8 +41,6 @@ require (
 
 replace github.com/theNullP0inter/account-management/command => ./command
 
-replace github.com/theNullP0inter/account-management/dic => ./dic
-
 replace github.com/theNullP0inter/account-management/logger => ./logger
 
 replace github.com/theNullP0inter/account-management/model => ./model
@@ -53,12 +51,10 @@ replace github.com/theNullP0inter/account-management/route => ./route
 
 replace github.com/theNullP0inter/account-management/service => ./service
 
-replace github.com/theNullP0inter/account-management/service_repository => ./service_repository
-
 replace github.com/theNullP0inter/account-management/resource => ./resource
+
+replace github.com/theNullP0inter/account-management/controller => ./controller
 
 replace github.com/theNullP0inter/account-management/app => ./app
 
 replace github.com/theNullP0inter/account-management/app_repository => ./app_repository
-
-replace github.com/theNullP0inter/account-management/app_repository/accounts => ./app_repository/accounts

@@ -21,7 +21,7 @@ services:
         restart: always
         build: 
             context: .
-        command: ["server"]
+        command: ["serve_http"]
         networks:
             - _pub
             - _net

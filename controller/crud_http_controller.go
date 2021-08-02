@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/model"
 	"github.com/theNullP0inter/account-management/service"
 	"gorm.io/gorm"
@@ -185,7 +185,7 @@ func (s *CrudHttpController) Delete(c *gin.Context) {
 
 }
 
-func NewCrudHttpController(logger *logrus.Logger,
+func NewCrudHttpController(logger logger.LoggerInterface,
 	service service.CrudServiceInterface,
 	hydrator *CrudParametersHydrator,
 	crud_http_connector CrudHttpControllerConnectorInterface,

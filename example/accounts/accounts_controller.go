@@ -1,9 +1,9 @@
-package accounts
+package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"github.com/theNullP0inter/account-management/controller"
+	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/model"
 )
 
@@ -28,7 +28,7 @@ func (s *AccountCrudHttpConnector) AddActions(router *gin.RouterGroup) {
 
 }
 
-func NewAccountController(s AccountServiceInterface, logger *logrus.Logger) *AccountController {
+func NewAccountController(s AccountServiceInterface, logger logger.LoggerInterface) *AccountController {
 	hydrator := controller.NewBaseParametersHydrator(logger)
 	crud_http_connector := &AccountCrudHttpConnector{}
 

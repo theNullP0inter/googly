@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 )
 
 type DataInterface interface {
@@ -17,10 +17,10 @@ type ServiceInterface interface {
 
 type Service struct {
 	ServiceInterface
-	Logger *logrus.Logger
+	Logger logger.LoggerInterface
 }
 
-func NewService(logger *logrus.Logger) *Service {
+func NewService(logger logger.LoggerInterface) *Service {
 	return &Service{
 		Logger: logger,
 	}

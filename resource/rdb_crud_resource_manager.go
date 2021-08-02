@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/copier"
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/model"
 	"gorm.io/gorm"
 )
@@ -94,7 +94,7 @@ func (s RdbCrudResourceManager) List(parameters DataInterface) (DataInterface, e
 
 func NewRdbCrudResourceManager(
 	db *gorm.DB,
-	logger *logrus.Logger,
+	logger logger.LoggerInterface,
 	model model.BaseModelInterface,
 	query_builder PaginatedRdbListQueryBuilderInterface,
 ) *RdbCrudResourceManager {

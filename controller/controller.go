@@ -1,16 +1,16 @@
 package controller
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 )
 
 type ControllerInterface interface {
 }
 
 type Controller struct {
-	Logger *logrus.Logger
+	Logger logger.LoggerInterface
 }
 
-func NewController(logger *logrus.Logger) *Controller {
+func NewController(logger logger.LoggerInterface) *Controller {
 	return &Controller{logger}
 }

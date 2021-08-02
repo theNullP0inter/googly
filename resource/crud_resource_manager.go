@@ -1,8 +1,6 @@
 package resource
 
-import (
-	"github.com/sirupsen/logrus"
-)
+import "github.com/theNullP0inter/account-management/logger"
 
 type CrudResourceManagerInterface interface {
 	ResourceManagerInterface
@@ -20,7 +18,7 @@ type CrudResourceManager struct {
 	Implementor CrudResourceManagerInterface
 }
 
-func NewCrudResourceManager(logger *logrus.Logger,
+func NewCrudResourceManager(logger logger.LoggerInterface,
 	resource Resource,
 	crud_implementor CrudResourceManagerInterface,
 ) *CrudResourceManager {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 	"gorm.io/gorm"
 )
 
@@ -21,11 +21,11 @@ type PaginatedRdbListQueryBuilderInterface interface {
 
 type PaginatedRdbListQueryBuilder struct {
 	Rdb    *gorm.DB
-	Logger *logrus.Logger
+	Logger logger.LoggerInterface
 	PaginatedRdbListQueryBuilderInterface
 }
 
-func NewPaginatedRdbListQueryBuilder(db *gorm.DB, logger *logrus.Logger) *PaginatedRdbListQueryBuilder {
+func NewPaginatedRdbListQueryBuilder(db *gorm.DB, logger logger.LoggerInterface) *PaginatedRdbListQueryBuilder {
 	return &PaginatedRdbListQueryBuilder{Rdb: db, Logger: logger}
 }
 

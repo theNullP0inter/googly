@@ -11,7 +11,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-func NewLogger() *logrus.Logger {
+type LoggerInterface interface {
+	Error(args ...interface{})
+}
+
+func NewLogger() LoggerInterface {
 	logger := logrus.Logger{
 		Out:       os.Stdout,
 		Formatter: &logrus.TextFormatter{ForceColors: true},
@@ -41,14 +45,26 @@ func NewLogger() *logrus.Logger {
 	return &logger
 }
 
-func NewSentryClient() *sentry.Client {
-	dsn := viper.Get("SENTRY_DSN")
-	if dsn == nil {
-		return nil
+func AddSentryHookToLogrus(logger *logrus.Logger, dsn string, timeout int) LoggerInterface {
+	hook, err := logrus_sentry.NewSentryHook(dsn, []logrus.Level{
+		logrus.PanicLevel,
+		logrus.FatalLevel,
+		logrus.ErrorLevel,
+	})
+	hook.Timeout = time.Duration(timeout) * time.Second
+	hook.StacktraceConfiguration.Enable = true
+
+	if err == nil {
+		logger.Hooks.Add(hook)
 	}
 
+	return logger
+}
+
+func NewSentryClient(dsn string) *sentry.Client {
+
 	client, err := sentry.NewClient(sentry.ClientOptions{
-		Dsn:   dsn.(string),
+		Dsn:   dsn,
 		Debug: true,
 	})
 	if err != nil {

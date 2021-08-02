@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/resource"
 )
 
@@ -24,7 +24,7 @@ type CrudService struct {
 	ResourceManager resource.ResourceManagerInterface
 }
 
-func NewCrudService(logger *logrus.Logger, rm resource.ResourceManagerInterface, implementor CrudServiceImplementorInterface) *CrudService {
+func NewCrudService(logger logger.LoggerInterface, rm resource.ResourceManagerInterface, implementor CrudServiceImplementorInterface) *CrudService {
 	service := NewService(logger)
 	return &CrudService{
 		implementor,
