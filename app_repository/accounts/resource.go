@@ -7,16 +7,16 @@ import (
 )
 
 type AccountResourceManagerInterface interface {
-	resource.ModelResourceManagerInterface
+	resource.RdbCrudResourceManagerIntereface
 }
 
 type AccountResourceManager struct {
-	*resource.ModelResourceManager
+	*resource.RdbCrudResourceManager
 }
 
 func NewAccountResourceManager(rdb *gorm.DB, logger *logrus.Logger) AccountResourceManagerInterface {
 	var model Account
-	query_builder := resource.NewBaseListQueryBuilder(rdb, logger)
-	rm := resource.NewModelResourceManager(rdb, logger, model, query_builder)
+	query_builder := resource.NewPaginatedRdbListQueryBuilder(rdb, logger)
+	rm := resource.NewRdbCrudResourceManager(rdb, logger, model, query_builder)
 	return &AccountResourceManager{rm}
 }

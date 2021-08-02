@@ -5,8 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/theNullP0inter/account-management/controller"
 	"github.com/theNullP0inter/account-management/model"
-
-	"github.com/theNullP0inter/account-management/service"
 )
 
 type AccountSerializer struct {
@@ -30,7 +28,7 @@ func (s *AccountCrudHttpConnector) AddActions(router *gin.RouterGroup) {
 
 }
 
-func NewAccountController(s service.ModelCrudServiceInterface, logger *logrus.Logger) *AccountController {
+func NewAccountController(s AccountServiceInterface, logger *logrus.Logger) *AccountController {
 	hydrator := controller.NewBaseParametersHydrator(logger)
 	crud_http_connector := &AccountCrudHttpConnector{}
 

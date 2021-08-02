@@ -12,15 +12,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type CrudHttpConnectorInterface interface {
+type CrudHttpControllerConnectorInterface interface {
 	AddActions(*gin.RouterGroup)
-	// GetListSerializer() SerializerInterface
-	// GetDetailSerializer() SerializerInterface
-	// GetUpdateRequest() SerializerInterface
-	// GetCreateRequest() SerializerInterface
 }
 
 type CrudHttpControllerInterface interface {
+	HttpControllerInterface
 	Create(context *gin.Context)
 	Get(context *gin.Context)
 	List(context *gin.Context)
@@ -30,9 +27,9 @@ type CrudHttpControllerInterface interface {
 
 type CrudHttpController struct {
 	*HttpController
-	CrudHttpConnectorInterface
-	Service            service.ModelCrudServiceInterface
-	ParametersHydrator ParametersHydratorInterface
+	CrudHttpControllerConnectorInterface
+	Service            service.CrudServiceInterface
+	ParametersHydrator QueryParametersHydratorInterface
 
 	CreateRequest    SerializerInterface
 	UpdateRequest    SerializerInterface
@@ -189,9 +186,9 @@ func (s *CrudHttpController) Delete(c *gin.Context) {
 }
 
 func NewCrudHttpController(logger *logrus.Logger,
-	service service.ModelCrudServiceInterface,
-	hydrator ParametersHydratorInterface,
-	crud_http_connector CrudHttpConnectorInterface,
+	service service.CrudServiceInterface,
+	hydrator *CrudParametersHydrator,
+	crud_http_connector CrudHttpControllerConnectorInterface,
 	create_request SerializerInterface,
 	update_request SerializerInterface,
 	list_serializer SerializerInterface,
@@ -200,10 +197,10 @@ func NewCrudHttpController(logger *logrus.Logger,
 	http_controller := NewHttpController(logger)
 
 	return &CrudHttpController{
-		HttpController:             http_controller,
-		CrudHttpConnectorInterface: crud_http_connector,
-		Service:                    service,
-		ParametersHydrator:         hydrator,
+		HttpController:                       http_controller,
+		CrudHttpControllerConnectorInterface: crud_http_connector,
+		Service:                              service,
+		ParametersHydrator:                   hydrator,
 
 		CreateRequest:    create_request,
 		UpdateRequest:    update_request,

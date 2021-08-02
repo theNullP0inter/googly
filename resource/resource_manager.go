@@ -1,21 +1,23 @@
 package resource
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/sirupsen/logrus"
+)
 
 type ResourceManagerInterface interface {
-	GetResource() ResourceInterface
+	GetResource() Resource
 }
 
 type ResourceManager struct {
 	ResourceManagerInterface
-	Resource ResourceInterface
+	Resource Resource
 	Logger   *logrus.Logger
 }
 
-func (s *ResourceManager) GetResource() ResourceInterface {
+func (s *ResourceManager) GetResource() Resource {
 	return s.Resource
 }
-func NewResourceManager(logger *logrus.Logger, r ResourceInterface) *ResourceManager {
+func NewResourceManager(logger *logrus.Logger, r Resource) *ResourceManager {
 	return &ResourceManager{
 		Logger:   logger,
 		Resource: r,

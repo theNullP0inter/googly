@@ -11,21 +11,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type ModelResourceManagerInterface interface {
-	ModelCrudInterface
-	ResourceManagerInterface
-	ListQueryBuilderInterface
+type RdbCrudResourceManagerIntereface interface {
+	CrudResourceManagerInterface
 	GetModel() DataInterface
 }
 
-type ModelResourceManager struct {
+type RdbCrudResourceManager struct {
 	*ResourceManager
-	ListQueryBuilderInterface
-	Rdb   *gorm.DB
-	Model model.BaseModelInterface
+	RdbCrudResourceManagerIntereface
+	Rdb          *gorm.DB
+	Model        model.BaseModelInterface
+	QueryBuilder RdbListQueryBuilderInterface
 }
 
-func (s *ModelResourceManager) Create(m DataInterface) (DataInterface, error) {
+func (s RdbCrudResourceManager) Create(m DataInterface) (DataInterface, error) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
 	result := s.Rdb.Create(item)
@@ -40,21 +39,25 @@ func (s *ModelResourceManager) Create(m DataInterface) (DataInterface, error) {
 	return item, nil
 }
 
-func (s ModelResourceManager) GetResource() ResourceInterface {
+func (s RdbCrudResourceManager) GetResource() Resource {
 	return s.Model
 }
 
-func (s ModelResourceManager) GetModel() DataInterface {
+func (s RdbCrudResourceManager) GetModel() DataInterface {
 	return s.Model
 }
-func (s ModelResourceManager) Get(id model.BinID) (DataInterface, error) {
+func (s RdbCrudResourceManager) Get(id DataInterface) (DataInterface, error) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	b_id, _ := id.MarshalBinary()
+	bin_id, ok := id.(model.BinID)
+	if !ok {
+		return nil, errors.New(BIN_ID_ASSERTION_FAILED)
+	}
+	b_id, _ := bin_id.MarshalBinary()
 	err := s.Rdb.Where("id = ?", b_id).First(item).Error
 	return item, err
 }
 
-func (s ModelResourceManager) Update(item DataInterface) (DataInterface, error) {
+func (s RdbCrudResourceManager) Update(item DataInterface) (DataInterface, error) {
 	result := s.Rdb.Save(item)
 	if result.Error != nil {
 		var mysqlErr *mysql.MySQLError
@@ -65,7 +68,7 @@ func (s ModelResourceManager) Update(item DataInterface) (DataInterface, error) 
 	}
 	return item, nil
 }
-func (s ModelResourceManager) Delete(id model.BinID) error {
+func (s RdbCrudResourceManager) Delete(id DataInterface) error {
 	item, err := s.Get(id)
 	if err != nil {
 		return err
@@ -74,10 +77,10 @@ func (s ModelResourceManager) Delete(id model.BinID) error {
 	return nil
 }
 
-func (s ModelResourceManager) List(parameters DataInterface) (DataInterface, error) {
+func (s RdbCrudResourceManager) List(parameters DataInterface) (DataInterface, error) {
 
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
-	result, err := s.ListQuery(parameters)
+	result, err := s.QueryBuilder.ListQuery(parameters)
 	if err != nil {
 		return nil, err
 	}
@@ -89,21 +92,18 @@ func (s ModelResourceManager) List(parameters DataInterface) (DataInterface, err
 	return items, nil
 }
 
-func (s *ModelResourceManager) ListQuery(parameters ListParametersInterface) (*gorm.DB, error) {
-	return s.PaginationQuery(parameters), nil
-}
-
-func NewModelResourceManager(
+func NewRdbCrudResourceManager(
 	db *gorm.DB,
 	logger *logrus.Logger,
 	model model.BaseModelInterface,
-	query_builder ListQueryBuilderInterface,
-) *ModelResourceManager {
-	new_resource := NewResourceManager(logger, model.(ResourceInterface))
-	return &ModelResourceManager{
-		new_resource,
-		query_builder,
-		db,
-		model,
+	query_builder PaginatedRdbListQueryBuilderInterface,
+) *RdbCrudResourceManager {
+	resource_manager := NewResourceManager(logger, model)
+	return &RdbCrudResourceManager{
+		ResourceManager: resource_manager,
+		Rdb:             db,
+		Model:           model,
+		QueryBuilder:    query_builder,
 	}
+
 }

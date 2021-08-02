@@ -7,12 +7,20 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type HttpConnectorInterface interface {
+type HttpControllerConnectorInterface interface {
 	AddRoutes(*gin.RouterGroup)
+}
+
+type HttpControllerInterface interface {
+	ControllerInterface
+	HttpResponse(*gin.Context, interface{}, int)
+	HttpReplySuccess(*gin.Context, interface{})
+	HttpReplyError(*gin.Context, string, int)
 }
 
 type HttpController struct {
 	*Controller
+	HttpControllerInterface
 }
 
 func (c HttpController) HttpReplySuccess(context *gin.Context, data interface{}) {
@@ -30,6 +38,6 @@ func (c HttpController) HttpResponse(context *gin.Context, obj interface{}, code
 func NewHttpController(logger *logrus.Logger) *HttpController {
 	controller := NewController(logger)
 	return &HttpController{
-		controller,
+		Controller: controller,
 	}
 }

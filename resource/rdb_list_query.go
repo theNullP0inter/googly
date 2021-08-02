@@ -8,37 +8,33 @@ import (
 	"gorm.io/gorm"
 )
 
-type ListParametersInterface interface{}
-
-type PaginationParameters struct {
-	Page      int    `json:"page,default=0"`
-	PageSize  int    `json:"page_size,default=30"`
-	OrderBy   string `json:"order_by,default=id"`
-	OrderDesc bool   `json:"order_desc,default=false"`
-}
-
-type CrudListParameters struct {
-	*PaginationParameters
-}
-
 const DefaultPageSize = 30
 
-type ListQueryBuilderInterface interface {
+type ListParametersInterface interface{ ParameterInterface }
+type RdbListQueryBuilderInterface interface {
 	ListQuery(parameters ListParametersInterface) (*gorm.DB, error)
+}
+type PaginatedRdbListQueryBuilderInterface interface {
+	RdbListQueryBuilderInterface
 	PaginationQuery(parameters ListParametersInterface) *gorm.DB
 }
 
-type BaseListQueryBuilder struct {
+type PaginatedRdbListQueryBuilder struct {
 	Rdb    *gorm.DB
 	Logger *logrus.Logger
-	ListQueryBuilderInterface
+	PaginatedRdbListQueryBuilderInterface
 }
 
-func NewBaseListQueryBuilder(db *gorm.DB, logger *logrus.Logger) *BaseListQueryBuilder {
-	return &BaseListQueryBuilder{Rdb: db, Logger: logger}
+func NewPaginatedRdbListQueryBuilder(db *gorm.DB, logger *logrus.Logger) *PaginatedRdbListQueryBuilder {
+	return &PaginatedRdbListQueryBuilder{Rdb: db, Logger: logger}
 }
 
-func (c BaseListQueryBuilder) PaginationQuery(parameters ListParametersInterface) *gorm.DB {
+// modify for a new type of query builder
+func (c PaginatedRdbListQueryBuilder) ListQuery(parameters ListParametersInterface) (*gorm.DB, error) {
+	return c.PaginationQuery(parameters), nil
+}
+
+func (c PaginatedRdbListQueryBuilder) PaginationQuery(parameters ListParametersInterface) *gorm.DB {
 	query := c.Rdb
 
 	val := reflect.ValueOf(parameters).Elem()
@@ -101,8 +97,4 @@ func (c BaseListQueryBuilder) PaginationQuery(parameters ListParametersInterface
 	}
 
 	return query
-}
-
-func (c BaseListQueryBuilder) ListQuery(parameters ListParametersInterface) (*gorm.DB, error) {
-	return c.PaginationQuery(parameters), nil
 }
