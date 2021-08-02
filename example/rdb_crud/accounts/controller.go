@@ -17,7 +17,7 @@ type AccountCreateRequestSerializer struct {
 }
 
 type AccountController struct {
-	*controller.CrudHttpController
+	*controller.GinCrudController
 }
 
 type AccountCrudHttpConnector struct {
@@ -42,7 +42,7 @@ func NewAccountController(s AccountServiceInterface, logger logger.LoggerInterfa
 	var update_request AccountCreateRequestSerializer
 	var create_request AccountCreateRequestSerializer
 
-	controller := controller.NewCrudHttpController(
+	controller := controller.NewGinCrudController(
 		logger, s, hydrator,
 		crud_http_connector,
 

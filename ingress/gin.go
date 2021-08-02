@@ -1,4 +1,4 @@
-package command
+package ingress
 
 import (
 	"fmt"
@@ -6,18 +6,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
+	"github.com/theNullP0inter/googly/command"
 )
 
-type GinRouterSetup func(*gin.Engine, di.Container) *gin.Engine
+type GinIngressInterface interface {
+	Connect(di.Container) *gin.Engine
+}
 
-func NewGinServerCommand(config *CommandConfig, cnt di.Container, port int, setup GinRouterSetup) *cobra.Command {
+func NewGinServerCommand(config *command.CommandConfig, cnt di.Container, port int, ingress GinIngressInterface) *cobra.Command {
 
 	var ginServerCmd = &cobra.Command{
 		Use:   config.Name,
 		Short: config.Short,
 		Run: func(cmd *cobra.Command, args []string) {
-			router := gin.New()
-			router = setup(router, cnt)
+			router := ingress.Connect(cnt)
 			router.Run(":" + fmt.Sprint(port))
 		},
 	}

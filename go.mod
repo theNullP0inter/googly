@@ -35,6 +35,7 @@ require (
 	github.com/ugorji/go v1.2.6 // indirect
 	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
 	golang.org/x/tools v0.1.5 // indirect
+	google.golang.org/grpc v1.39.0
 	google.golang.org/protobuf v1.27.1 // indirect
 	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
@@ -59,6 +60,8 @@ replace github.com/theNullP0inter/googly/controller => ./controller
 replace github.com/theNullP0inter/googly/app => ./app
 
 replace github.com/theNullP0inter/googly/app_repository => ./app_repository
+
+replace github.com/theNullP0inter/googly/ingress => ./ingress
 
 // example/rdb_crud
 

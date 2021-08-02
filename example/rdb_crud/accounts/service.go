@@ -16,6 +16,6 @@ type AccountService struct {
 func NewAccountService(logger logger.LoggerInterface, rm AccountResourceManagerInterface) AccountServiceInterface {
 	crud_service := service.NewDbCrudService(logger, rm)
 	return &AccountService{
-		crud_service.(*service.DbCrudService),
+		crud_service,
 	}
 }

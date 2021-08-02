@@ -12,6 +12,7 @@ import (
 	"github.com/theNullP0inter/googly/command"
 	"github.com/theNullP0inter/googly/example/rdb_crud/accounts"
 	"github.com/theNullP0inter/googly/example/rdb_crud/consts"
+	"github.com/theNullP0inter/googly/ingress"
 	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/rdb"
 	mysql "gorm.io/driver/mysql"
@@ -61,14 +62,14 @@ func (a MainAppRunner) Inject(builder *di.Builder) {
 }
 
 func (a MainAppRunner) RegisterCommands(cmd *cobra.Command, cnt di.Container) {
-	serve_http := command.NewGinServerCommand(
+	serve_http := ingress.NewGinServerCommand(
 		&command.CommandConfig{
 			Name:  "serve_http",
 			Short: "serves http",
 		},
 		cnt,
 		8080,
-		RouteSetup,
+		NewMainIngress(),
 	)
 	cmd.AddCommand(serve_http)
 
