@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 	gogeta "github.com/theNullP0inter/account-management"
 	"github.com/theNullP0inter/account-management/app"
+	"github.com/theNullP0inter/account-management/app/example/rdb_crud/accounts"
 	"github.com/theNullP0inter/account-management/command"
 	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/rdb"
@@ -16,7 +17,7 @@ import (
 )
 
 var INSTALLED_APPS = []app.AppInterface{
-	&AccountsApp{},
+	&accounts.AccountsApp{},
 }
 
 const SentryClient = "sentry_client"

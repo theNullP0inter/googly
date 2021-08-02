@@ -1,4 +1,4 @@
-package main
+package accounts
 
 import "github.com/theNullP0inter/account-management/model"
 

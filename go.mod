@@ -58,3 +58,9 @@ replace github.com/theNullP0inter/account-management/controller => ./controller
 replace github.com/theNullP0inter/account-management/app => ./app
 
 replace github.com/theNullP0inter/account-management/app_repository => ./app_repository
+
+// example/rdb_crud
+
+replace github.com/theNullP0inter/account-management/example/rdb_crud => ./example/rdb_crud
+
+replace github.com/theNullP0inter/account-management/example/rdb_crud/accounts => ./example/rdb_crud/accounts
