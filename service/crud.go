@@ -21,11 +21,11 @@ type CrudServiceInterface interface {
 type CrudService struct {
 	CrudServiceInterface
 	*Service
-	ResourceManager resource.ResourceManagerInterface
+	ResourceManager resource.CrudResourceManagerInterface
 }
 
-func NewCrudService(logger logger.LoggerInterface, rm resource.ResourceManagerInterface, implementor CrudServiceImplementorInterface) *CrudService {
-	service := NewService(logger)
+func NewCrudService(logger logger.LoggerInterface, rm resource.CrudResourceManagerInterface, implementor CrudServiceImplementorInterface) *CrudService {
+	service := NewService(logger).(*Service)
 	return &CrudService{
 		implementor,
 		service,

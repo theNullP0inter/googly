@@ -6,17 +6,16 @@ import (
 )
 
 type AccountServiceInterface interface {
-	service.RdbCrudImplementorInterface
+	service.DbCrudServiceInterface
 }
 
 type AccountService struct {
-	*service.CrudService
+	*service.DbCrudService
 }
 
-func NewAccountService(logger logger.LoggerInterface, rm AccountResourceManagerInterface) *AccountService {
-	rdb_crud_implementor := service.NewRdbCrudImplementor(logger, rm)
-	crud_service := service.NewCrudService(logger, rm, rdb_crud_implementor)
+func NewAccountService(logger logger.LoggerInterface, rm AccountResourceManagerInterface) AccountServiceInterface {
+	crud_service := service.NewDbCrudService(logger, rm)
 	return &AccountService{
-		crud_service,
+		crud_service.(*service.DbCrudService),
 	}
 }

@@ -35,9 +35,9 @@ func (c HttpController) HttpResponse(context *gin.Context, obj interface{}, code
 	context.JSON(code, obj)
 }
 
-func NewHttpController(logger logger.LoggerInterface) *HttpController {
+func NewHttpController(logger logger.LoggerInterface) HttpControllerInterface {
 	controller := NewController(logger)
 	return &HttpController{
-		Controller: controller,
+		Controller: controller.(*Controller),
 	}
 }

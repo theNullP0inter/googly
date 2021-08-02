@@ -11,6 +11,6 @@ type Controller struct {
 	Logger logger.LoggerInterface
 }
 
-func NewController(logger logger.LoggerInterface) *Controller {
+func NewController(logger logger.LoggerInterface) ControllerInterface {
 	return &Controller{logger}
 }

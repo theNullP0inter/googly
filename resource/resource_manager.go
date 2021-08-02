@@ -15,7 +15,7 @@ type ResourceManager struct {
 func (s *ResourceManager) GetResource() Resource {
 	return s.Resource
 }
-func NewResourceManager(logger logger.LoggerInterface, r Resource) *ResourceManager {
+func NewResourceManager(logger logger.LoggerInterface, r Resource) ResourceManagerInterface {
 	return &ResourceManager{
 		Logger:   logger,
 		Resource: r,

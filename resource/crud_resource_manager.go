@@ -2,8 +2,7 @@ package resource
 
 import "github.com/theNullP0inter/account-management/logger"
 
-type CrudResourceManagerInterface interface {
-	ResourceManagerInterface
+type CrudImplementorInterface interface {
 	Create(m DataInterface) (DataInterface, error)
 	List(parameters DataInterface) (DataInterface, error)
 	Get(id DataInterface) (DataInterface, error)
@@ -13,19 +12,24 @@ type CrudResourceManagerInterface interface {
 	Delete(id DataInterface) error
 }
 
+type CrudResourceManagerInterface interface {
+	ResourceManagerInterface
+	CrudImplementorInterface
+}
+
 type CrudResourceManager struct {
 	*ResourceManager
-	Implementor CrudResourceManagerInterface
+	CrudImplementorInterface
 }
 
 func NewCrudResourceManager(logger logger.LoggerInterface,
 	resource Resource,
-	crud_implementor CrudResourceManagerInterface,
-) *CrudResourceManager {
+	crud_implementor CrudImplementorInterface,
+) CrudResourceManagerInterface {
 	rm := NewResourceManager(logger, resource)
 
 	return &CrudResourceManager{
-		ResourceManager: rm,
-		Implementor:     crud_implementor,
+		rm.(*ResourceManager),
+		crud_implementor,
 	}
 }

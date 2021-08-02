@@ -68,6 +68,8 @@ func (s *CrudHttpController) Create(c *gin.Context) {
 		return
 	}
 
+	// copier.Copy(res, data)
+
 	data, err := s.Service.Create(serializer)
 
 	if err != nil {
@@ -197,7 +199,7 @@ func NewCrudHttpController(logger logger.LoggerInterface,
 	http_controller := NewHttpController(logger)
 
 	return &CrudHttpController{
-		HttpController:                       http_controller,
+		HttpController:                       http_controller.(*HttpController),
 		CrudHttpControllerConnectorInterface: crud_http_connector,
 		Service:                              service,
 		ParametersHydrator:                   hydrator,

@@ -16,11 +16,10 @@ type ServiceInterface interface {
 }
 
 type Service struct {
-	ServiceInterface
 	Logger logger.LoggerInterface
 }
 
-func NewService(logger logger.LoggerInterface) *Service {
+func NewService(logger logger.LoggerInterface) ServiceInterface {
 	return &Service{
 		Logger: logger,
 	}
