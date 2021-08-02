@@ -9,8 +9,9 @@ import (
 	"github.com/spf13/viper"
 	gogeta "github.com/theNullP0inter/account-management"
 	"github.com/theNullP0inter/account-management/app"
-	"github.com/theNullP0inter/account-management/app/example/rdb_crud/accounts"
 	"github.com/theNullP0inter/account-management/command"
+	"github.com/theNullP0inter/account-management/example/rdb_crud/accounts"
+	"github.com/theNullP0inter/account-management/example/rdb_crud/consts"
 	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/rdb"
 	mysql "gorm.io/driver/mysql"
@@ -19,10 +20,6 @@ import (
 var INSTALLED_APPS = []app.AppInterface{
 	&accounts.AccountsApp{},
 }
-
-const SentryClient = "sentry_client"
-const Logger = "logger"
-const Rdb = "rdb"
 
 type MainAppRunner struct{}
 
@@ -35,7 +32,7 @@ func (a MainAppRunner) Inject(builder *di.Builder) {
 	// })
 
 	builder.Add(di.Def{
-		Name: Logger,
+		Name: consts.Logger,
 		Build: func(ctn di.Container) (interface{}, error) {
 			l := logger.NewLogger()
 			// logger.AddSentryHookToLogrus(l.(*logrus.Logger), viper.GetString("SENTRY_DSN"), viper.GetInt("SENTRY_TIMEOUT"))
@@ -44,7 +41,7 @@ func (a MainAppRunner) Inject(builder *di.Builder) {
 	})
 
 	builder.Add(di.Def{
-		Name: Rdb,
+		Name: consts.Rdb,
 		Build: func(ctn di.Container) (interface{}, error) {
 			dbUrl := viper.GetString("RDB_URL")
 			db := rdb.NewDb(mysql.Open(dbUrl))

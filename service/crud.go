@@ -1,23 +1,24 @@
 package service
 
 import (
+	"github.com/theNullP0inter/account-management/errors"
 	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/resource"
 )
 
 type CrudServiceImplementorInterface interface {
 	ServiceInterface
-	GetItem(id DataInterface) (DataInterface, error)
-	GetList(req DataInterface) (DataInterface, error)
-	Create(req DataInterface) (DataInterface, error)
-	Update(item DataInterface) (DataInterface, error)
-	Delete(id DataInterface) error
+	GetItem(id DataInterface) (DataInterface, *errors.GogetaError)
+	GetList(req DataInterface) (DataInterface, *errors.GogetaError)
+	Create(req DataInterface) (DataInterface, *errors.GogetaError)
+	Update(item DataInterface) (DataInterface, *errors.GogetaError)
+	Delete(id DataInterface) *errors.GogetaError
 }
 
 type CrudServiceInterface interface {
-	ServiceInterface
 	CrudServiceImplementorInterface
 }
+
 type CrudService struct {
 	CrudServiceInterface
 	*Service

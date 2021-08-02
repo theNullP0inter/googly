@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/theNullP0inter/account-management/errors"
 	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/resource"
 )
@@ -13,23 +14,23 @@ type DbCrudService struct {
 	*DbService
 }
 
-func (s *DbCrudService) Delete(id DataInterface) error {
+func (s *DbCrudService) Delete(id DataInterface) *errors.GogetaError {
 	return s.DbResourceManagerIntereface.Delete(id)
 }
 
-func (s *DbCrudService) GetItem(id DataInterface) (DataInterface, error) {
+func (s *DbCrudService) GetItem(id DataInterface) (DataInterface, *errors.GogetaError) {
 	return s.DbResourceManagerIntereface.Get(id)
 }
 
-func (s *DbCrudService) GetList(req DataInterface) (DataInterface, error) {
+func (s *DbCrudService) GetList(req DataInterface) (DataInterface, *errors.GogetaError) {
 	return s.DbResourceManagerIntereface.List(req)
 }
 
-func (s *DbCrudService) Create(item DataInterface) (DataInterface, error) {
+func (s *DbCrudService) Create(item DataInterface) (DataInterface, *errors.GogetaError) {
 	return s.DbResourceManagerIntereface.Create(item)
 }
 
-func (s *DbCrudService) Update(item DataInterface) (DataInterface, error) {
+func (s *DbCrudService) Update(item DataInterface) (DataInterface, *errors.GogetaError) {
 	return s.DbResourceManagerIntereface.Update(item)
 }
 

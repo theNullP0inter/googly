@@ -39,14 +39,15 @@ func NewAccountController(s AccountServiceInterface, logger logger.LoggerInterfa
 	//
 	// var list_serializer []AccountSerializer
 	// var detail_serializer AccountSerializer
-	// var update_request AccountCreateRequestSerializer
+	var update_request AccountCreateRequestSerializer
 	var create_request AccountCreateRequestSerializer
 
 	controller := controller.NewCrudHttpController(
 		logger, s, hydrator,
 		crud_http_connector,
 
-		create_request, nil, nil, nil,
+		create_request, update_request, nil, nil,
+		// nil, nil, nil, nil // This blocks create & update APIs
 
 		// Continution from above => comment the nil in the above line and uncomment below
 		// update_request, // This is required for PUT update request to be active

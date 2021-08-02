@@ -1,15 +1,14 @@
 package controller
 
 import (
-	"net/http"
 	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
+	"github.com/theNullP0inter/account-management/errors"
 	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/model"
 	"github.com/theNullP0inter/account-management/service"
-	"gorm.io/gorm"
 )
 
 type CrudHttpControllerConnectorInterface interface {
@@ -64,7 +63,8 @@ func (s *CrudHttpController) Create(c *gin.Context) {
 	serializer := reflect.New(reflect.TypeOf(s.CreateRequest)).Interface()
 
 	if err := c.ShouldBindJSON(serializer); err != nil {
-		s.HttpReplyError(c, "Bad Request", http.StatusBadRequest)
+		s.Logger.Error(err)
+		s.HttpReplyBindError(c, err)
 		return
 	}
 
@@ -73,7 +73,8 @@ func (s *CrudHttpController) Create(c *gin.Context) {
 	data, err := s.Service.Create(serializer)
 
 	if err != nil {
-		s.HttpReplyError(c, "", 400)
+		s.Logger.Error(err)
+		s.HttpReplyGenericBadRequest(c)
 		return
 	}
 	if s.DetailSerializer != nil {
@@ -87,18 +88,14 @@ func (s *CrudHttpController) Create(c *gin.Context) {
 func (s *CrudHttpController) Get(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
-		s.HttpReplyError(c, "Invalid Id", 400)
+		s.Logger.Error(err)
+		s.HttpReplyBadRequestFromError(c, err)
 		return
 	}
 
 	data, err := s.Service.GetItem(id)
-	if err != nil {
-		error_message := "Bad Request"
-		error_code := 400
-		if err == gorm.ErrRecordNotFound {
-			error_code = 404
-		}
-		s.HttpReplyError(c, error_message, error_code)
+	if data == nil {
+		s.HttpReplyNotFound(c)
 		return
 	}
 
@@ -114,14 +111,14 @@ func (s *CrudHttpController) Get(c *gin.Context) {
 func (s *CrudHttpController) List(c *gin.Context) {
 	params, err := s.ParametersHydrator.Hydrate(c)
 	if err != nil {
-		s.HttpReplyError(c, "Invalid Query", http.StatusBadRequest)
+		s.HttpReplyBadRequestFromError(c, err)
 		return
 
 	}
 	data, err := s.Service.GetList(params)
 
 	if err != nil {
-		s.HttpReplyError(c, "Data not found", http.StatusBadRequest)
+		s.HttpReplyNotFound(c)
 		return
 	}
 
@@ -137,28 +134,29 @@ func (s *CrudHttpController) List(c *gin.Context) {
 func (s *CrudHttpController) Update(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
-		s.HttpReplyError(c, "Invalid Id", 400)
+		s.Logger.Error(err)
+		s.HttpReplyBadRequestFromError(c, err)
 		return
 	}
 
 	serializer := reflect.New(reflect.TypeOf(s.UpdateRequest)).Interface()
 	if err := c.ShouldBindJSON(serializer); err != nil {
-		s.HttpReplyError(c, "Bad Request", http.StatusBadRequest)
+		s.HttpReplyBadRequestFromError(c, err)
 		return
 	}
 
-	item, err := s.Service.GetItem(id)
+	item, _ := s.Service.GetItem(id)
 
-	if err != nil {
-		s.HttpReplyError(c, "Item Not Found", http.StatusNotFound)
+	if item == nil {
+		s.HttpReplyNotFound(c)
 		return
 	}
 
-	copier.Copy(&item, &serializer)
+	copier.Copy(item, serializer)
 	item, err = s.Service.Update(item)
 
-	if err != nil {
-		s.HttpReplyError(c, "Update Failed", http.StatusBadRequest)
+	if item == nil {
+		s.HttpReplyInternalError(c, err)
 		return
 	}
 
@@ -174,12 +172,13 @@ func (s *CrudHttpController) Update(c *gin.Context) {
 func (s *CrudHttpController) Delete(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
-		s.HttpReplyError(c, "Invalid Id", 400)
+		s.Logger.Error(err)
+		s.HttpReplyBadRequestFromError(c, err)
 		return
 	}
 	err = s.Service.Delete(id)
-	if err != nil {
-		s.HttpReplyError(c, "internal error", 500)
+	if _, is_err := err.(*errors.GogetaError); is_err {
+		s.HttpReplyInternalError(c, err)
 		return
 	}
 

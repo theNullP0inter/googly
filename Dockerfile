@@ -25,7 +25,7 @@ RUN go mod verify
 COPY . .
 
 # RUN go test ./...
-RUN cd ./example/accounts && go build \
+RUN cd ./example/rdb_crud && go build \
     -installsuffix 'static' \
     -o /app
 

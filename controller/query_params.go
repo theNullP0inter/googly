@@ -2,12 +2,13 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/theNullP0inter/account-management/errors"
 	"github.com/theNullP0inter/account-management/logger"
 	"github.com/theNullP0inter/account-management/resource"
 )
 
 type QueryParametersHydratorInterface interface {
-	Hydrate(context *gin.Context) (resource.ListParametersInterface, error)
+	Hydrate(context *gin.Context) (resource.ListParametersInterface, *errors.GogetaError)
 }
 
 type CrudParametersHydrator struct {
@@ -15,10 +16,13 @@ type CrudParametersHydrator struct {
 	QueryParametersHydratorInterface
 }
 
-func (c CrudParametersHydrator) Hydrate(context *gin.Context) (resource.ListParametersInterface, error) {
+func (c CrudParametersHydrator) Hydrate(context *gin.Context) (resource.ListParametersInterface, *errors.GogetaError) {
 	var parameters resource.CrudListParameters
 	err := context.ShouldBindQuery(&parameters)
-	return &parameters, err
+	if err != nil {
+		return nil, errors.NewParamsHydrationError(err)
+	}
+	return &parameters, nil
 }
 
 func NewBaseParametersHydrator(logger logger.LoggerInterface) *CrudParametersHydrator {

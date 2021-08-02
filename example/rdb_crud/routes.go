@@ -8,6 +8,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"github.com/theNullP0inter/account-management/controller"
+	"github.com/theNullP0inter/account-management/example/rdb_crud/consts"
 )
 
 func RouteSetup(router *gin.Engine, cnt di.Container) *gin.Engine {
@@ -45,7 +46,7 @@ func RouteSetup(router *gin.Engine, cnt di.Container) *gin.Engine {
 	})
 
 	// Adding accounts
-	accounts_controller := cnt.Get(AccountsControllerName).(controller.HttpControllerConnectorInterface)
+	accounts_controller := cnt.Get(consts.AccountsControllerName).(controller.HttpControllerConnectorInterface)
 	accounts_router := router.Group("/account")
 	accounts_controller.AddRoutes(accounts_router)
 

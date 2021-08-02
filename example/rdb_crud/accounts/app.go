@@ -4,7 +4,7 @@ import (
 	"github.com/sarulabs/di/v2"
 	"github.com/theNullP0inter/account-management/app"
 
-	"github.com/theNullP0inter/account-management/example/rdb_crud"
+	"github.com/theNullP0inter/account-management/example/rdb_crud/consts"
 	"github.com/theNullP0inter/account-management/logger"
 	"gorm.io/gorm"
 )
@@ -20,38 +20,34 @@ type AccountsApp struct {
 	Controller      *AccountController
 }
 
-const AccountsServiceName = "accounts_service"
-const AccountsResourceManagerName = "accounts_resource_management"
-const AccountsControllerName = "accounts_controller"
-
 func (a *AccountsApp) Build(builder *di.Builder) {
 
 	builder.Add(di.Def{
-		Name: AccountsResourceManagerName,
+		Name: consts.AccountsResourceManagerName,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountResourceManager(
-				ctn.Get(rdb_crud.Rdb).(*gorm.DB),
-				ctn.Get(rdb_crud.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.Rdb).(*gorm.DB),
+				ctn.Get(consts.Logger).(logger.LoggerInterface),
 			), nil
 		},
 	})
 
 	builder.Add(di.Def{
-		Name: AccountsServiceName,
+		Name: consts.AccountsServiceName,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountService(
-				ctn.Get(rdb_crud.Logger).(logger.LoggerInterface),
-				ctn.Get(AccountsResourceManagerName).(AccountResourceManagerInterface),
+				ctn.Get(consts.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.AccountsResourceManagerName).(AccountResourceManagerInterface),
 			), nil
 		},
 	})
 
 	builder.Add(di.Def{
-		Name: AccountsControllerName,
+		Name: consts.AccountsControllerName,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountController(
-				ctn.Get(AccountsServiceName).(AccountServiceInterface),
-				ctn.Get(rdb_crud.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.AccountsServiceName).(AccountServiceInterface),
+				ctn.Get(consts.Logger).(logger.LoggerInterface),
 			), nil
 		},
 	})

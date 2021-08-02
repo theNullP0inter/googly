@@ -1,15 +1,18 @@
 package resource
 
-import "github.com/theNullP0inter/account-management/logger"
+import (
+	"github.com/theNullP0inter/account-management/errors"
+	"github.com/theNullP0inter/account-management/logger"
+)
 
 type CrudImplementorInterface interface {
-	Create(m DataInterface) (DataInterface, error)
-	List(parameters DataInterface) (DataInterface, error)
-	Get(id DataInterface) (DataInterface, error)
+	Create(m DataInterface) (DataInterface, *errors.GogetaError)
+	List(parameters DataInterface) (DataInterface, *errors.GogetaError)
+	Get(id DataInterface) (DataInterface, *errors.GogetaError)
 
-	Update(item DataInterface) (DataInterface, error)
+	Update(item DataInterface) (DataInterface, *errors.GogetaError)
 
-	Delete(id DataInterface) error
+	Delete(id DataInterface) *errors.GogetaError
 }
 
 type CrudResourceManagerInterface interface {
