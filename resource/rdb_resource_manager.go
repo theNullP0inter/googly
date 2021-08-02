@@ -6,9 +6,9 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/copier"
-	"github.com/theNullP0inter/account-management/errors"
-	"github.com/theNullP0inter/account-management/logger"
-	"github.com/theNullP0inter/account-management/model"
+	"github.com/theNullP0inter/googly/errors"
+	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/model"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +19,7 @@ type RdbResourceManager struct {
 	QueryBuilder RdbListQueryBuilderInterface
 }
 
-func (s RdbResourceManager) Create(m DataInterface) (DataInterface, *errors.GogetaError) {
+func (s RdbResourceManager) Create(m DataInterface) (DataInterface, *errors.GooglyError) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
 	result := s.Rdb.Create(item)
@@ -41,7 +41,7 @@ func (s RdbResourceManager) GetResource() Resource {
 func (s RdbResourceManager) GetModel() DataInterface {
 	return s.Model
 }
-func (s RdbResourceManager) Get(id DataInterface) (DataInterface, *errors.GogetaError) {
+func (s RdbResourceManager) Get(id DataInterface) (DataInterface, *errors.GooglyError) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	bin_id, ok := id.(model.BinID)
 	if !ok {
@@ -55,7 +55,7 @@ func (s RdbResourceManager) Get(id DataInterface) (DataInterface, *errors.Gogeta
 	return item, nil
 }
 
-func (s RdbResourceManager) Update(data DataInterface) (DataInterface, *errors.GogetaError) {
+func (s RdbResourceManager) Update(data DataInterface) (DataInterface, *errors.GooglyError) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, data)
 	result := s.Rdb.Save(item)
@@ -68,19 +68,16 @@ func (s RdbResourceManager) Update(data DataInterface) (DataInterface, *errors.G
 	}
 	return item, nil
 }
-func (s RdbResourceManager) Delete(id DataInterface) *errors.GogetaError {
+func (s RdbResourceManager) Delete(id DataInterface) *errors.GooglyError {
 	item, err := s.Get(id)
 	if err != nil {
 		return err
 	}
-	result := s.Rdb.Delete(item)
-	if result.Error != nil {
-		return errors.NewInternalError(result.Error)
-	}
+	s.Rdb.Delete(item)
 	return nil
 }
 
-func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, *errors.GogetaError) {
+func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, *errors.GooglyError) {
 
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
 	result, err := s.QueryBuilder.ListQuery(parameters)

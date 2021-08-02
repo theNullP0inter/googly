@@ -1,6 +1,6 @@
 package resource
 
-import "github.com/theNullP0inter/account-management/logger"
+import "github.com/theNullP0inter/googly/logger"
 
 type ResourceManagerInterface interface {
 	GetResource() Resource

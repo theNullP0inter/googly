@@ -7,13 +7,13 @@ import (
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	gogeta "github.com/theNullP0inter/account-management"
-	"github.com/theNullP0inter/account-management/app"
-	"github.com/theNullP0inter/account-management/command"
-	"github.com/theNullP0inter/account-management/example/rdb_crud/accounts"
-	"github.com/theNullP0inter/account-management/example/rdb_crud/consts"
-	"github.com/theNullP0inter/account-management/logger"
-	"github.com/theNullP0inter/account-management/rdb"
+	"github.com/theNullP0inter/googly"
+	"github.com/theNullP0inter/googly/app"
+	"github.com/theNullP0inter/googly/command"
+	"github.com/theNullP0inter/googly/example/rdb_crud/accounts"
+	"github.com/theNullP0inter/googly/example/rdb_crud/consts"
+	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/rdb"
 	mysql "gorm.io/driver/mysql"
 )
 
@@ -95,16 +95,16 @@ func (a MainAppRunner) RegisterCommands(cmd *cobra.Command, cnt di.Container) {
 }
 
 func main() {
-	g := &gogeta.Gogeta{
-		GogetaRunnerInterface: &MainAppRunner{},
+	g := &googly.Googly{
+		GooglyRunnerInterface: &MainAppRunner{},
 		InstalledApps:         INSTALLED_APPS,
 	}
-	// client := gogeta.Container.Get(SentryClient).(*sentry.Client)
+	// client := googly.Container.Get(SentryClient).(*sentry.Client)
 	// if client != nil {
 	// 	func() {
-	// 		gogeta.Run(g)
+	// 		googly.Run(g)
 	// 	}()
 	// } else {
-	gogeta.Run(g)
+	googly.Run(g)
 	// }
 }

@@ -1,6 +1,6 @@
 package accounts
 
-import "github.com/theNullP0inter/account-management/model"
+import "github.com/theNullP0inter/googly/model"
 
 type Account struct {
 	model.BaseModel

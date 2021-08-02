@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/theNullP0inter/account-management/logger"
+	"github.com/theNullP0inter/googly/logger"
 	"gorm.io/gorm"
 )
 

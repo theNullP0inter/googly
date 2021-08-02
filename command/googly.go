@@ -11,11 +11,11 @@ type CommandConfig struct {
 	Short string
 }
 
-var GogetaCmd = &cobra.Command{
-	Use:   "gogeta",
-	Short: "gogeta",
+var GooglyCmd = &cobra.Command{
+	Use:   "googly",
+	Short: "googly",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Gogeta: Initialized")
+		fmt.Println("Googly: Running")
 		// This is just a root command. Nothing to run
 	},
 }

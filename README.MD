@@ -1,6 +1,10 @@
-# Account Management Service
+# Googly: An Extensible golang framework
 
-
+Pending Tasks
+- [] Mongo Resource Manager
+- [] Unit Tests
+- [] Add "Ingress" to Googly 
+- [] Readme changes
 
 ## Libs Used
 

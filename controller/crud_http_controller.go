@@ -5,10 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
-	"github.com/theNullP0inter/account-management/errors"
-	"github.com/theNullP0inter/account-management/logger"
-	"github.com/theNullP0inter/account-management/model"
-	"github.com/theNullP0inter/account-management/service"
+	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/model"
+	"github.com/theNullP0inter/googly/service"
 )
 
 type CrudHttpControllerConnectorInterface interface {
@@ -153,10 +152,10 @@ func (s *CrudHttpController) Update(c *gin.Context) {
 	}
 
 	copier.Copy(item, serializer)
-	item, err = s.Service.Update(item)
+	item, gerr := s.Service.Update(item)
 
-	if item == nil {
-		s.HttpReplyInternalError(c, err)
+	if gerr != nil {
+		s.HttpReplyInternalError(c, gerr)
 		return
 	}
 
@@ -176,9 +175,10 @@ func (s *CrudHttpController) Delete(c *gin.Context) {
 		s.HttpReplyBadRequestFromError(c, err)
 		return
 	}
-	err = s.Service.Delete(id)
-	if _, is_err := err.(*errors.GogetaError); is_err {
-		s.HttpReplyInternalError(c, err)
+
+	gerr := s.Service.Delete(id)
+	if gerr != nil {
+		s.HttpReplyInternalError(c, gerr)
 		return
 	}
 

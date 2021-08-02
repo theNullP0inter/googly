@@ -1,18 +1,18 @@
 package service
 
 import (
-	"github.com/theNullP0inter/account-management/errors"
-	"github.com/theNullP0inter/account-management/logger"
-	"github.com/theNullP0inter/account-management/resource"
+	"github.com/theNullP0inter/googly/errors"
+	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/resource"
 )
 
 type CrudServiceImplementorInterface interface {
 	ServiceInterface
-	GetItem(id DataInterface) (DataInterface, *errors.GogetaError)
-	GetList(req DataInterface) (DataInterface, *errors.GogetaError)
-	Create(req DataInterface) (DataInterface, *errors.GogetaError)
-	Update(item DataInterface) (DataInterface, *errors.GogetaError)
-	Delete(id DataInterface) *errors.GogetaError
+	GetItem(id DataInterface) (DataInterface, *errors.GooglyError)
+	GetList(req DataInterface) (DataInterface, *errors.GooglyError)
+	Create(req DataInterface) (DataInterface, *errors.GooglyError)
+	Update(item DataInterface) (DataInterface, *errors.GooglyError)
+	Delete(id DataInterface) *errors.GooglyError
 }
 
 type CrudServiceInterface interface {

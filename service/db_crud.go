@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/theNullP0inter/account-management/errors"
-	"github.com/theNullP0inter/account-management/logger"
-	"github.com/theNullP0inter/account-management/resource"
+	"github.com/theNullP0inter/googly/errors"
+	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/resource"
 )
 
 type DbCrudServiceInterface interface {
@@ -14,23 +14,23 @@ type DbCrudService struct {
 	*DbService
 }
 
-func (s *DbCrudService) Delete(id DataInterface) *errors.GogetaError {
+func (s *DbCrudService) Delete(id DataInterface) *errors.GooglyError {
 	return s.DbResourceManagerIntereface.Delete(id)
 }
 
-func (s *DbCrudService) GetItem(id DataInterface) (DataInterface, *errors.GogetaError) {
+func (s *DbCrudService) GetItem(id DataInterface) (DataInterface, *errors.GooglyError) {
 	return s.DbResourceManagerIntereface.Get(id)
 }
 
-func (s *DbCrudService) GetList(req DataInterface) (DataInterface, *errors.GogetaError) {
+func (s *DbCrudService) GetList(req DataInterface) (DataInterface, *errors.GooglyError) {
 	return s.DbResourceManagerIntereface.List(req)
 }
 
-func (s *DbCrudService) Create(item DataInterface) (DataInterface, *errors.GogetaError) {
+func (s *DbCrudService) Create(item DataInterface) (DataInterface, *errors.GooglyError) {
 	return s.DbResourceManagerIntereface.Create(item)
 }
 
-func (s *DbCrudService) Update(item DataInterface) (DataInterface, *errors.GogetaError) {
+func (s *DbCrudService) Update(item DataInterface) (DataInterface, *errors.GooglyError) {
 	return s.DbResourceManagerIntereface.Update(item)
 }
 

@@ -1,10 +1,10 @@
 package errors
 
-func NewParamsHydrationError(err error) *GogetaError {
+func NewParamsHydrationError(err error) *GooglyError {
 	if err == nil {
 		return nil
 	}
-	return &GogetaError{
+	return &GooglyError{
 		Status:  400,
 		Message: "Invalid Parameters",
 		Err:     err,

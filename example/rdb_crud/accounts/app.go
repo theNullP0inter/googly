@@ -2,10 +2,10 @@ package accounts
 
 import (
 	"github.com/sarulabs/di/v2"
-	"github.com/theNullP0inter/account-management/app"
+	"github.com/theNullP0inter/googly/app"
 
-	"github.com/theNullP0inter/account-management/example/rdb_crud/consts"
-	"github.com/theNullP0inter/account-management/logger"
+	"github.com/theNullP0inter/googly/example/rdb_crud/consts"
+	"github.com/theNullP0inter/googly/logger"
 	"gorm.io/gorm"
 )
 

@@ -2,9 +2,9 @@ package accounts
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/theNullP0inter/account-management/controller"
-	"github.com/theNullP0inter/account-management/logger"
-	"github.com/theNullP0inter/account-management/model"
+	"github.com/theNullP0inter/googly/controller"
+	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/model"
 )
 
 type AccountSerializer struct {

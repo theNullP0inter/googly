@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/theNullP0inter/account-management/logger"
+	"github.com/theNullP0inter/googly/logger"
 )
 
 type DataInterface interface {

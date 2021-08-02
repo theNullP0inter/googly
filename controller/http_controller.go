@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"github.com/theNullP0inter/account-management/errors"
-	"github.com/theNullP0inter/account-management/logger"
+	"github.com/theNullP0inter/googly/errors"
+	"github.com/theNullP0inter/googly/logger"
 )
 
 type HttpControllerConnectorInterface interface {
@@ -17,7 +17,7 @@ type HttpControllerInterface interface {
 	ControllerInterface
 	HttpResponse(*gin.Context, interface{}, int)
 	HttpReplySuccess(*gin.Context, interface{})
-	HttpReplyError(*gin.Context, *errors.GogetaError)
+	HttpReplyError(*gin.Context, *errors.GooglyError)
 }
 
 type HttpController struct {
@@ -45,7 +45,7 @@ func (c HttpController) HttpReplyValidationError(context *gin.Context, err inter
 	c.HttpResponse(context, gin.H{"error": err}, 422)
 }
 
-func (c HttpController) HttpReplyErrorMessage(context *gin.Context, err *errors.GogetaError) {
+func (c HttpController) HttpReplyErrorMessage(context *gin.Context, err *errors.GooglyError) {
 	c.HttpResponse(context, gin.H{"error_message": err.Message}, err.Status)
 }
 

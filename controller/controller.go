@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/theNullP0inter/account-management/logger"
+	"github.com/theNullP0inter/googly/logger"
 )
 
 type ControllerInterface interface {

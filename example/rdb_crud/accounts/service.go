@@ -1,8 +1,8 @@
 package accounts
 
 import (
-	"github.com/theNullP0inter/account-management/logger"
-	"github.com/theNullP0inter/account-management/service"
+	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/service"
 )
 
 type AccountServiceInterface interface {

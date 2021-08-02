@@ -1,4 +1,4 @@
-module github.com/theNullP0inter/account-management
+module github.com/theNullP0inter/googly
 
 go 1.16
 
@@ -40,28 +40,28 @@ require (
 	gorm.io/gorm v1.21.12
 )
 
-replace github.com/theNullP0inter/account-management/command => ./command
+replace github.com/theNullP0inter/googly/command => ./command
 
-replace github.com/theNullP0inter/account-management/logger => ./logger
+replace github.com/theNullP0inter/googly/logger => ./logger
 
-replace github.com/theNullP0inter/account-management/model => ./model
+replace github.com/theNullP0inter/googly/model => ./model
 
-replace github.com/theNullP0inter/account-management/rdb => ./rdb
+replace github.com/theNullP0inter/googly/rdb => ./rdb
 
-replace github.com/theNullP0inter/account-management/route => ./route
+replace github.com/theNullP0inter/googly/route => ./route
 
-replace github.com/theNullP0inter/account-management/service => ./service
+replace github.com/theNullP0inter/googly/service => ./service
 
-replace github.com/theNullP0inter/account-management/resource => ./resource
+replace github.com/theNullP0inter/googly/resource => ./resource
 
-replace github.com/theNullP0inter/account-management/controller => ./controller
+replace github.com/theNullP0inter/googly/controller => ./controller
 
-replace github.com/theNullP0inter/account-management/app => ./app
+replace github.com/theNullP0inter/googly/app => ./app
 
-replace github.com/theNullP0inter/account-management/app_repository => ./app_repository
+replace github.com/theNullP0inter/googly/app_repository => ./app_repository
 
 // example/rdb_crud
 
-replace github.com/theNullP0inter/account-management/example/rdb_crud => ./example/rdb_crud
+replace github.com/theNullP0inter/googly/example/rdb_crud => ./example/rdb_crud
 
-replace github.com/theNullP0inter/account-management/example/rdb_crud/accounts => ./example/rdb_crud/accounts
+replace github.com/theNullP0inter/googly/example/rdb_crud/accounts => ./example/rdb_crud/accounts

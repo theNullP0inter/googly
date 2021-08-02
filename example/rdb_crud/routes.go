@@ -7,8 +7,8 @@ import (
 	"github.com/sarulabs/di/v2"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"github.com/theNullP0inter/account-management/controller"
-	"github.com/theNullP0inter/account-management/example/rdb_crud/consts"
+	"github.com/theNullP0inter/googly/controller"
+	"github.com/theNullP0inter/googly/example/rdb_crud/consts"
 )
 
 func RouteSetup(router *gin.Engine, cnt di.Container) *gin.Engine {
@@ -17,7 +17,7 @@ func RouteSetup(router *gin.Engine, cnt di.Container) *gin.Engine {
 	// router := gin.New()
 	router.Use(gin.Recovery())
 
-	// client := gogeta.Container.Get(gogeta.SentryClient).(*sentry.Client)
+	// client := cnt.Get(consts.SentryClient).(*sentry.Client)
 
 	// if client != nil {
 	// 	router.Use(sentrygin.New(sentrygin.Options{
