@@ -4,6 +4,8 @@ Pending Tasks
 - [] Mongo Resource Manager
 - [] Unit Tests 
 - [] Readme changes
+- [] Example grpc service
+- [] Example MongoDb
 
 ## Libs Used
 
