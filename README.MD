@@ -1,9 +1,8 @@
-# Googly: An Extensible golang framework
+# Googly: An Extensible Microservice Toolkit
 
 Pending Tasks
 - [] Mongo Resource Manager
-- [] Unit Tests
-- [] Add "Ingress" to Googly 
+- [] Unit Tests 
 - [] Readme changes
 
 ## Libs Used

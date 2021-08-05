@@ -10,11 +10,11 @@ import (
 	"github.com/theNullP0inter/googly"
 	"github.com/theNullP0inter/googly/app"
 	"github.com/theNullP0inter/googly/command"
+	googly_db "github.com/theNullP0inter/googly/db"
 	"github.com/theNullP0inter/googly/example/rdb_crud/accounts"
 	"github.com/theNullP0inter/googly/example/rdb_crud/consts"
 	"github.com/theNullP0inter/googly/ingress"
 	"github.com/theNullP0inter/googly/logger"
-	"github.com/theNullP0inter/googly/rdb"
 	mysql "gorm.io/driver/mysql"
 )
 
@@ -45,7 +45,7 @@ func (a MainAppRunner) Inject(builder *di.Builder) {
 		Name: consts.Rdb,
 		Build: func(ctn di.Container) (interface{}, error) {
 			dbUrl := viper.GetString("RDB_URL")
-			db := rdb.NewDb(mysql.Open(dbUrl))
+			db := googly_db.NewRdb(mysql.Open(dbUrl))
 
 			sqlDB, err := db.DB()
 
