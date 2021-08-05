@@ -15,7 +15,7 @@ type DbService struct {
 	resource.DbResourceManagerIntereface
 }
 
-func NewDbService(logger logger.LoggerInterface, rm resource.DbResourceManagerIntereface) DbServiceInterface {
-	service := NewService(logger).(*Service)
+func NewDbService(logger logger.LoggerInterface, rm resource.DbResourceManagerIntereface) *DbService {
+	service := NewService(logger)
 	return &DbService{service, rm}
 }

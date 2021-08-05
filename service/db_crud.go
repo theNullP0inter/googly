@@ -7,7 +7,7 @@ import (
 )
 
 type DbCrudServiceInterface interface {
-	CrudServiceImplementorInterface
+	CrudInterface
 }
 
 type DbCrudService struct {
@@ -34,7 +34,7 @@ func (s *DbCrudService) Update(item DataInterface) (DataInterface, *errors.Googl
 	return s.DbResourceManagerIntereface.Update(item)
 }
 
-func NewDbCrudService(logger logger.LoggerInterface, rm resource.DbResourceManagerIntereface) DbCrudServiceInterface {
-	service := NewDbService(logger, rm).(*DbService)
+func NewDbCrudService(logger logger.LoggerInterface, rm resource.DbResourceManagerIntereface) *DbCrudService {
+	service := NewDbService(logger, rm)
 	return &DbCrudService{service}
 }

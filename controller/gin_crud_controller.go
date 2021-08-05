@@ -10,12 +10,13 @@ import (
 	"github.com/theNullP0inter/googly/service"
 )
 
-type CrudHttpControllerConnectorInterface interface {
+type GinCrudConnectorInterface interface {
 	AddActions(*gin.RouterGroup)
 }
 
-type CrudHttpControllerInterface interface {
-	HttpControllerInterface
+type GinCrudControllerInterface interface {
+	GinControllerInterface
+	GinControllerIngressInterface
 	Create(context *gin.Context)
 	Get(context *gin.Context)
 	List(context *gin.Context)
@@ -23,10 +24,10 @@ type CrudHttpControllerInterface interface {
 	Delete(context *gin.Context)
 }
 
-type CrudHttpController struct {
-	*HttpController
-	CrudHttpControllerConnectorInterface
-	Service            service.CrudServiceInterface
+type GinCrudController struct {
+	*GinController
+	GinCrudConnectorInterface
+	Service            service.CrudInterface
 	ParametersHydrator QueryParametersHydratorInterface
 
 	CreateRequest    SerializerInterface
@@ -37,7 +38,7 @@ type CrudHttpController struct {
 	// TODO: add more options like allowed_methods, etc in a map. These can be implemented in AddRoutes()
 }
 
-func (s *CrudHttpController) AddRoutes(router *gin.RouterGroup) {
+func (s *GinCrudController) AddRoutes(router *gin.RouterGroup) {
 	if s.CreateRequest != nil {
 		router.POST("/", s.Create)
 	}
@@ -52,13 +53,13 @@ func (s *CrudHttpController) AddRoutes(router *gin.RouterGroup) {
 	s.AddActions(router)
 }
 
-func (s *CrudHttpController) CopyAndSendSuccess(c *gin.Context, data, i SerializerInterface) {
+func (s *GinCrudController) CopyAndSendSuccess(c *gin.Context, data, i SerializerInterface) {
 	res := reflect.New(reflect.TypeOf(i)).Interface()
 	copier.Copy(res, data)
 	s.HttpReplySuccess(c, res)
 }
 
-func (s *CrudHttpController) Create(c *gin.Context) {
+func (s *GinCrudController) Create(c *gin.Context) {
 	serializer := reflect.New(reflect.TypeOf(s.CreateRequest)).Interface()
 
 	if err := c.ShouldBindJSON(serializer); err != nil {
@@ -84,7 +85,7 @@ func (s *CrudHttpController) Create(c *gin.Context) {
 	s.HttpReplySuccess(c, data)
 }
 
-func (s *CrudHttpController) Get(c *gin.Context) {
+func (s *GinCrudController) Get(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
 		s.Logger.Error(err)
@@ -107,7 +108,7 @@ func (s *CrudHttpController) Get(c *gin.Context) {
 
 }
 
-func (s *CrudHttpController) List(c *gin.Context) {
+func (s *GinCrudController) List(c *gin.Context) {
 	params, err := s.ParametersHydrator.Hydrate(c)
 	if err != nil {
 		s.HttpReplyBadRequestFromError(c, err)
@@ -130,7 +131,7 @@ func (s *CrudHttpController) List(c *gin.Context) {
 
 }
 
-func (s *CrudHttpController) Update(c *gin.Context) {
+func (s *GinCrudController) Update(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
 		s.Logger.Error(err)
@@ -168,7 +169,7 @@ func (s *CrudHttpController) Update(c *gin.Context) {
 
 }
 
-func (s *CrudHttpController) Delete(c *gin.Context) {
+func (s *GinCrudController) Delete(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
 		s.Logger.Error(err)
@@ -186,22 +187,22 @@ func (s *CrudHttpController) Delete(c *gin.Context) {
 
 }
 
-func NewCrudHttpController(logger logger.LoggerInterface,
-	service service.CrudServiceInterface,
+func NewGinCrudController(logger logger.LoggerInterface,
+	service service.CrudInterface,
 	hydrator *CrudParametersHydrator,
-	crud_http_connector CrudHttpControllerConnectorInterface,
+	gin_crud_connector GinCrudConnectorInterface,
 	create_request SerializerInterface,
 	update_request SerializerInterface,
 	list_serializer SerializerInterface,
 	detail_serializer SerializerInterface,
-) *CrudHttpController {
-	http_controller := NewHttpController(logger)
+) *GinCrudController {
+	gin_controller := NewGinController(logger)
 
-	return &CrudHttpController{
-		HttpController:                       http_controller.(*HttpController),
-		CrudHttpControllerConnectorInterface: crud_http_connector,
-		Service:                              service,
-		ParametersHydrator:                   hydrator,
+	return &GinCrudController{
+		GinController:             gin_controller,
+		GinCrudConnectorInterface: gin_crud_connector,
+		Service:                   service,
+		ParametersHydrator:        hydrator,
 
 		CreateRequest:    create_request,
 		UpdateRequest:    update_request,

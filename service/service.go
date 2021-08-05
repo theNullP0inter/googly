@@ -19,7 +19,7 @@ type Service struct {
 	Logger logger.LoggerInterface
 }
 
-func NewService(logger logger.LoggerInterface) ServiceInterface {
+func NewService(logger logger.LoggerInterface) *Service {
 	return &Service{
 		Logger: logger,
 	}
