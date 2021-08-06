@@ -19,17 +19,28 @@ type RdbResourceManager struct {
 	QueryBuilder RdbListQueryBuilderInterface
 }
 
+func handleGormError(err error) *errors.GooglyError {
+
+	if err == gorm.ErrRecordNotFound {
+		return errors.NewResourceNotFoundError("", err)
+	} else if err == gorm.ErrInvalidTransaction {
+		return errors.NewInternalError(err)
+	}
+
+	var mysqlErr *mysql.MySQLError
+	if go_errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		return errors.NewUniqueConstraintError("", err)
+	}
+	return errors.NewInvalidRequestError()
+}
+
 func (s RdbResourceManager) Create(m DataInterface) (DataInterface, *errors.GooglyError) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
 	result := s.Db.Create(item)
 
 	if result.Error != nil {
-		var mysqlErr *mysql.MySQLError
-		if go_errors.As(result.Error, &mysqlErr) && mysqlErr.Number == 1062 {
-			return nil, errors.NewUniqueConstraintError("", result.Error)
-		}
-		return nil, errors.NewInternalError(result.Error)
+		return nil, handleGormError(result.Error)
 	}
 	return item, nil
 }
@@ -50,16 +61,12 @@ func (s RdbResourceManager) Get(id DataInterface) (DataInterface, *errors.Googly
 	b_id, _ := bin_id.MarshalBinary()
 	err := s.Db.Where("id = ?", b_id).First(item).Error
 	if err != nil {
-		return nil, errors.NewResourceNotFoundError("", err)
+		return nil, handleGormError(err)
 	}
 	return item, nil
 }
 
 func (s RdbResourceManager) Update(id DataInterface, data DataInterface) *errors.GooglyError {
-
-	// var service_request resource.UpdateRequest = make(resource.UpdateRequest)
-	// j, _ := json.Marshal(update)
-	// json.Unmarshal(j, &service_request)
 
 	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	bin_id, ok := id.(model.BinID)
@@ -73,11 +80,7 @@ func (s RdbResourceManager) Update(id DataInterface, data DataInterface) *errors
 	result := s.Db.Model(s.GetModel()).Where("id = ?", b_id).Updates(m)
 
 	if result.Error != nil {
-		var mysqlErr *mysql.MySQLError
-		if go_errors.As(result.Error, &mysqlErr) && mysqlErr.Number == 1062 {
-			return errors.NewUniqueConstraintError("", result.Error)
-		}
-		return errors.NewInternalError(result.Error)
+		return handleGormError(result.Error)
 	}
 
 	return nil
@@ -100,7 +103,7 @@ func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, *erro
 	}
 	result = result.Find(items)
 	if result.Error != nil {
-		return nil, errors.NewResourceNotFoundError("", result.Error)
+		return nil, handleGormError(result.Error)
 	}
 
 	return items, nil

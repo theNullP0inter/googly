@@ -83,7 +83,7 @@ func (a MainAppRunner) RegisterCommands(cmd *cobra.Command, cnt di.Container) {
 		panic(err)
 	}
 
-	migrate_cmd := command.NewMigrateCommand(
+	migrate_cmd := googly_db.NewMigrateCommand(
 		&command.CommandConfig{
 			Name:  "migrate",
 			Short: "DB Migrator",
