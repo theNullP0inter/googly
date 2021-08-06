@@ -1,12 +1,11 @@
 package resource
 
 import (
-	go_errors "errors"
+	"errors"
 	"reflect"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/copier"
-	"github.com/theNullP0inter/googly/errors"
 	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/model"
 	"gorm.io/gorm"
@@ -19,22 +18,22 @@ type RdbResourceManager struct {
 	QueryBuilder RdbListQueryBuilderInterface
 }
 
-func handleGormError(err error) *errors.GooglyError {
+func handleGormError(err error) error {
 
 	if err == gorm.ErrRecordNotFound {
-		return errors.NewResourceNotFoundError("", err)
+		return ErrResourceNotFound
 	} else if err == gorm.ErrInvalidTransaction {
-		return errors.NewInternalError(err)
+		return ErrInvalidTransaction
 	}
 
 	var mysqlErr *mysql.MySQLError
-	if go_errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
-		return errors.NewUniqueConstraintError("", err)
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+		return ErrUniqueConstraint
 	}
-	return errors.NewInvalidRequestError()
+	return ErrInvalidQuery
 }
 
-func (s RdbResourceManager) Create(m DataInterface) (DataInterface, *errors.GooglyError) {
+func (s RdbResourceManager) Create(m DataInterface) (DataInterface, error) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
 	result := s.Db.Create(item)
@@ -52,11 +51,11 @@ func (s RdbResourceManager) GetResource() Resource {
 func (s RdbResourceManager) GetModel() DataInterface {
 	return s.Model
 }
-func (s RdbResourceManager) Get(id DataInterface) (DataInterface, *errors.GooglyError) {
+func (s RdbResourceManager) Get(id DataInterface) (DataInterface, error) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	bin_id, ok := id.(model.BinID)
 	if !ok {
-		return nil, errors.NewBinIdAssertionError(id)
+		return nil, ErrInvalidFormat
 	}
 	b_id, _ := bin_id.MarshalBinary()
 	err := s.Db.Where("id = ?", b_id).First(item).Error
@@ -66,12 +65,12 @@ func (s RdbResourceManager) Get(id DataInterface) (DataInterface, *errors.Googly
 	return item, nil
 }
 
-func (s RdbResourceManager) Update(id DataInterface, data DataInterface) *errors.GooglyError {
+func (s RdbResourceManager) Update(id DataInterface, data DataInterface) error {
 
 	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	bin_id, ok := id.(model.BinID)
 	if !ok {
-		return errors.NewBinIdAssertionError(id)
+		return ErrInvalidFormat
 	}
 	b_id, _ := bin_id.MarshalBinary()
 
@@ -85,7 +84,7 @@ func (s RdbResourceManager) Update(id DataInterface, data DataInterface) *errors
 
 	return nil
 }
-func (s RdbResourceManager) Delete(id DataInterface) *errors.GooglyError {
+func (s RdbResourceManager) Delete(id DataInterface) error {
 	item, err := s.Get(id)
 	if err != nil {
 		return err
@@ -94,12 +93,12 @@ func (s RdbResourceManager) Delete(id DataInterface) *errors.GooglyError {
 	return nil
 }
 
-func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, *errors.GooglyError) {
+func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, error) {
 
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
 	result, err := s.QueryBuilder.ListQuery(parameters)
 	if err != nil {
-		return nil, errors.NewInternalError(err)
+		return nil, ErrInternal
 	}
 	result = result.Find(items)
 	if result.Error != nil {

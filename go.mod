@@ -19,6 +19,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/google/uuid v1.3.0
 	github.com/jinzhu/copier v0.3.2
+	github.com/jinzhu/gorm v1.9.16
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/lib/pq v1.10.2
 	github.com/mailru/easyjson v0.7.7 // indirect

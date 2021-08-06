@@ -1,18 +1,17 @@
 package resource
 
 import (
-	"github.com/theNullP0inter/googly/errors"
 	"github.com/theNullP0inter/googly/logger"
 )
 
 type CrudImplementorInterface interface {
-	Create(m DataInterface) (DataInterface, *errors.GooglyError)
-	List(parameters DataInterface) (DataInterface, *errors.GooglyError)
-	Get(id DataInterface) (DataInterface, *errors.GooglyError)
+	Create(m DataInterface) (DataInterface, error)
+	List(parameters DataInterface) (DataInterface, error)
+	Get(id DataInterface) (DataInterface, error)
 
-	Update(id DataInterface, item DataInterface) *errors.GooglyError
+	Update(id DataInterface, item DataInterface) error
 
-	Delete(id DataInterface) *errors.GooglyError
+	Delete(id DataInterface) error
 }
 
 type CrudResourceManagerInterface interface {

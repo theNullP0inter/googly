@@ -4,12 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"github.com/theNullP0inter/googly/errors"
 	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/service"
 )
 
-type GinControllerIngressInterface interface {
+type GinControllerConnectorInterface interface {
 	AddRoutes(*gin.RouterGroup)
 }
 
@@ -17,51 +16,57 @@ type GinControllerInterface interface {
 	ControllerInterface
 	HttpResponse(*gin.Context, interface{}, int)
 	HttpReplySuccess(*gin.Context, interface{})
-	HttpReplyError(*gin.Context, *errors.GooglyError)
+	HttpReplyServiceError(*gin.Context, *service.ServiceError)
 }
 
 type GinController struct {
 	*Controller
 }
 
+func (c GinController) HttpResponse(context *gin.Context, obj interface{}, code int) {
+	context.JSON(code, obj)
+}
+
 func (c GinController) HttpReplySuccess(context *gin.Context, data interface{}) {
 	c.HttpResponse(context, gin.H{"data": data}, http.StatusOK)
 }
 
-func (c GinController) HttpReplyInternalError(context *gin.Context, err interface{}) {
-	if viper.GetString("GIN_MODE") == "release" {
-		c.HttpResponse(context, gin.H{"error": "Internal Server Error"}, 500)
-		return
+func (c GinController) HttpReplyGinBindError(context *gin.Context, err error) {
+	e := &HttpError{
+		Code:    422,
+		Message: ErrHttpInvalidRequest,
+		Err:     nil,
+		Errors:  err.Error(),
 	}
-	c.HttpResponse(context, gin.H{"error": err}, 500)
+	e.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyNotFound(context *gin.Context) {
-	c.HttpResponse(context, gin.H{"error": "Not Found"}, 404)
+func (c GinController) HttpReplyGinPathParamError(context *gin.Context, err error) {
+	e := &HttpError{
+		Code:    400,
+		Message: ErrHttpInvalidPathParam,
+		Err:     err,
+		Errors:  nil,
+	}
+	e.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyValidationError(context *gin.Context, err interface{}) {
-	c.HttpResponse(context, gin.H{"error": err}, 422)
+func (c GinController) HttpReplyGinNotFoundError(context *gin.Context, err error) {
+	e := &HttpError{
+		Code:    400,
+		Message: ErrHttpInvalidRequest,
+		Err:     nil,
+		Errors:  err.Error(),
+	}
+	e.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyErrorMessage(context *gin.Context, err *errors.GooglyError) {
-	c.HttpResponse(context, gin.H{"error_message": err.Message}, err.Status)
+func (c GinController) HttpReplyHttpError(context *gin.Context, err HttpError) {
+	err.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyGenericBadRequest(context *gin.Context) {
-	c.HttpResponse(context, gin.H{"error": "Bad Request"}, 400)
-}
-
-func (c GinController) HttpReplyBadRequestFromError(context *gin.Context, err error) {
-	c.HttpResponse(context, gin.H{"error": err.Error()}, 400)
-}
-
-func (c GinController) HttpReplyBindError(context *gin.Context, err error) {
-	c.HttpReplyBadRequestFromError(context, err)
-}
-
-func (c GinController) HttpResponse(context *gin.Context, obj interface{}, code int) {
-	context.JSON(code, obj)
+func (c GinController) HttpReplyServiceError(context *gin.Context, err *service.ServiceError) {
+	NewHttpErrorFromServiceError(err).RespondToGin(context)
 }
 
 func NewGinController(logger logger.LoggerInterface) *GinController {

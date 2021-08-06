@@ -16,7 +16,7 @@ type GinCrudConnectorInterface interface {
 
 type GinCrudControllerInterface interface {
 	GinControllerInterface
-	GinControllerIngressInterface
+	GinControllerConnectorInterface
 	Create(context *gin.Context)
 	Get(context *gin.Context)
 	List(context *gin.Context)
@@ -64,17 +64,15 @@ func (s *GinCrudController) Create(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(serializer); err != nil {
 		s.Logger.Error(err)
-		s.HttpReplyBindError(c, err)
+		s.HttpReplyGinBindError(c, err)
 		return
 	}
-
-	// copier.Copy(res, data)
 
 	data, err := s.Service.Create(serializer)
 
 	if err != nil {
 		s.Logger.Error(err)
-		s.HttpReplyGenericBadRequest(c)
+		s.HttpReplyServiceError(c, err)
 		return
 	}
 	if s.DetailSerializer != nil {
@@ -89,13 +87,13 @@ func (s *GinCrudController) Get(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
 		s.Logger.Error(err)
-		s.HttpReplyBadRequestFromError(c, err)
+		s.HttpReplyGinPathParamError(c, err)
 		return
 	}
 
-	data, err := s.Service.GetItem(id)
+	data, serr := s.Service.GetItem(id)
 	if data == nil {
-		s.HttpReplyNotFound(c)
+		s.HttpReplyServiceError(c, serr)
 		return
 	}
 
@@ -111,14 +109,14 @@ func (s *GinCrudController) Get(c *gin.Context) {
 func (s *GinCrudController) List(c *gin.Context) {
 	params, err := s.ParametersHydrator.Hydrate(c)
 	if err != nil {
-		s.HttpReplyBadRequestFromError(c, err)
+		s.HttpReplyGinBindError(c, err)
 		return
 
 	}
-	data, err := s.Service.GetList(params)
+	data, serr := s.Service.GetList(params)
 
 	if err != nil {
-		s.HttpReplyNotFound(c)
+		s.HttpReplyServiceError(c, serr)
 		return
 	}
 
@@ -135,20 +133,20 @@ func (s *GinCrudController) Update(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
 		s.Logger.Error(err)
-		s.HttpReplyBadRequestFromError(c, err)
+		s.HttpReplyGinPathParamError(c, err)
 		return
 	}
 
 	serializer := reflect.New(reflect.TypeOf(s.UpdateRequest)).Interface()
 	if err := c.ShouldBindJSON(serializer); err != nil {
-		s.HttpReplyBadRequestFromError(c, err)
+		s.HttpReplyGinBindError(c, err)
 		return
 	}
 
-	gerr := s.Service.Update(id, serializer)
+	serr := s.Service.Update(id, serializer)
 
-	if gerr != nil {
-		s.HttpReplyInternalError(c, gerr)
+	if serr != nil {
+		s.HttpReplyServiceError(c, serr)
 		return
 	}
 
@@ -160,13 +158,13 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 	id, err := model.StringToBinID(c.Param("id"))
 	if err != nil {
 		s.Logger.Error(err)
-		s.HttpReplyBadRequestFromError(c, err)
+		s.HttpReplyGinPathParamError(c, err)
 		return
 	}
 
-	gerr := s.Service.Delete(id)
-	if gerr != nil {
-		s.HttpReplyInternalError(c, gerr)
+	serr := s.Service.Delete(id)
+	if serr != nil {
+		s.HttpReplyServiceError(c, serr)
 		return
 	}
 

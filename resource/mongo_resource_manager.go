@@ -2,12 +2,9 @@ package resource
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"reflect"
 	"time"
 
-	googly_errors "github.com/theNullP0inter/googly/errors"
 	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -38,7 +35,7 @@ func (s MongoResourceManager) GetModel() DataInterface {
 	return s.Model
 }
 
-func (s MongoResourceManager) Create(m DataInterface) (DataInterface, *googly_errors.GooglyError) {
+func (s MongoResourceManager) Create(m DataInterface) (DataInterface, error) {
 	ctx, cancel := initContext()
 	defer cancel()
 
@@ -47,7 +44,7 @@ func (s MongoResourceManager) Create(m DataInterface) (DataInterface, *googly_er
 
 	res, err := s.Db.Collection(s.CollectionName).InsertOne(ctx, &m)
 	if err != nil {
-		return nil, googly_errors.NewInternalError(err)
+		return nil, ErrInternal
 	}
 
 	if item, ok := m.(*model.BaseMongoModel); ok {
@@ -58,72 +55,72 @@ func (s MongoResourceManager) Create(m DataInterface) (DataInterface, *googly_er
 
 }
 
-func (s MongoResourceManager) Get(id DataInterface) (DataInterface, *googly_errors.GooglyError) {
+func (s MongoResourceManager) Get(id DataInterface) (DataInterface, error) {
 	ctx, cancel := initContext()
 	defer cancel()
 
 	objectId, err := primitive.ObjectIDFromHex(id.(string))
 	if err != nil {
-		return nil, googly_errors.NewObjectIdAssertionError(id)
+		return nil, ErrInvalidFormat
 	}
 
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	s.Db.Collection(s.CollectionName).FindOne(ctx, bson.M{"_id": objectId}).Decode(&item)
 
 	if item == nil {
-		return nil, googly_errors.NewResourceNotFoundError("", nil)
+		return nil, ErrResourceNotFound
 	}
 
 	return item, nil
 
 }
 
-func (s MongoResourceManager) Update(id DataInterface, data DataInterface) *googly_errors.GooglyError {
+func (s MongoResourceManager) Update(id DataInterface, data DataInterface) error {
 	ctx, cancel := initContext()
 	defer cancel()
 
 	objectId, err := primitive.ObjectIDFromHex(id.(string))
 	if err != nil {
-		return googly_errors.NewObjectIdAssertionError(id)
+		return ErrInvalidFormat
 	}
 
 	req := data.(map[string]interface{})
 	res, err := s.Db.Collection(s.CollectionName).UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": bson.M(req)})
 	if err != nil {
-		return googly_errors.NewInternalError(err)
+		return ErrInternal
 	}
 
 	if res.ModifiedCount == 0 {
-		return googly_errors.NewResourceNotFoundError(s.CollectionName, fmt.Errorf("%d Modified", res.ModifiedCount))
+		return ErrResourceNotFound
 	}
 
 	return nil
 }
 
-func (s MongoResourceManager) Delete(id DataInterface) *googly_errors.GooglyError {
+func (s MongoResourceManager) Delete(id DataInterface) error {
 	ctx, cancel := initContext()
 	defer cancel()
 
 	objectId, err := primitive.ObjectIDFromHex(id.(string))
 	if err != nil {
-		return googly_errors.NewObjectIdAssertionError(id)
+		return ErrInvalidFormat
 	}
 
 	res, err := s.Db.Collection(s.CollectionName).DeleteOne(ctx, bson.M{"_id": objectId})
 
 	if err != nil {
-		return googly_errors.NewInternalError(err)
+		return ErrInternal
 	}
 
 	if res.DeletedCount == 0 {
-		return googly_errors.NewResourceNotFoundError(s.CollectionName, errors.New("0 items Deleted"))
+		return ErrResourceNotFound
 	}
 
 	return nil
 
 }
 
-func (s MongoResourceManager) List(parameters DataInterface) (DataInterface, *googly_errors.GooglyError) {
+func (s MongoResourceManager) List(parameters DataInterface) (DataInterface, error) {
 
 	ctx, cancel := initContext()
 	defer cancel()
@@ -132,11 +129,11 @@ func (s MongoResourceManager) List(parameters DataInterface) (DataInterface, *go
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
 	cur, err := s.Db.Collection(s.CollectionName).Find(ctx, bson.D{})
 	if err != nil {
-		return nil, googly_errors.NewInternalError(err)
+		return nil, ErrInternal
 	}
 	err = cur.All(ctx, &items)
 	if err != nil {
-		return nil, googly_errors.NewInternalError(err)
+		return nil, ErrInternal
 	}
 	return items, nil
 }
