@@ -1,0 +1,41 @@
+version: '3.8'
+
+services: 
+
+    app_mongo:
+        restart: always
+        image: mongo:4.4.0
+        env_file:
+            - ./env_temp/app_mongo.env
+        networks:
+            - _net
+        ports:
+            - 27017:27017
+        volumes:
+            - mongodb_data:/data/db
+
+    app:
+        restart: always
+        build: 
+            context: ../../
+            dockerfile: ./example/mongo_crud/Dockerfile
+        command: ["serve_http"]
+        networks:
+            - _pub
+            - _net
+        env_file:
+            - ./env_temp/app.env
+        ports:
+            - 8080:8080
+        depends_on:
+            - app_mongo   
+            
+volumes:
+    mongodb_data:
+
+
+networks:
+    _pub: # open network access, please use only when necessary
+        internal: false
+    _net: # private, inter-system channel
+        internal: true
