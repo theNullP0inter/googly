@@ -30,8 +30,8 @@ func (s *DbCrudService) Create(item DataInterface) (DataInterface, *errors.Googl
 	return s.DbResourceManagerIntereface.Create(item)
 }
 
-func (s *DbCrudService) Update(item DataInterface) (DataInterface, *errors.GooglyError) {
-	return s.DbResourceManagerIntereface.Update(item)
+func (s *DbCrudService) Update(id DataInterface, update DataInterface) *errors.GooglyError {
+	return s.DbResourceManagerIntereface.Update(id, update)
 }
 
 func NewDbCrudService(logger logger.LoggerInterface, rm resource.DbResourceManagerIntereface) *DbCrudService {

@@ -1,6 +1,8 @@
 package errors
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type GooglyError struct {
 	Status  int
@@ -21,5 +23,14 @@ func NewInternalError(err error) *GooglyError {
 		Status:  500,
 		Message: "internal error",
 		Err:     err,
+	}
+}
+
+func NewInvalidRequestError() *GooglyError {
+
+	return &GooglyError{
+		Status:  400,
+		Message: "Invalid Request",
+		Err:     nil,
 	}
 }

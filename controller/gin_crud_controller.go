@@ -145,27 +145,14 @@ func (s *GinCrudController) Update(c *gin.Context) {
 		return
 	}
 
-	item, _ := s.Service.GetItem(id)
-
-	if item == nil {
-		s.HttpReplyNotFound(c)
-		return
-	}
-
-	copier.Copy(item, serializer)
-	item, gerr := s.Service.Update(item)
+	gerr := s.Service.Update(id, serializer)
 
 	if gerr != nil {
 		s.HttpReplyInternalError(c, gerr)
 		return
 	}
 
-	if s.DetailSerializer != nil {
-		s.CopyAndSendSuccess(c, item, s.DetailSerializer)
-		return
-	}
-
-	s.HttpReplySuccess(c, item)
+	s.HttpReplySuccess(c, "updated")
 
 }
 

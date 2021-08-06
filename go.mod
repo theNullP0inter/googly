@@ -10,6 +10,7 @@ require (
 	github.com/getsentry/raven-go v0.2.0 // indirect
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/gin-gonic/gin v1.7.2
+	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
@@ -33,10 +34,12 @@ require (
 	github.com/swaggo/swag v1.7.0 // indirect
 	github.com/thedevsaddam/govalidator v1.9.10
 	github.com/ugorji/go v1.2.6 // indirect
+	go.mongodb.org/mongo-driver v1.7.1
 	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
 	golang.org/x/tools v0.1.5 // indirect
 	google.golang.org/grpc v1.39.0
 	google.golang.org/protobuf v1.27.1 // indirect
+	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
 	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
 )

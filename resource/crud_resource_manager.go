@@ -10,7 +10,7 @@ type CrudImplementorInterface interface {
 	List(parameters DataInterface) (DataInterface, *errors.GooglyError)
 	Get(id DataInterface) (DataInterface, *errors.GooglyError)
 
-	Update(item DataInterface) (DataInterface, *errors.GooglyError)
+	Update(id DataInterface, item DataInterface) *errors.GooglyError
 
 	Delete(id DataInterface) *errors.GooglyError
 }

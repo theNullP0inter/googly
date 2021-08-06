@@ -8,6 +8,6 @@ type CrudInterface interface {
 	GetItem(id DataInterface) (DataInterface, *errors.GooglyError)
 	GetList(req DataInterface) (DataInterface, *errors.GooglyError)
 	Create(req DataInterface) (DataInterface, *errors.GooglyError)
-	Update(item DataInterface) (DataInterface, *errors.GooglyError)
+	Update(id DataInterface, update DataInterface) *errors.GooglyError
 	Delete(id DataInterface) *errors.GooglyError
 }

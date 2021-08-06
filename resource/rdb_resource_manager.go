@@ -14,7 +14,7 @@ import (
 
 type RdbResourceManager struct {
 	*ResourceManager
-	Rdb          *gorm.DB
+	Db           *gorm.DB
 	Model        model.BaseModelInterface
 	QueryBuilder RdbListQueryBuilderInterface
 }
@@ -22,7 +22,7 @@ type RdbResourceManager struct {
 func (s RdbResourceManager) Create(m DataInterface) (DataInterface, *errors.GooglyError) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
-	result := s.Rdb.Create(item)
+	result := s.Db.Create(item)
 
 	if result.Error != nil {
 		var mysqlErr *mysql.MySQLError
@@ -48,32 +48,46 @@ func (s RdbResourceManager) Get(id DataInterface) (DataInterface, *errors.Googly
 		return nil, errors.NewBinIdAssertionError(id)
 	}
 	b_id, _ := bin_id.MarshalBinary()
-	err := s.Rdb.Where("id = ?", b_id).First(item).Error
+	err := s.Db.Where("id = ?", b_id).First(item).Error
 	if err != nil {
 		return nil, errors.NewResourceNotFoundError("", err)
 	}
 	return item, nil
 }
 
-func (s RdbResourceManager) Update(data DataInterface) (DataInterface, *errors.GooglyError) {
-	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	copier.Copy(item, data)
-	result := s.Rdb.Save(item)
+func (s RdbResourceManager) Update(id DataInterface, data DataInterface) *errors.GooglyError {
+
+	// var service_request resource.UpdateRequest = make(resource.UpdateRequest)
+	// j, _ := json.Marshal(update)
+	// json.Unmarshal(j, &service_request)
+
+	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
+	bin_id, ok := id.(model.BinID)
+	if !ok {
+		return errors.NewBinIdAssertionError(id)
+	}
+	b_id, _ := bin_id.MarshalBinary()
+
+	copier.Copy(m, data)
+
+	result := s.Db.Model(s.GetModel()).Where("id = ?", b_id).Updates(m)
+
 	if result.Error != nil {
 		var mysqlErr *mysql.MySQLError
 		if go_errors.As(result.Error, &mysqlErr) && mysqlErr.Number == 1062 {
-			return nil, errors.NewUniqueConstraintError("", result.Error)
+			return errors.NewUniqueConstraintError("", result.Error)
 		}
-		return nil, errors.NewInternalError(result.Error)
+		return errors.NewInternalError(result.Error)
 	}
-	return item, nil
+
+	return nil
 }
 func (s RdbResourceManager) Delete(id DataInterface) *errors.GooglyError {
 	item, err := s.Get(id)
 	if err != nil {
 		return err
 	}
-	s.Rdb.Delete(item)
+	s.Db.Delete(item)
 	return nil
 }
 
@@ -101,7 +115,7 @@ func NewRdbResourceManager(
 	resource_manager := NewResourceManager(logger, model)
 	return &RdbResourceManager{
 		ResourceManager: resource_manager.(*ResourceManager),
-		Rdb:             db,
+		Db:              db,
 		Model:           model,
 		QueryBuilder:    query_builder,
 	}
