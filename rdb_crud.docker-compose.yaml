@@ -21,6 +21,7 @@ services:
         restart: always
         build: 
             context: .
+            dockerfile: rdb_crud.Dockerfile
         command: ["serve_http"]
         networks:
             - _pub
@@ -35,8 +36,9 @@ services:
     app_rdb_migrations:
         container_name: accounts_db_migrations
         restart: on-failure
-        build: 
+        build:
             context: .
+            dockerfile: rdb_crud.Dockerfile
         command: ["migrate", "up"]
         networks:
             - _net

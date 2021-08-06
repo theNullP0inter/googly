@@ -2,7 +2,7 @@
 
 set -euo
 
-. ./config.sh
+. ./rdb_crud.config.sh
 
 # Default values
 reset=false
