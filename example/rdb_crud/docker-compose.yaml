@@ -3,12 +3,11 @@ version: '3.8'
 services: 
 
     app_rdb:
-        container_name: accounts_db
         restart: always
         image: percona:8.0.20-11-centos
         command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
         env_file:
-            - ./env/app_rdb.env
+            - ./env_temp/app_rdb.env
         networks:
             - _net
         ports:
@@ -17,33 +16,31 @@ services:
             - accounts_mysqld:/var/lib/mysql:delegated  # :delegated will substantially improve psql perf on mac
 
     app:
-        container_name: accounts
         restart: always
         build: 
-            context: .
-            dockerfile: rdb_crud.Dockerfile
+            context: ../../
+            dockerfile: ./example_docker/rdb_crud/Dockerfile
         command: ["serve_http"]
         networks:
             - _pub
             - _net
         env_file:
-            - ./env/app.env
+            - ./env_temp/app.env
         ports:
             - 8080:8080
         depends_on:
             - app_rdb   
             
     app_rdb_migrations:
-        container_name: accounts_db_migrations
         restart: on-failure
         build:
-            context: .
-            dockerfile: rdb_crud.Dockerfile
+            context: ../../
+            dockerfile: ./example_docker/rdb_crud/Dockerfile
         command: ["migrate", "up"]
         networks:
             - _net
         env_file:
-            - ./env/app.env
+            - ./env_temp/app.env
         depends_on:
             - app_rdb   
         volumes:
