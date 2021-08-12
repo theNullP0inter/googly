@@ -9,13 +9,8 @@ import (
 	"github.com/theNullP0inter/googly/service"
 )
 
-type GinCrudConnectorInterface interface {
-	AddActions(*gin.RouterGroup)
-}
-
 type GinCrudControllerInterface interface {
 	GinControllerInterface
-	GinControllerConnectorInterface
 	Create(context *gin.Context)
 	Get(context *gin.Context)
 	List(context *gin.Context)
@@ -25,7 +20,6 @@ type GinCrudControllerInterface interface {
 
 type GinCrudController struct {
 	*GinController
-	GinCrudConnectorInterface
 	Service                 service.CrudInterface
 	QueryParametersHydrator GinQueryParametersHydratorInterface
 
@@ -49,7 +43,6 @@ func (s *GinCrudController) AddRoutes(router *gin.RouterGroup) {
 	router.GET("/:id", s.Get)
 
 	router.DELETE("/:id", s.Delete)
-	s.AddActions(router)
 }
 
 func (s *GinCrudController) CopyAndSendSuccess(c *gin.Context, data, i SerializerInterface) {
@@ -159,7 +152,6 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 func NewGinCrudController(logger logger.LoggerInterface,
 	service service.CrudInterface,
 	hydrator GinQueryParametersHydratorInterface,
-	gin_crud_connector GinCrudConnectorInterface,
 	create_request SerializerInterface,
 	update_request SerializerInterface,
 	list_serializer SerializerInterface,
@@ -168,10 +160,9 @@ func NewGinCrudController(logger logger.LoggerInterface,
 	gin_controller := NewGinController(logger)
 
 	return &GinCrudController{
-		GinController:             gin_controller,
-		GinCrudConnectorInterface: gin_crud_connector,
-		Service:                   service,
-		QueryParametersHydrator:   hydrator,
+		GinController:           gin_controller,
+		Service:                 service,
+		QueryParametersHydrator: hydrator,
 
 		CreateRequest:    create_request,
 		UpdateRequest:    update_request,

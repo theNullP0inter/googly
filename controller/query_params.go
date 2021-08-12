@@ -6,7 +6,7 @@ import (
 	"github.com/theNullP0inter/googly/resource"
 )
 
-type CrudListPaginationQueryParameters struct {
+type ListPaginationQueryParameters struct {
 	*resource.PaginationQueryParameters
 }
 
@@ -20,7 +20,7 @@ type GinPaginatedQueryParametersHydrator struct {
 }
 
 func (c GinPaginatedQueryParametersHydrator) Hydrate(context *gin.Context) (resource.QueryParameters, error) {
-	var parameters CrudListPaginationQueryParameters
+	var parameters ListPaginationQueryParameters
 	err := context.ShouldBindQuery(&parameters)
 	if err != nil {
 		return nil, err

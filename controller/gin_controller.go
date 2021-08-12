@@ -8,7 +8,7 @@ import (
 	"github.com/theNullP0inter/googly/service"
 )
 
-type GinControllerConnectorInterface interface {
+type GinControllerIngress interface {
 	AddRoutes(*gin.RouterGroup)
 }
 
@@ -23,15 +23,15 @@ type GinController struct {
 	*Controller
 }
 
-func (c GinController) HttpResponse(context *gin.Context, obj interface{}, code int) {
+func (c *GinController) HttpResponse(context *gin.Context, obj interface{}, code int) {
 	context.JSON(code, obj)
 }
 
-func (c GinController) HttpReplySuccess(context *gin.Context, data interface{}) {
+func (c *GinController) HttpReplySuccess(context *gin.Context, data interface{}) {
 	c.HttpResponse(context, gin.H{"data": data}, http.StatusOK)
 }
 
-func (c GinController) HttpReplyGinBindError(context *gin.Context, err error) {
+func (c *GinController) HttpReplyGinBindError(context *gin.Context, err error) {
 	e := &HttpError{
 		Code:    422,
 		Message: ErrHttpInvalidRequest,
@@ -41,7 +41,7 @@ func (c GinController) HttpReplyGinBindError(context *gin.Context, err error) {
 	e.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyGinPathParamError(context *gin.Context, err error) {
+func (c *GinController) HttpReplyGinPathParamError(context *gin.Context, err error) {
 	e := &HttpError{
 		Code:    400,
 		Message: ErrHttpInvalidPathParam,
@@ -51,7 +51,7 @@ func (c GinController) HttpReplyGinPathParamError(context *gin.Context, err erro
 	e.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyGinNotFoundError(context *gin.Context, err error) {
+func (c *GinController) HttpReplyGinNotFoundError(context *gin.Context, err error) {
 	e := &HttpError{
 		Code:    400,
 		Message: ErrHttpInvalidRequest,
@@ -61,11 +61,11 @@ func (c GinController) HttpReplyGinNotFoundError(context *gin.Context, err error
 	e.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyHttpError(context *gin.Context, err HttpError) {
+func (c *GinController) HttpReplyHttpError(context *gin.Context, err HttpError) {
 	err.RespondToGin(context)
 }
 
-func (c GinController) HttpReplyServiceError(context *gin.Context, err *service.ServiceError) {
+func (c *GinController) HttpReplyServiceError(context *gin.Context, err *service.ServiceError) {
 	NewHttpErrorFromServiceError(err).RespondToGin(context)
 }
 
