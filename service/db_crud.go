@@ -24,7 +24,8 @@ func handleResourceErrors(err error) *ServiceError {
 
 	if err == resource.ErrInvalidQuery ||
 		err == resource.ErrUniqueConstraint ||
-		err == resource.ErrInvalidFormat {
+		err == resource.ErrInvalidFormat ||
+		err == resource.ErrInternal {
 		return NewInternalServiceError(err)
 
 	}

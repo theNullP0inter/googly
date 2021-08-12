@@ -13,6 +13,7 @@ services:
             - 27017:27017
         volumes:
             - mongodb_data:/data/db
+            - ./conf/mongodb:/home
 
     app:
         restart: always
@@ -28,14 +29,14 @@ services:
         ports:
             - 8080:8080
         depends_on:
-            - app_mongo   
+            - app_mongo 
             
 volumes:
     mongodb_data:
 
 
 networks:
-    _pub: # open network access, please use only when necessary
+    _pub:
         internal: false
-    _net: # private, inter-system channel
+    _net:
         internal: true

@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/theNullP0inter/googly/logger"
-	"github.com/theNullP0inter/googly/model"
 	"github.com/theNullP0inter/googly/service"
 )
 
@@ -27,8 +26,8 @@ type GinCrudControllerInterface interface {
 type GinCrudController struct {
 	*GinController
 	GinCrudConnectorInterface
-	Service            service.CrudInterface
-	ParametersHydrator QueryParametersHydratorInterface
+	Service                 service.CrudInterface
+	QueryParametersHydrator GinQueryParametersHydratorInterface
 
 	CreateRequest    SerializerInterface
 	UpdateRequest    SerializerInterface
@@ -84,12 +83,7 @@ func (s *GinCrudController) Create(c *gin.Context) {
 }
 
 func (s *GinCrudController) Get(c *gin.Context) {
-	id, err := model.StringToBinID(c.Param("id"))
-	if err != nil {
-		s.Logger.Error(err)
-		s.HttpReplyGinPathParamError(c, err)
-		return
-	}
+	id := c.Param("id")
 
 	data, serr := s.Service.GetItem(id)
 	if data == nil {
@@ -107,15 +101,15 @@ func (s *GinCrudController) Get(c *gin.Context) {
 }
 
 func (s *GinCrudController) List(c *gin.Context) {
-	params, err := s.ParametersHydrator.Hydrate(c)
+	query_params, err := s.QueryParametersHydrator.Hydrate(c)
 	if err != nil {
 		s.HttpReplyGinBindError(c, err)
 		return
 
 	}
-	data, serr := s.Service.GetList(params)
+	data, serr := s.Service.GetList(query_params)
 
-	if err != nil {
+	if serr != nil {
 		s.HttpReplyServiceError(c, serr)
 		return
 	}
@@ -130,12 +124,7 @@ func (s *GinCrudController) List(c *gin.Context) {
 }
 
 func (s *GinCrudController) Update(c *gin.Context) {
-	id, err := model.StringToBinID(c.Param("id"))
-	if err != nil {
-		s.Logger.Error(err)
-		s.HttpReplyGinPathParamError(c, err)
-		return
-	}
+	id := c.Param("id")
 
 	serializer := reflect.New(reflect.TypeOf(s.UpdateRequest)).Interface()
 	if err := c.ShouldBindJSON(serializer); err != nil {
@@ -155,12 +144,7 @@ func (s *GinCrudController) Update(c *gin.Context) {
 }
 
 func (s *GinCrudController) Delete(c *gin.Context) {
-	id, err := model.StringToBinID(c.Param("id"))
-	if err != nil {
-		s.Logger.Error(err)
-		s.HttpReplyGinPathParamError(c, err)
-		return
-	}
+	id := c.Param("id")
 
 	serr := s.Service.Delete(id)
 	if serr != nil {
@@ -174,7 +158,7 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 
 func NewGinCrudController(logger logger.LoggerInterface,
 	service service.CrudInterface,
-	hydrator *CrudParametersHydrator,
+	hydrator GinQueryParametersHydratorInterface,
 	gin_crud_connector GinCrudConnectorInterface,
 	create_request SerializerInterface,
 	update_request SerializerInterface,
@@ -187,7 +171,7 @@ func NewGinCrudController(logger logger.LoggerInterface,
 		GinController:             gin_controller,
 		GinCrudConnectorInterface: gin_crud_connector,
 		Service:                   service,
-		ParametersHydrator:        hydrator,
+		QueryParametersHydrator:   hydrator,
 
 		CreateRequest:    create_request,
 		UpdateRequest:    update_request,

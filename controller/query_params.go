@@ -6,17 +6,21 @@ import (
 	"github.com/theNullP0inter/googly/resource"
 )
 
-type QueryParametersHydratorInterface interface {
-	Hydrate(context *gin.Context) (resource.ListParametersInterface, error)
+type CrudListPaginationQueryParameters struct {
+	*resource.PaginationQueryParameters
 }
 
-type CrudParametersHydrator struct {
+type GinQueryParametersHydratorInterface interface {
+	Hydrate(context *gin.Context) (resource.QueryParameters, error)
+}
+
+type GinPaginatedQueryParametersHydrator struct {
 	Logger logger.LoggerInterface
-	QueryParametersHydratorInterface
+	GinQueryParametersHydratorInterface
 }
 
-func (c CrudParametersHydrator) Hydrate(context *gin.Context) (resource.ListParametersInterface, error) {
-	var parameters resource.CrudListParameters
+func (c GinPaginatedQueryParametersHydrator) Hydrate(context *gin.Context) (resource.QueryParameters, error) {
+	var parameters CrudListPaginationQueryParameters
 	err := context.ShouldBindQuery(&parameters)
 	if err != nil {
 		return nil, err
@@ -24,6 +28,6 @@ func (c CrudParametersHydrator) Hydrate(context *gin.Context) (resource.ListPara
 	return &parameters, nil
 }
 
-func NewBaseParametersHydrator(logger logger.LoggerInterface) *CrudParametersHydrator {
-	return &CrudParametersHydrator{Logger: logger}
+func NewGinPaginatedQueryParametersHydrator(logger logger.LoggerInterface) *GinPaginatedQueryParametersHydrator {
+	return &GinPaginatedQueryParametersHydrator{Logger: logger}
 }

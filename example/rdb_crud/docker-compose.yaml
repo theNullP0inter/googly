@@ -51,7 +51,7 @@ volumes:
 
 
 networks:
-    _pub: # open network access, please use only when necessary
+    _pub:
         internal: false
-    _net: # private, inter-system channel
+    _net:
         internal: true

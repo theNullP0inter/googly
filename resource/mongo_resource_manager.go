@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/jinzhu/copier"
 	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -22,9 +23,7 @@ type MongoResourceManager struct {
 	Db             *mongo.Database
 	CollectionName string
 	Model          model.BaseModelInterface
-
-	// TODO: Add New Query Builder
-	QueryBuilder RdbListQueryBuilderInterface
+	QueryBuilder   MongoListQueryBuilderInterface
 }
 
 func (s MongoResourceManager) GetResource() Resource {
@@ -39,20 +38,24 @@ func (s MongoResourceManager) Create(m DataInterface) (DataInterface, error) {
 	ctx, cancel := initContext()
 	defer cancel()
 
-	// item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	// copier.Copy(item, m)
+	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
+	copier.Copy(item, m)
 
-	res, err := s.Db.Collection(s.CollectionName).InsertOne(ctx, &m)
+	res, err := s.Db.Collection(s.CollectionName).InsertOne(ctx, item)
 	if err != nil {
 		return nil, ErrInternal
 	}
 
-	if item, ok := m.(*model.BaseMongoModel); ok {
-		item.ID = res.InsertedID.(primitive.ObjectID)
-		return item, nil
+	item_bit, err := bson.Marshal(item)
+	if err != nil {
+		return nil, ErrParseBson
 	}
-	return m, nil
-
+	item_map := bson.M{}
+	bson.Unmarshal(item_bit, item_map)
+	item_map["_id"] = res.InsertedID
+	item_map_bit, _ := bson.Marshal(item_map)
+	bson.Unmarshal(item_map_bit, item)
+	return item, nil
 }
 
 func (s MongoResourceManager) Get(id DataInterface) (DataInterface, error) {
@@ -65,7 +68,14 @@ func (s MongoResourceManager) Get(id DataInterface) (DataInterface, error) {
 	}
 
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	s.Db.Collection(s.CollectionName).FindOne(ctx, bson.M{"_id": objectId}).Decode(&item)
+	err = s.Db.Collection(s.CollectionName).FindOne(ctx, bson.M{"_id": objectId}).Decode(item)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, ErrResourceNotFound
+		}
+		return nil, ErrInternal
+	}
 
 	if item == nil {
 		return nil, ErrResourceNotFound
@@ -84,14 +94,22 @@ func (s MongoResourceManager) Update(id DataInterface, data DataInterface) error
 		return ErrInvalidFormat
 	}
 
-	req := data.(map[string]interface{})
-	res, err := s.Db.Collection(s.CollectionName).UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": bson.M(req)})
+	req, err := bson.Marshal(data)
+
+	if err != nil {
+		return ErrParseBson
+	}
+
+	req_doc := bson.M{}
+	bson.Unmarshal(req, req_doc)
+
+	res, err := s.Db.Collection(s.CollectionName).UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": req_doc})
 	if err != nil {
 		return ErrInternal
 	}
 
 	if res.ModifiedCount == 0 {
-		return ErrResourceNotFound
+		return ErrNoModification
 	}
 
 	return nil
@@ -125,16 +143,17 @@ func (s MongoResourceManager) List(parameters DataInterface) (DataInterface, err
 	ctx, cancel := initContext()
 	defer cancel()
 
-	// TODO: Add Query from parameters
+	query, opts := s.QueryBuilder.ListQuery(parameters)
+
+	cur, err := s.Db.Collection(s.CollectionName).Find(ctx, query, opts)
+	if err != nil {
+		return nil, ErrInternal
+	}
+
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
-	cur, err := s.Db.Collection(s.CollectionName).Find(ctx, bson.D{})
-	if err != nil {
-		return nil, ErrInternal
-	}
-	err = cur.All(ctx, &items)
-	if err != nil {
-		return nil, ErrInternal
-	}
+
+	cur.All(ctx, items)
+
 	return items, nil
 }
 
@@ -143,8 +162,7 @@ func NewMongoResourceManager(
 	collection_name string,
 	logger logger.LoggerInterface,
 	model model.BaseModelInterface,
-
-	query_builder PaginatedRdbListQueryBuilderInterface,
+	query_builder MongoListQueryBuilderInterface,
 ) DbResourceManagerIntereface {
 	resource_manager := NewResourceManager(logger, model)
 	return &MongoResourceManager{

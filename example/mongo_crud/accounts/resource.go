@@ -16,6 +16,7 @@ type AccountResourceManager struct {
 
 func NewAccountResourceManager(db *mongo.Database, logger logger.LoggerInterface) AccountResourceManagerInterface {
 	var model Account
-	rm := resource.NewMongoResourceManager(db, "accounts", logger, model, nil).(*resource.MongoResourceManager)
+	list_query_builder := resource.NewPaginatedMongoListQueryBuilder(logger)
+	rm := resource.NewMongoResourceManager(db, "accounts", logger, model, list_query_builder).(*resource.MongoResourceManager)
 	return &AccountResourceManager{rm}
 }

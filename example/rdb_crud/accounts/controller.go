@@ -29,7 +29,7 @@ func (s *AccountCrudHttpConnector) AddActions(router *gin.RouterGroup) {
 }
 
 func NewAccountController(s AccountServiceInterface, logger logger.LoggerInterface) *AccountController {
-	hydrator := controller.NewBaseParametersHydrator(logger)
+	hydrator := controller.NewGinPaginatedQueryParametersHydrator(logger)
 	crud_http_connector := &AccountCrudHttpConnector{}
 
 	// Add these to customize your response.
