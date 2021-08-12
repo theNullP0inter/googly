@@ -2,11 +2,9 @@ package main
 
 import (
 	"github.com/sarulabs/di/v2"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/theNullP0inter/googly"
 	"github.com/theNullP0inter/googly/app"
-	"github.com/theNullP0inter/googly/command"
 	googly_db "github.com/theNullP0inter/googly/db"
 	"github.com/theNullP0inter/googly/example/mongo_crud/accounts"
 	"github.com/theNullP0inter/googly/example/mongo_crud/consts"
@@ -18,9 +16,9 @@ var INSTALLED_APPS = []app.AppInterface{
 	&accounts.AccountsApp{},
 }
 
-type MainAppRunner struct{}
+type MainGooglyInterface struct{}
 
-func (a MainAppRunner) Inject(builder *di.Builder) {
+func (a *MainGooglyInterface) Inject(builder *di.Builder) {
 	builder.Add(di.Def{
 		Name: consts.Logger,
 		Build: func(ctn di.Container) (interface{}, error) {
@@ -40,24 +38,17 @@ func (a MainAppRunner) Inject(builder *di.Builder) {
 	})
 }
 
-func (a MainAppRunner) RegisterCommands(cmd *cobra.Command, cnt di.Container) {
-	serve_http := ingress.NewGinServerCommand(
-		&command.CommandConfig{
-			Name:  "serve_http",
-			Short: "serves http",
-		},
-		cnt,
-		8080,
-		NewMainIngress(),
-	)
-	cmd.AddCommand(serve_http)
+func (a *MainGooglyInterface) GetIngressPoints(cnt di.Container) []ingress.IngressInterface {
+	return []ingress.IngressInterface{
+		NewMainGinIngress(cnt, 8080),
+	}
 
 }
 
 func main() {
 	g := &googly.Googly{
-		GooglyRunnerInterface: &MainAppRunner{},
-		InstalledApps:         INSTALLED_APPS,
+		GooglyInterface: &MainGooglyInterface{},
+		InstalledApps:   INSTALLED_APPS,
 	}
 
 	googly.Run(g)

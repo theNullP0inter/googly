@@ -1,15 +1,10 @@
 package main
 
 import (
-	"database/sql"
-
-	mysqldb "github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/sarulabs/di/v2"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/theNullP0inter/googly"
 	"github.com/theNullP0inter/googly/app"
-	"github.com/theNullP0inter/googly/command"
 	googly_db "github.com/theNullP0inter/googly/db"
 	"github.com/theNullP0inter/googly/example/rdb_crud/accounts"
 	"github.com/theNullP0inter/googly/example/rdb_crud/consts"
@@ -22,21 +17,13 @@ var INSTALLED_APPS = []app.AppInterface{
 	&accounts.AccountsApp{},
 }
 
-type MainAppRunner struct{}
+type MainGooglyInterface struct{}
 
-func (a MainAppRunner) Inject(builder *di.Builder) {
-	// builder.Add(di.Def{
-	// 	Name: SentryClient,
-	// 	Build: func(ctn di.Container) (interface{}, error) {
-	// 		return logger.NewSentryClient(viper.GetString("SENTRY_DSN")), nil
-	// 	},
-	// })
-
+func (a *MainGooglyInterface) Inject(builder *di.Builder) {
 	builder.Add(di.Def{
 		Name: consts.Logger,
 		Build: func(ctn di.Container) (interface{}, error) {
 			l := logger.NewLogger()
-			// logger.AddSentryHookToLogrus(l.(*logrus.Logger), viper.GetString("SENTRY_DSN"), viper.GetInt("SENTRY_TIMEOUT"))
 			return l, nil
 		},
 	})
@@ -46,66 +33,23 @@ func (a MainAppRunner) Inject(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			dbUrl := viper.GetString("RDB_URL")
 			db := googly_db.NewRdb(mysql.Open(dbUrl))
-
-			sqlDB, err := db.DB()
-
-			if err != nil {
-				panic("failed to configure the database")
-			}
-
-			sqlDB.SetMaxIdleConns(viper.GetInt("RDB_MAX_CONNECTIONS"))
-			sqlDB.SetMaxOpenConns(viper.GetInt("RDB_MAX_CONNECTIONS"))
-
 			return db, nil
 		},
 	})
 }
 
-func (a MainAppRunner) RegisterCommands(cmd *cobra.Command, cnt di.Container) {
-	serve_http := ingress.NewGinServerCommand(
-		&command.CommandConfig{
-			Name:  "serve_http",
-			Short: "serves http",
-		},
-		cnt,
-		8080,
-		NewMainIngress(),
-	)
-	cmd.AddCommand(serve_http)
-
-	// Migrations
-	db, err := sql.Open("mysql", viper.GetString("RDB_URL"))
-	if err != nil {
-		panic(err)
-	}
-	driver, err := mysqldb.WithInstance(db, &mysqldb.Config{})
-	if err != nil {
-		panic(err)
+func (a *MainGooglyInterface) GetIngressPoints(cnt di.Container) []ingress.IngressInterface {
+	return []ingress.IngressInterface{
+		NewMainGinIngress(cnt, 8080),
+		NewMainMigrationIngress(cnt),
 	}
 
-	migrate_cmd := googly_db.NewMigrateCommand(
-		&command.CommandConfig{
-			Name:  "migrate",
-			Short: "DB Migrator",
-		},
-		"file:///migrations",
-		"mysql", driver,
-	)
-
-	cmd.AddCommand(migrate_cmd)
 }
 
 func main() {
 	g := &googly.Googly{
-		GooglyRunnerInterface: &MainAppRunner{},
-		InstalledApps:         INSTALLED_APPS,
+		GooglyInterface: &MainGooglyInterface{},
+		InstalledApps:   INSTALLED_APPS,
 	}
-	// client := googly.Container.Get(SentryClient).(*sentry.Client)
-	// if client != nil {
-	// 	func() {
-	// 		googly.Run(g)
-	// 	}()
-	// } else {
 	googly.Run(g)
-	// }
 }

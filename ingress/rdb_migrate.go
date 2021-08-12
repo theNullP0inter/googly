@@ -1,4 +1,4 @@
-package db
+package ingress
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ func NewMigrateCommand(config *command.CommandConfig, path string, driver_name s
 
 	var migrateCmd = &cobra.Command{
 		Use:   "migrate",
-		Short: "Migration Lib",
+		Short: "Migration on a database driver",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println(("Running Migrations"))
 		},
@@ -61,5 +61,24 @@ func NewMigrateCommand(config *command.CommandConfig, path string, driver_name s
 	migrateCmd.AddCommand(migrateDownCmd)
 
 	return migrateCmd
+
+}
+
+type MigrationIngress struct {
+	*Ingress
+}
+
+func NewMigrationIngress(name string, path string, driver database.Driver) *MigrationIngress {
+
+	cmd := NewMigrateCommand(
+		&command.CommandConfig{
+			Name:  name,
+			Short: "DB Migrator",
+		},
+		fmt.Sprintf("file://%s", path),
+		"mysql", driver,
+	)
+	ingress := NewIngress(cmd)
+	return &MigrationIngress{ingress}
 
 }

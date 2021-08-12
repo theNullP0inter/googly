@@ -9,21 +9,40 @@ import (
 	"github.com/theNullP0inter/googly/command"
 )
 
-type GinIngressInterface interface {
+type GinIngressConnector interface {
 	Connect(di.Container) *gin.Engine
 }
 
-func NewGinServerCommand(config *command.CommandConfig, cnt di.Container, port int, ingress GinIngressInterface) *cobra.Command {
+type GinIngress struct {
+	*Ingress
+	Connector GinIngressConnector
+}
+
+func NewGinServerCommand(config *command.CommandConfig, cnt di.Container, port int, connector GinIngressConnector) *cobra.Command {
 
 	var ginServerCmd = &cobra.Command{
 		Use:   config.Name,
 		Short: config.Short,
 		Run: func(cmd *cobra.Command, args []string) {
-			router := ingress.Connect(cnt)
+			router := connector.Connect(cnt)
 			router.Run(":" + fmt.Sprint(port))
 		},
 	}
 
 	return ginServerCmd
 
+}
+
+func NewGinIngress(name string, cnt di.Container, port int, connector GinIngressConnector) *GinIngress {
+	cmd := NewGinServerCommand(
+		&command.CommandConfig{
+			Name:  name,
+			Short: fmt.Sprintf("%s Ingress", name),
+		},
+		cnt,
+		port,
+		connector,
+	)
+	ingress := NewIngress(cmd)
+	return &GinIngress{ingress, connector}
 }

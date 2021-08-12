@@ -9,28 +9,23 @@ import (
 	"github.com/spf13/viper"
 	"github.com/theNullP0inter/googly/app"
 	"github.com/theNullP0inter/googly/command"
+	"github.com/theNullP0inter/googly/ingress"
 )
 
-type GooglyInjectorInterface interface {
+type GooglyInterface interface {
 	Inject(builder *di.Builder)
-}
-
-type GooglyCommanderInterface interface {
-	RegisterCommands(cmd *cobra.Command, cnt di.Container)
-}
-
-type GooglyRunnerInterface interface {
-	GooglyInjectorInterface
-	GooglyCommanderInterface
-}
-
-type GooglyRunner struct {
-	GooglyRunnerInterface
+	GetIngressPoints(di.Container) []ingress.IngressInterface
 }
 
 type Googly struct {
-	GooglyRunnerInterface
+	GooglyInterface
 	InstalledApps []app.AppInterface
+}
+
+func (g *Googly) RegisterIngressPoints(root_cmd *cobra.Command, cnt di.Container) {
+	for _, ig := range g.GetIngressPoints(cnt) {
+		root_cmd.AddCommand(ig.GetEntryCommand())
+	}
 }
 
 func Run(g *Googly) {
@@ -38,7 +33,7 @@ func Run(g *Googly) {
 	viper.AutomaticEnv()
 	cnt := InitContainer(g)
 	root_cmd := command.GooglyCmd
-	g.RegisterCommands(root_cmd, cnt)
+	g.RegisterIngressPoints(root_cmd, cnt)
 	if err := root_cmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
