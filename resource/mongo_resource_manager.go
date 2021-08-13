@@ -160,7 +160,7 @@ func (s MongoResourceManager) List(parameters DataInterface) (DataInterface, err
 func NewMongoResourceManager(
 	mongo_db *mongo.Database,
 	collection_name string,
-	logger logger.LoggerInterface,
+	logger logger.GooglyLoggerInterface,
 	model model.BaseModelInterface,
 	query_builder MongoListQueryBuilderInterface,
 ) DbResourceManagerIntereface {

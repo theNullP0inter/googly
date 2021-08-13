@@ -55,7 +55,6 @@ func (s *GinCrudController) Create(c *gin.Context) {
 	serializer := reflect.New(reflect.TypeOf(s.CreateRequest)).Interface()
 
 	if err := c.ShouldBindJSON(serializer); err != nil {
-		s.Logger.Error(err)
 		s.HttpReplyGinBindError(c, err)
 		return
 	}
@@ -63,7 +62,6 @@ func (s *GinCrudController) Create(c *gin.Context) {
 	data, err := s.Service.Create(serializer)
 
 	if err != nil {
-		s.Logger.Error(err)
 		s.HttpReplyServiceError(c, err)
 		return
 	}
@@ -149,7 +147,7 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 
 }
 
-func NewGinCrudController(logger logger.LoggerInterface,
+func NewGinCrudController(logger logger.GooglyLoggerInterface,
 	service service.CrudServiceInterface,
 	hydrator GinQueryParametersHydratorInterface,
 	create_request SerializerInterface,

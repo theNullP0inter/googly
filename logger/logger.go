@@ -1,75 +1,29 @@
 package logger
 
-import (
-	"fmt"
-	"os"
-	"time"
-
-	"github.com/evalphobia/logrus_sentry"
-	"github.com/getsentry/sentry-go"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
-)
-
 type LoggerInterface interface {
-	Error(args ...interface{})
+	Debugf(format string, args ...interface{})
+	Debug(string)
+
+	Infof(format string, args ...interface{})
+	Info(string)
+
+	Printf(format string, args ...interface{})
+	Print(string)
+
+	Warnf(format string, args ...interface{})
+	Warn(string)
+
+	Errorf(format string, args ...interface{})
+	Error(string)
+
+	Fatalf(format string, args ...interface{})
+	Fatal(string)
+
+	Panicf(format string, args ...interface{})
+	Panic(string)
 }
 
-func NewLogger() LoggerInterface {
-	logger := logrus.Logger{
-		Out:       os.Stdout,
-		Formatter: &logrus.TextFormatter{ForceColors: true},
-		Hooks:     make(logrus.LevelHooks),
-		Level:     logrus.InfoLevel,
-	}
-	dsn := viper.Get("SENTRY_DSN")
-	if dsn == nil {
-		return &logger
-	}
-
-	if dsn != nil {
-		hook, err := logrus_sentry.NewSentryHook(dsn.(string), []logrus.Level{
-			logrus.PanicLevel,
-			logrus.FatalLevel,
-			logrus.ErrorLevel,
-		})
-		timeout := viper.GetInt("SENTRY_TIMEOUT")
-		hook.Timeout = time.Duration(timeout) * time.Second
-		hook.StacktraceConfiguration.Enable = true
-
-		if err == nil {
-			logger.Hooks.Add(hook)
-		}
-	}
-
-	return &logger
-}
-
-func AddSentryHookToLogrus(logger *logrus.Logger, dsn string, timeout int) LoggerInterface {
-	hook, err := logrus_sentry.NewSentryHook(dsn, []logrus.Level{
-		logrus.PanicLevel,
-		logrus.FatalLevel,
-		logrus.ErrorLevel,
-	})
-	hook.Timeout = time.Duration(timeout) * time.Second
-	hook.StacktraceConfiguration.Enable = true
-
-	if err == nil {
-		logger.Hooks.Add(hook)
-	}
-
-	return logger
-}
-
-func NewSentryClient(dsn string) *sentry.Client {
-
-	client, err := sentry.NewClient(sentry.ClientOptions{
-		Dsn:   dsn,
-		Debug: true,
-	})
-	if err != nil {
-		fmt.Println("Fatal")
-		fmt.Println(err)
-	}
-	return client
+type GooglyLoggerInterface interface {
+	LoggerInterface
+	WithData(map[string]interface{}) LoggerInterface
 }

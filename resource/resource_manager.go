@@ -9,13 +9,13 @@ type ResourceManagerInterface interface {
 type ResourceManager struct {
 	ResourceManagerInterface
 	Resource Resource
-	Logger   logger.LoggerInterface
+	Logger   logger.GooglyLoggerInterface
 }
 
 func (s *ResourceManager) GetResource() Resource {
 	return s.Resource
 }
-func NewResourceManager(logger logger.LoggerInterface, r Resource) ResourceManagerInterface {
+func NewResourceManager(logger logger.GooglyLoggerInterface, r Resource) ResourceManagerInterface {
 	return &ResourceManager{
 		Logger:   logger,
 		Resource: r,

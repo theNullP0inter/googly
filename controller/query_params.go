@@ -15,7 +15,7 @@ type GinQueryParametersHydratorInterface interface {
 }
 
 type GinPaginatedQueryParametersHydrator struct {
-	Logger logger.LoggerInterface
+	Logger logger.GooglyLoggerInterface
 	GinQueryParametersHydratorInterface
 }
 
@@ -28,6 +28,6 @@ func (c GinPaginatedQueryParametersHydrator) Hydrate(context *gin.Context) (reso
 	return &parameters, nil
 }
 
-func NewGinPaginatedQueryParametersHydrator(logger logger.LoggerInterface) *GinPaginatedQueryParametersHydrator {
+func NewGinPaginatedQueryParametersHydrator(logger logger.GooglyLoggerInterface) *GinPaginatedQueryParametersHydrator {
 	return &GinPaginatedQueryParametersHydrator{Logger: logger}
 }

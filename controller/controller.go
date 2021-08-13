@@ -8,9 +8,9 @@ type ControllerInterface interface {
 }
 
 type Controller struct {
-	Logger logger.LoggerInterface
+	Logger logger.GooglyLoggerInterface
 }
 
-func NewController(logger logger.LoggerInterface) *Controller {
+func NewController(logger logger.GooglyLoggerInterface) *Controller {
 	return &Controller{logger}
 }

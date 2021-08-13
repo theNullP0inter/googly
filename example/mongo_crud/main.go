@@ -21,7 +21,7 @@ func (a *MainGooglyInterface) Inject(builder *di.Builder) {
 	builder.Add(di.Def{
 		Name: consts.Logger,
 		Build: func(ctn di.Container) (interface{}, error) {
-			l := logger.NewLogger()
+			l := logger.NewGooglyLogrusLogger()
 			return l, nil
 		},
 	})

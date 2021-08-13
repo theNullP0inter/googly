@@ -27,7 +27,7 @@ func (a *AccountsApp) Build(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountResourceManager(
 				ctn.Get(consts.Rdb).(*gorm.DB),
-				ctn.Get(consts.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.Logger).(logger.GooglyLoggerInterface),
 			), nil
 		},
 	})
@@ -36,7 +36,7 @@ func (a *AccountsApp) Build(builder *di.Builder) {
 		Name: consts.AccountsServiceName,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountService(
-				ctn.Get(consts.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.Logger).(logger.GooglyLoggerInterface),
 				ctn.Get(consts.AccountsResourceManagerName).(AccountResourceManagerInterface),
 			), nil
 		},
@@ -47,7 +47,7 @@ func (a *AccountsApp) Build(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountController(
 				ctn.Get(consts.AccountsServiceName).(AccountServiceInterface),
-				ctn.Get(consts.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.Logger).(logger.GooglyLoggerInterface),
 			), nil
 		},
 	})

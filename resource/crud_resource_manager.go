@@ -24,7 +24,7 @@ type CrudResourceManager struct {
 	CrudImplementorInterface
 }
 
-func NewCrudResourceManager(logger logger.LoggerInterface,
+func NewCrudResourceManager(logger logger.GooglyLoggerInterface,
 	resource Resource,
 	crud_implementor CrudImplementorInterface,
 ) CrudResourceManagerInterface {

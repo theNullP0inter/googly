@@ -110,7 +110,7 @@ func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, error
 
 func NewRdbResourceManager(
 	db *gorm.DB,
-	logger logger.LoggerInterface,
+	logger logger.GooglyLoggerInterface,
 	model model.BaseModelInterface,
 	query_builder PaginatedRdbListQueryBuilderInterface,
 ) DbResourceManagerIntereface {

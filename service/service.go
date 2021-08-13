@@ -16,10 +16,10 @@ type ServiceInterface interface {
 }
 
 type Service struct {
-	Logger logger.LoggerInterface
+	Logger logger.GooglyLoggerInterface
 }
 
-func NewService(logger logger.LoggerInterface) *Service {
+func NewService(logger logger.GooglyLoggerInterface) *Service {
 	return &Service{
 		Logger: logger,
 	}

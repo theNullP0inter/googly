@@ -17,11 +17,11 @@ type PaginatedMongoListQueryBuilderInterface interface {
 }
 
 type PaginatedMongoListQueryBuilder struct {
-	Logger logger.LoggerInterface
+	Logger logger.GooglyLoggerInterface
 	PaginatedMongoListQueryBuilderInterface
 }
 
-func NewPaginatedMongoListQueryBuilder(logger logger.LoggerInterface) *PaginatedMongoListQueryBuilder {
+func NewPaginatedMongoListQueryBuilder(logger logger.GooglyLoggerInterface) *PaginatedMongoListQueryBuilder {
 	return &PaginatedMongoListQueryBuilder{Logger: logger}
 }
 
@@ -36,7 +36,7 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParamete
 
 	val := reflect.ValueOf(parameters).Elem()
 	if val.Kind() != reflect.Struct {
-		c.Logger.Error("Unexpected type of parameters for PaginationQuery")
+		c.Logger.Errorf("Unexpected type of parameters for PaginationQuery")
 		return query, query_options
 	}
 	paginationParameters := val.FieldByName("PaginationQueryParameters")
@@ -47,7 +47,7 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParamete
 	if hasPaginationParams {
 		pageValue := val.FieldByName("Page")
 		if !pageValue.IsValid() || pageValue.Kind() != reflect.Int {
-			c.Logger.Error("Page is not specified correctly in listQuery")
+			c.Logger.Errorf("Page is not specified correctly in listQuery")
 		} else {
 			page = pageValue.Int()
 		}
@@ -58,7 +58,7 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParamete
 	if hasPaginationParams {
 		pageSizeValue := val.FieldByName("PageSize")
 		if !pageSizeValue.IsValid() || pageSizeValue.Kind() != reflect.Int {
-			c.Logger.Error("PageSize is not specified in listQuery")
+			c.Logger.Errorf("PageSize is not specified in listQuery")
 		} else {
 			pageSize = pageSizeValue.Int()
 		}

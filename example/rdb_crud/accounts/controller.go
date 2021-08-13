@@ -19,7 +19,7 @@ type AccountController struct {
 	*controller.GinCrudController
 }
 
-func NewAccountController(s AccountServiceInterface, logger logger.LoggerInterface) *AccountController {
+func NewAccountController(s AccountServiceInterface, logger logger.GooglyLoggerInterface) *AccountController {
 	hydrator := controller.NewGinPaginatedQueryParametersHydrator(logger)
 
 	// Add these to customize your GET response.

@@ -20,11 +20,11 @@ type PaginatedRdbListQueryBuilderInterface interface {
 
 type PaginatedRdbListQueryBuilder struct {
 	Rdb    *gorm.DB
-	Logger logger.LoggerInterface
+	Logger logger.GooglyLoggerInterface
 	PaginatedRdbListQueryBuilderInterface
 }
 
-func NewPaginatedRdbListQueryBuilder(db *gorm.DB, logger logger.LoggerInterface) *PaginatedRdbListQueryBuilder {
+func NewPaginatedRdbListQueryBuilder(db *gorm.DB, logger logger.GooglyLoggerInterface) *PaginatedRdbListQueryBuilder {
 	return &PaginatedRdbListQueryBuilder{Rdb: db, Logger: logger}
 }
 
@@ -38,7 +38,7 @@ func (c PaginatedRdbListQueryBuilder) PaginationQuery(parameters QueryParameters
 
 	val := reflect.ValueOf(parameters).Elem()
 	if val.Kind() != reflect.Struct {
-		c.Logger.Error("Unexpected type of parameters for PaginationQuery")
+		c.Logger.Errorf("Unexpected type of parameters for PaginationQuery")
 		return query
 	}
 
@@ -50,7 +50,7 @@ func (c PaginatedRdbListQueryBuilder) PaginationQuery(parameters QueryParameters
 	if hasPaginationParams {
 		pageValue := val.FieldByName("Page")
 		if !pageValue.IsValid() || pageValue.Kind() != reflect.Int {
-			c.Logger.Error("Page is not specified correctly in listQuery")
+			c.Logger.Errorf("Page is not specified correctly in listQuery")
 		} else {
 			page = pageValue.Int()
 		}
@@ -61,7 +61,7 @@ func (c PaginatedRdbListQueryBuilder) PaginationQuery(parameters QueryParameters
 	if hasPaginationParams {
 		pageSizeValue := val.FieldByName("PageSize")
 		if !pageSizeValue.IsValid() || pageSizeValue.Kind() != reflect.Int {
-			c.Logger.Error("PageSize is not specified in listQuery")
+			c.Logger.Errorf("PageSize is not specified in listQuery")
 		} else {
 			pageSize = pageSizeValue.Int()
 		}

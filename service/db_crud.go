@@ -59,7 +59,7 @@ func (s *DbCrudService) Update(id DataInterface, update DataInterface) *ServiceE
 	return handleResourceErrors(err)
 }
 
-func NewDbCrudService(logger logger.LoggerInterface, rm resource.DbResourceManagerIntereface) *DbCrudService {
+func NewDbCrudService(logger logger.GooglyLoggerInterface, rm resource.DbResourceManagerIntereface) *DbCrudService {
 	service := NewDbService(logger, rm)
 	return &DbCrudService{service}
 }

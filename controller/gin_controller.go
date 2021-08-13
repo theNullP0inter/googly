@@ -69,7 +69,7 @@ func (c *GinController) HttpReplyServiceError(context *gin.Context, err *service
 	NewHttpErrorFromServiceError(err).RespondToGin(context)
 }
 
-func NewGinController(logger logger.LoggerInterface) *GinController {
+func NewGinController(logger logger.GooglyLoggerInterface) *GinController {
 	controller := NewController(logger)
 	return &GinController{
 		controller,
