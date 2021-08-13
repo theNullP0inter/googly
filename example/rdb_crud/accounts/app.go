@@ -2,7 +2,7 @@ package accounts
 
 import (
 	"github.com/sarulabs/di/v2"
-	"github.com/theNullP0inter/googly/app"
+	"github.com/theNullP0inter/googly"
 
 	"github.com/theNullP0inter/googly/example/rdb_crud/consts"
 	"github.com/theNullP0inter/googly/logger"
@@ -10,7 +10,7 @@ import (
 )
 
 type AccountsAppInterface interface {
-	app.AppInterface
+	googly.AppInterface
 }
 
 type AccountsApp struct {

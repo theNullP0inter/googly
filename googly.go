@@ -7,7 +7,6 @@ import (
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/theNullP0inter/googly/app"
 	"github.com/theNullP0inter/googly/command"
 	"github.com/theNullP0inter/googly/ingress"
 )
@@ -19,7 +18,7 @@ type GooglyInterface interface {
 
 type Googly struct {
 	GooglyInterface
-	InstalledApps []app.AppInterface
+	InstalledApps []AppInterface
 }
 
 func (g *Googly) RegisterIngressPoints(root_cmd *cobra.Command, cnt di.Container) {

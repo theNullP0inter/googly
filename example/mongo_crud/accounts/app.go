@@ -2,7 +2,7 @@ package accounts
 
 import (
 	"github.com/sarulabs/di/v2"
-	"github.com/theNullP0inter/googly/app"
+	"github.com/theNullP0inter/googly"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/theNullP0inter/googly/example/mongo_crud/consts"
@@ -10,7 +10,7 @@ import (
 )
 
 type AccountsAppInterface interface {
-	app.AppInterface
+	googly.AppInterface
 }
 
 type AccountsApp struct {

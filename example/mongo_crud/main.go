@@ -4,7 +4,6 @@ import (
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/viper"
 	"github.com/theNullP0inter/googly"
-	"github.com/theNullP0inter/googly/app"
 	googly_db "github.com/theNullP0inter/googly/db"
 	"github.com/theNullP0inter/googly/example/mongo_crud/accounts"
 	"github.com/theNullP0inter/googly/example/mongo_crud/consts"
@@ -12,7 +11,7 @@ import (
 	"github.com/theNullP0inter/googly/logger"
 )
 
-var INSTALLED_APPS = []app.AppInterface{
+var INSTALLED_APPS = []googly.AppInterface{
 	&accounts.AccountsApp{},
 }
 

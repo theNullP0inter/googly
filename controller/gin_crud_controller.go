@@ -20,7 +20,7 @@ type GinCrudControllerInterface interface {
 
 type GinCrudController struct {
 	*GinController
-	Service                 service.CrudInterface
+	Service                 service.CrudServiceInterface
 	QueryParametersHydrator GinQueryParametersHydratorInterface
 
 	CreateRequest    SerializerInterface
@@ -150,7 +150,7 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 }
 
 func NewGinCrudController(logger logger.LoggerInterface,
-	service service.CrudInterface,
+	service service.CrudServiceInterface,
 	hydrator GinQueryParametersHydratorInterface,
 	create_request SerializerInterface,
 	update_request SerializerInterface,

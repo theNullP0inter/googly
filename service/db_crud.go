@@ -6,7 +6,7 @@ import (
 )
 
 type DbCrudServiceInterface interface {
-	CrudInterface
+	CrudServiceInterface
 }
 
 type DbCrudService struct {

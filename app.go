@@ -1,4 +1,4 @@
-package app
+package googly
 
 import (
 	"github.com/sarulabs/di/v2"
@@ -6,7 +6,4 @@ import (
 
 type AppInterface interface {
 	Build(builder *di.Builder)
-}
-
-type App struct {
 }

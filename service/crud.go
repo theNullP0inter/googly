@@ -1,6 +1,7 @@
 package service
 
-type CrudInterface interface {
+type CrudServiceInterface interface {
+	ServiceInterface
 	GetItem(id DataInterface) (DataInterface, *ServiceError)
 	GetList(req DataInterface) (DataInterface, *ServiceError)
 	Create(req DataInterface) (DataInterface, *ServiceError)
