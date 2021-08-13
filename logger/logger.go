@@ -2,25 +2,25 @@ package logger
 
 type LoggerInterface interface {
 	Debugf(format string, args ...interface{})
-	Debug(string)
+	Debug(args ...interface{})
 
 	Infof(format string, args ...interface{})
-	Info(string)
+	Info(args ...interface{})
 
 	Printf(format string, args ...interface{})
-	Print(string)
+	Print(args ...interface{})
 
 	Warnf(format string, args ...interface{})
-	Warn(string)
+	Warn(args ...interface{})
 
 	Errorf(format string, args ...interface{})
-	Error(string)
+	Error(args ...interface{})
 
 	Fatalf(format string, args ...interface{})
-	Fatal(string)
+	Fatal(args ...interface{})
 
 	Panicf(format string, args ...interface{})
-	Panic(string)
+	Panic(args ...interface{})
 }
 
 type GooglyLoggerInterface interface {
