@@ -52,13 +52,14 @@ func (s RdbResourceManager) GetModel() DataInterface {
 	return s.Model
 }
 func (s RdbResourceManager) Get(id DataInterface) (DataInterface, error) {
+	s_id := id.(string)
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	bin_id, ok := id.(model.BinID)
-	if !ok {
+	bin_id, err := model.StringToBinID(s_id)
+	if err != nil {
 		return nil, ErrInvalidFormat
 	}
 	b_id, _ := bin_id.MarshalBinary()
-	err := s.Db.Where("id = ?", b_id).First(item).Error
+	err = s.Db.Where("id = ?", b_id).First(item).Error
 	if err != nil {
 		return nil, handleGormError(err)
 	}
@@ -68,8 +69,9 @@ func (s RdbResourceManager) Get(id DataInterface) (DataInterface, error) {
 func (s RdbResourceManager) Update(id DataInterface, data DataInterface) error {
 
 	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	bin_id, ok := id.(model.BinID)
-	if !ok {
+	s_id := id.(string)
+	bin_id, err := model.StringToBinID(s_id)
+	if err != nil {
 		return ErrInvalidFormat
 	}
 	b_id, _ := bin_id.MarshalBinary()

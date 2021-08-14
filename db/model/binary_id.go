@@ -30,7 +30,7 @@ func (b BinID) MarshalBinary() ([]byte, error) {
 	return s.MarshalBinary()
 }
 
-// MarshalBinary converts BinId to binary bytes
+// MarshalJSON converts BinId to binary bytes
 func (b BinID) MarshalJSON() ([]byte, error) {
 	s := uuid.UUID(b)
 	str := "\"" + s.String() + "\""
