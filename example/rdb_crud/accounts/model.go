@@ -1,6 +1,6 @@
 package accounts
 
-import "github.com/theNullP0inter/googly/model"
+import "github.com/theNullP0inter/googly/db/model"
 
 type Account struct {
 	model.RdbSoftDeleteBaseModel

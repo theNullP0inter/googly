@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/copier"
+	"github.com/theNullP0inter/googly/db/model"
 	"github.com/theNullP0inter/googly/logger"
-	"github.com/theNullP0inter/googly/model"
 	"gorm.io/gorm"
 )
 

@@ -46,9 +46,9 @@ replace github.com/theNullP0inter/googly/command => ./command
 
 replace github.com/theNullP0inter/googly/logger => ./logger
 
-replace github.com/theNullP0inter/googly/model => ./model
-
 replace github.com/theNullP0inter/googly/db => ./db
+
+replace github.com/theNullP0inter/googly/db/model => ./db/model
 
 replace github.com/theNullP0inter/googly/route => ./route
 

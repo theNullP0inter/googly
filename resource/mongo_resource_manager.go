@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/jinzhu/copier"
+	"github.com/theNullP0inter/googly/db/model"
 	"github.com/theNullP0inter/googly/logger"
-	"github.com/theNullP0inter/googly/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/mgo.v2/bson"

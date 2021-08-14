@@ -2,8 +2,8 @@ package accounts
 
 import (
 	"github.com/theNullP0inter/googly/controller"
+	"github.com/theNullP0inter/googly/db/model"
 	"github.com/theNullP0inter/googly/logger"
-	"github.com/theNullP0inter/googly/model"
 )
 
 type AccountSerializer struct {
