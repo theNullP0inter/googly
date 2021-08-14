@@ -42,8 +42,6 @@ require (
 	gorm.io/gorm v1.21.12
 )
 
-replace github.com/theNullP0inter/googly/command => ./command
-
 replace github.com/theNullP0inter/googly/logger => ./logger
 
 replace github.com/theNullP0inter/googly/db => ./db

@@ -7,7 +7,6 @@ import (
 	"github.com/golang-migrate/migrate/v4/database"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
-	"github.com/theNullP0inter/googly/command"
 
 	"github.com/spf13/cobra"
 )
@@ -25,7 +24,7 @@ func getMigration(path string, driver_name string, driver database.Driver) *migr
 	return m
 }
 
-func NewMigrateCommand(config *command.CommandConfig, path string, driver_name string, driver database.Driver) *cobra.Command {
+func NewMigrateCommand(config *CommandConfig, path string, driver_name string, driver database.Driver) *cobra.Command {
 
 	var migrateCmd = &cobra.Command{
 		Use:   "migrate",
@@ -71,7 +70,7 @@ type MigrationIngress struct {
 func NewMigrationIngress(name string, path string, driver database.Driver) *MigrationIngress {
 
 	cmd := NewMigrateCommand(
-		&command.CommandConfig{
+		&CommandConfig{
 			Name:  name,
 			Short: "DB Migrator",
 		},

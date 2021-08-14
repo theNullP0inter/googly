@@ -6,7 +6,6 @@ import (
 
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
-	"github.com/theNullP0inter/googly/command"
 	"google.golang.org/grpc"
 )
 
@@ -16,7 +15,7 @@ type GrpcIngressInterface interface {
 	Connect(*grpc.Server)
 }
 
-func NewGrpcServerCommand(config *command.CommandConfig, cnt di.Container, port int, ingress GrpcIngressInterface) *cobra.Command {
+func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, ingress GrpcIngressInterface) *cobra.Command {
 
 	var ginServerCmd = &cobra.Command{
 		Use:   config.Name,

@@ -7,7 +7,6 @@ import (
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/theNullP0inter/googly/command"
 	"github.com/theNullP0inter/googly/ingress"
 )
 
@@ -69,7 +68,7 @@ func Run(g *Googly) {
 	container := builder.Build()
 
 	// Register Ingress
-	root_cmd := command.GooglyCmd
+	root_cmd := ingress.GooglyCmd
 	g.RegisterIngressPoints(root_cmd, container)
 
 	// Run

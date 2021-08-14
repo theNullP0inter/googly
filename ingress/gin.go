@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
-	"github.com/theNullP0inter/googly/command"
 )
 
 type GinIngressConnector interface {
@@ -18,7 +17,7 @@ type GinIngress struct {
 	Connector GinIngressConnector
 }
 
-func NewGinServerCommand(config *command.CommandConfig, cnt di.Container, port int, connector GinIngressConnector) *cobra.Command {
+func NewGinServerCommand(config *CommandConfig, cnt di.Container, port int, connector GinIngressConnector) *cobra.Command {
 
 	var ginServerCmd = &cobra.Command{
 		Use:   config.Name,
@@ -35,7 +34,7 @@ func NewGinServerCommand(config *command.CommandConfig, cnt di.Container, port i
 
 func NewGinIngress(name string, cnt di.Container, port int, connector GinIngressConnector) *GinIngress {
 	cmd := NewGinServerCommand(
-		&command.CommandConfig{
+		&CommandConfig{
 			Name:  name,
 			Short: fmt.Sprintf("%s Ingress", name),
 		},
