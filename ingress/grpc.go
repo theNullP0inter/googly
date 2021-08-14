@@ -9,21 +9,39 @@ import (
 	"google.golang.org/grpc"
 )
 
-type GrpcProtoSetup func(*grpc.Server)
-
-type GrpcIngressInterface interface {
+// GrpcIngressConnector acts connector between GrpcIngress and your application
+//
+// GrpcIngressInterface implements this
+type GrpcIngressConnector interface {
 	Connect(*grpc.Server)
 }
 
-func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, ingress GrpcIngressInterface) *cobra.Command {
+// GrpcIngressInterface is a Grpc binding for IngressInterface
+//
+// Connects to your application via GrpcIngressConnector
+type GrpcIngressInterface interface {
+	IngressInterface
+	GrpcIngressConnector
+}
 
-	var ginServerCmd = &cobra.Command{
+// GrpcIngress is a basic ingress implementation for Grpc
+type GrpcIngress struct {
+	*Ingress
+	Connector GrpcIngressConnector
+}
+
+// NewGrpcServerCommand creates a new cobra command that runs a Grpc server.
+//
+// This is invoked while creating a new GrpcIngress
+func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, connector GrpcIngressConnector) *cobra.Command {
+
+	var grpcServerCmd = &cobra.Command{
 		Use:   config.Name,
 		Short: config.Short,
 		Run: func(cmd *cobra.Command, args []string) {
 			grpc_server := grpc.NewServer()
 
-			ingress.Connect(grpc_server)
+			connector.Connect(grpc_server)
 
 			fmt.Println("GRPC Ingress Connected")
 
@@ -40,6 +58,22 @@ func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, ing
 		},
 	}
 
-	return ginServerCmd
+	return grpcServerCmd
 
+}
+
+// NewGrpcIngress creates a new GrpcIngress
+func NewGrpcIngress(name string, cnt di.Container, port int, connector GrpcIngressConnector) *GrpcIngress {
+
+	cmd := NewGrpcServerCommand(
+		&CommandConfig{
+			Name:  name,
+			Short: fmt.Sprintf("%s Ingress", name),
+		},
+		cnt,
+		port,
+		connector,
+	)
+	ingress := NewIngress(cmd)
+	return &GrpcIngress{ingress, connector}
 }
