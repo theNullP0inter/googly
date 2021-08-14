@@ -21,7 +21,7 @@ func NewMainMigrationIngress(cnt di.Container) *ingress.MigrationIngress {
 	}
 	return ingress.NewMigrationIngress(
 		"migrate",
-		"file:///migrations",
+		"/migrations",
 		driver,
 	)
 }

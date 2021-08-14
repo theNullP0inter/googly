@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// NewMongoDatabase creates a new instance of mongo db
 func NewMongoDatabase(mongo_uri string, database_name string) *mongo.Database {
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(mongo_uri))
