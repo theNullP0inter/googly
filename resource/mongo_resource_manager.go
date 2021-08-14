@@ -46,15 +46,15 @@ func (s MongoResourceManager) Create(m DataInterface) (DataInterface, error) {
 		return nil, ErrInternal
 	}
 
-	item_bit, err := bson.Marshal(item)
+	itemBit, err := bson.Marshal(item)
 	if err != nil {
 		return nil, ErrParseBson
 	}
-	item_map := bson.M{}
-	bson.Unmarshal(item_bit, item_map)
-	item_map["_id"] = res.InsertedID
-	item_map_bit, _ := bson.Marshal(item_map)
-	bson.Unmarshal(item_map_bit, item)
+	itemMap := bson.M{}
+	bson.Unmarshal(itemBit, itemMap)
+	itemMap["_id"] = res.InsertedID
+	itemMapBit, _ := bson.Marshal(itemMap)
+	bson.Unmarshal(itemMapBit, item)
 	return item, nil
 }
 
@@ -100,10 +100,10 @@ func (s MongoResourceManager) Update(id DataInterface, data DataInterface) error
 		return ErrParseBson
 	}
 
-	req_doc := bson.M{}
-	bson.Unmarshal(req, req_doc)
+	reqDoc := bson.M{}
+	bson.Unmarshal(req, reqDoc)
 
-	res, err := s.Db.Collection(s.CollectionName).UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": req_doc})
+	res, err := s.Db.Collection(s.CollectionName).UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": reqDoc})
 	if err != nil {
 		return ErrInternal
 	}
@@ -158,19 +158,19 @@ func (s MongoResourceManager) List(parameters DataInterface) (DataInterface, err
 }
 
 func NewMongoResourceManager(
-	mongo_db *mongo.Database,
-	collection_name string,
+	mongoDb *mongo.Database,
+	collectionName string,
 	logger logger.GooglyLoggerInterface,
 	model model.BaseModelInterface,
-	query_builder MongoListQueryBuilderInterface,
+	queryBuilder MongoListQueryBuilderInterface,
 ) DbResourceManagerIntereface {
-	resource_manager := NewResourceManager(logger, model)
+	resourceManager := NewResourceManager(logger, model)
 	return &MongoResourceManager{
-		ResourceManager: resource_manager.(*ResourceManager),
-		Db:              mongo_db,
-		CollectionName:  collection_name,
+		ResourceManager: resourceManager.(*ResourceManager),
+		Db:              mongoDb,
+		CollectionName:  collectionName,
 		Model:           model,
-		QueryBuilder:    query_builder,
+		QueryBuilder:    queryBuilder,
 	}
 
 }

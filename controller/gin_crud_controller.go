@@ -92,13 +92,13 @@ func (s *GinCrudController) Get(c *gin.Context) {
 }
 
 func (s *GinCrudController) List(c *gin.Context) {
-	query_params, err := s.QueryParametersHydrator.Hydrate(c)
+	queryParams, err := s.QueryParametersHydrator.Hydrate(c)
 	if err != nil {
 		s.HttpReplyGinBindError(c, err)
 		return
 
 	}
-	data, serr := s.Service.GetList(query_params)
+	data, serr := s.Service.GetList(queryParams)
 
 	if serr != nil {
 		s.HttpReplyServiceError(c, serr)
@@ -150,21 +150,21 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 func NewGinCrudController(logger logger.GooglyLoggerInterface,
 	service service.CrudServiceInterface,
 	hydrator GinQueryParametersHydratorInterface,
-	create_request SerializerInterface,
-	update_request SerializerInterface,
-	list_serializer SerializerInterface,
-	detail_serializer SerializerInterface,
+	createRequest SerializerInterface,
+	updateRequest SerializerInterface,
+	listSerializer SerializerInterface,
+	detailSerializer SerializerInterface,
 ) *GinCrudController {
-	gin_controller := NewGinController(logger)
+	ginController := NewGinController(logger)
 
 	return &GinCrudController{
-		GinController:           gin_controller,
+		GinController:           ginController,
 		Service:                 service,
 		QueryParametersHydrator: hydrator,
 
-		CreateRequest:    create_request,
-		UpdateRequest:    update_request,
-		ListSerializer:   list_serializer,
-		DetailSerializer: detail_serializer,
+		CreateRequest:    createRequest,
+		UpdateRequest:    updateRequest,
+		ListSerializer:   listSerializer,
+		DetailSerializer: detailSerializer,
 	}
 }

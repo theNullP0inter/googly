@@ -39,9 +39,9 @@ func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, con
 		Use:   config.Name,
 		Short: config.Short,
 		Run: func(cmd *cobra.Command, args []string) {
-			grpc_server := grpc.NewServer()
+			grpcServer := grpc.NewServer()
 
-			connector.Connect(grpc_server)
+			connector.Connect(grpcServer)
 
 			fmt.Println("GRPC Ingress Connected")
 
@@ -51,7 +51,7 @@ func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, con
 				panic(fmt.Sprintf("failed to listen at %d: %v", port, err))
 			}
 
-			if err := grpc_server.Serve((lis)); err != nil {
+			if err := grpcServer.Serve((lis)); err != nil {
 				panic(fmt.Sprintf("failed to Serve at %d: %v", port, err))
 			}
 

@@ -52,14 +52,14 @@ func (s RdbResourceManager) GetModel() DataInterface {
 	return s.Model
 }
 func (s RdbResourceManager) Get(id DataInterface) (DataInterface, error) {
-	s_id := id.(string)
+	strId := id.(string)
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	bin_id, err := model.StringToBinID(s_id)
+	binId, err := model.StringToBinID(strId)
 	if err != nil {
 		return nil, ErrInvalidFormat
 	}
-	b_id, _ := bin_id.MarshalBinary()
-	err = s.Db.Where("id = ?", b_id).First(item).Error
+	bId, _ := binId.MarshalBinary()
+	err = s.Db.Where("id = ?", bId).First(item).Error
 	if err != nil {
 		return nil, handleGormError(err)
 	}
@@ -69,16 +69,16 @@ func (s RdbResourceManager) Get(id DataInterface) (DataInterface, error) {
 func (s RdbResourceManager) Update(id DataInterface, data DataInterface) error {
 
 	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	s_id := id.(string)
-	bin_id, err := model.StringToBinID(s_id)
+	strId := id.(string)
+	binId, err := model.StringToBinID(strId)
 	if err != nil {
 		return ErrInvalidFormat
 	}
-	b_id, _ := bin_id.MarshalBinary()
+	bId, _ := binId.MarshalBinary()
 
 	copier.Copy(m, data)
 
-	result := s.Db.Model(s.GetModel()).Where("id = ?", b_id).Updates(m)
+	result := s.Db.Model(s.GetModel()).Where("id = ?", bId).Updates(m)
 
 	if result.Error != nil {
 		return handleGormError(result.Error)
@@ -114,14 +114,14 @@ func NewRdbResourceManager(
 	db *gorm.DB,
 	logger logger.GooglyLoggerInterface,
 	model model.BaseModelInterface,
-	query_builder PaginatedRdbListQueryBuilderInterface,
+	queryBuilder PaginatedRdbListQueryBuilderInterface,
 ) DbResourceManagerIntereface {
-	resource_manager := NewResourceManager(logger, model)
+	resourceManager := NewResourceManager(logger, model)
 	return &RdbResourceManager{
-		ResourceManager: resource_manager.(*ResourceManager),
+		ResourceManager: resourceManager.(*ResourceManager),
 		Db:              db,
 		Model:           model,
-		QueryBuilder:    query_builder,
+		QueryBuilder:    queryBuilder,
 	}
 
 }

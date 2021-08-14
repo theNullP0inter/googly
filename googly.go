@@ -45,9 +45,9 @@ func (g *Googly) Build() *di.Builder {
 // RegisterIngressPoints will register all the ingress points returned in GetIngressPoints to GooglyCmd
 //
 // This is invoked by Run
-func (g *Googly) RegisterIngressPoints(root_cmd *cobra.Command, cnt di.Container) {
+func (g *Googly) RegisterIngressPoints(rootCmd *cobra.Command, cnt di.Container) {
 	for _, ig := range g.GetIngressPoints(cnt) {
-		root_cmd.AddCommand(ig.GetEntryCommand())
+		rootCmd.AddCommand(ig.GetEntryCommand())
 	}
 }
 
@@ -68,11 +68,11 @@ func Run(g *Googly) {
 	container := builder.Build()
 
 	// Register Ingress
-	root_cmd := ingress.GooglyCmd
-	g.RegisterIngressPoints(root_cmd, container)
+	rootCmd := ingress.GooglyCmd
+	g.RegisterIngressPoints(rootCmd, container)
 
 	// Run
-	if err := root_cmd.Execute(); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

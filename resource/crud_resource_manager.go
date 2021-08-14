@@ -26,12 +26,12 @@ type CrudResourceManager struct {
 
 func NewCrudResourceManager(logger logger.GooglyLoggerInterface,
 	resource Resource,
-	crud_implementor CrudImplementorInterface,
+	crudImplementor CrudImplementorInterface,
 ) CrudResourceManagerInterface {
 	rm := NewResourceManager(logger, resource)
 
 	return &CrudResourceManager{
 		rm.(*ResourceManager),
-		crud_implementor,
+		crudImplementor,
 	}
 }

@@ -11,11 +11,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func getMigration(path string, driver_name string, driver database.Driver) *migrate.Migrate {
+func getMigration(path string, driverName string, driver database.Driver) *migrate.Migrate {
 
 	m, err := migrate.NewWithDatabaseInstance(
 		path,
-		driver_name,
+		driverName,
 		driver,
 	)
 	if err != nil {
@@ -24,7 +24,7 @@ func getMigration(path string, driver_name string, driver database.Driver) *migr
 	return m
 }
 
-func NewMigrateCommand(config *CommandConfig, path string, driver_name string, driver database.Driver) *cobra.Command {
+func NewMigrateCommand(config *CommandConfig, path string, driverName string, driver database.Driver) *cobra.Command {
 
 	var migrateCmd = &cobra.Command{
 		Use:   "migrate",
@@ -38,7 +38,7 @@ func NewMigrateCommand(config *CommandConfig, path string, driver_name string, d
 		Use:   "up",
 		Short: "Ups all the migrations",
 		Run: func(cmd *cobra.Command, args []string) {
-			m := getMigration(path, driver_name, driver)
+			m := getMigration(path, driverName, driver)
 			if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 				panic(err)
 			}
@@ -49,7 +49,7 @@ func NewMigrateCommand(config *CommandConfig, path string, driver_name string, d
 		Use:   "down",
 		Short: "Downs all the migrations",
 		Run: func(cmd *cobra.Command, args []string) {
-			m := getMigration(path, driver_name, driver)
+			m := getMigration(path, driverName, driver)
 			if err := m.Down(); err != nil && err != migrate.ErrNoChange {
 				panic(err)
 			}

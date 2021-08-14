@@ -22,9 +22,9 @@ func (i *MainGinConnector) Connect(cnt di.Container) *gin.Engine {
 	})
 
 	// Adding accounts
-	accounts_controller := cnt.Get(consts.AccountsControllerName).(controller.GinControllerIngress)
-	accounts_router := router.Group("/account")
-	accounts_controller.AddRoutes(accounts_router)
+	accountsController := cnt.Get(consts.AccountsControllerName).(controller.GinControllerIngress)
+	accountsRouter := router.Group("/account")
+	accountsController.AddRoutes(accountsRouter)
 
 	return router
 }

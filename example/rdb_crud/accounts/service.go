@@ -14,8 +14,8 @@ type AccountService struct {
 }
 
 func NewAccountService(logger logger.GooglyLoggerInterface, rm AccountResourceManagerInterface) AccountServiceInterface {
-	crud_service := service.NewDbCrudService(logger, rm)
+	crudService := service.NewDbCrudService(logger, rm)
 	return &AccountService{
-		crud_service,
+		crudService,
 	}
 }

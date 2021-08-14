@@ -27,15 +27,15 @@ func NewAccountController(s AccountServiceInterface, logger logger.GooglyLoggerI
 	// by default, model object is sent as response. http response cann be tweaked by using the `json` tag on the model fields
 	//
 	//
-	// var list_serializer []AccountSerializer
-	// var detail_serializer AccountSerializer
-	var update_request AccountCreateRequestSerializer
-	var create_request AccountCreateRequestSerializer
+	// var listSerializer []AccountSerializer
+	// var detailSerializer AccountSerializer
+	var updateRequest AccountCreateRequestSerializer
+	var createRequest AccountCreateRequestSerializer
 
 	controller := controller.NewGinCrudController(
 		logger, s, hydrator,
 
-		create_request, update_request, nil, nil,
+		createRequest, updateRequest, nil, nil,
 		// nil, nil, nil, nil // This blocks create & update APIs
 	)
 	return &AccountController{

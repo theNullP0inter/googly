@@ -10,9 +10,9 @@ import (
 )
 
 // NewMongoDatabase creates a new instance of mongo db
-func NewMongoDatabase(mongo_uri string, database_name string) *mongo.Database {
+func NewMongoDatabase(mongoUri string, databaseName string) *mongo.Database {
 
-	client, err := mongo.NewClient(options.Client().ApplyURI(mongo_uri))
+	client, err := mongo.NewClient(options.Client().ApplyURI(mongoUri))
 
 	if err != nil {
 		fmt.Printf("MongoDB Client Init Error: %v", err)
@@ -27,6 +27,6 @@ func NewMongoDatabase(mongo_uri string, database_name string) *mongo.Database {
 		fmt.Printf("MongoDB Client Failed to Connect: %v", err)
 		panic(err)
 	}
-	return client.Database(database_name)
+	return client.Database(databaseName)
 
 }

@@ -32,12 +32,12 @@ func (c PaginatedMongoListQueryBuilder) ListQuery(parameters QueryParameters) (b
 
 func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParameters) (bson.M, *options.FindOptions) {
 	query := bson.M{}
-	query_options := options.Find()
+	queryOptions := options.Find()
 
 	val := reflect.ValueOf(parameters).Elem()
 	if val.Kind() != reflect.Struct {
 		c.Logger.Errorf("Unexpected type of parameters for PaginationQuery")
-		return query, query_options
+		return query, queryOptions
 	}
 	paginationParameters := val.FieldByName("PaginationQueryParameters")
 	hasPaginationParams := paginationParameters.IsValid() && !paginationParameters.IsNil()
@@ -67,8 +67,8 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParamete
 	limit := pageSize
 	offset := page * pageSize
 
-	query_options.SetSkip(offset)
-	query_options.SetLimit(limit)
+	queryOptions.SetSkip(offset)
+	queryOptions.SetLimit(limit)
 
 	var orderBy = "_id"
 	if hasPaginationParams {
@@ -88,11 +88,11 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParamete
 
 	if len(orderBy) > 0 {
 		if orderDesc {
-			query_options.SetSort(bson.M{orderBy: -1})
+			queryOptions.SetSort(bson.M{orderBy: -1})
 		} else {
-			query_options.SetSort(bson.M{orderBy: 1})
+			queryOptions.SetSort(bson.M{orderBy: 1})
 		}
 	}
 
-	return query, query_options
+	return query, queryOptions
 }
