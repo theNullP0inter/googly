@@ -20,7 +20,7 @@ type BaseRdbResourceManager struct {
 	*resource.BaseResourceManager
 	Db               *gorm.DB
 	Model            db.BaseModelInterface
-	ListQueryBuilder RdbListQueryBuilderInterface
+	ListQueryBuilder RdbListQueryBuilder
 }
 
 func handleGormError(err error) error {
@@ -119,7 +119,7 @@ func NewRdbResourceManager(
 	db *gorm.DB,
 	logger logger.GooglyLoggerInterface,
 	model db.BaseModelInterface,
-	queryBuilder PaginatedRdbListQueryBuilderInterface,
+	queryBuilder RdbListQueryBuilder,
 ) *BaseRdbResourceManager {
 	resourceManager := resource.NewBaseResourceManager(logger, model)
 	return &BaseRdbResourceManager{

@@ -11,29 +11,25 @@ import (
 
 const DefaultPageSize = 30
 
-type RdbListQueryBuilderInterface interface {
+type RdbListQueryBuilder interface {
 	ListQuery(resource.ListQuery) (*gorm.DB, error)
 }
 
-type PaginatedRdbListQueryBuilderInterface interface {
-	RdbListQueryBuilderInterface
+type PaginatedRdbListQueryBuilder interface {
+	RdbListQueryBuilder
 	PaginationQuery(resource.ListQuery) *gorm.DB
 }
 
-type PaginatedRdbListQueryBuilder struct {
+type BasePaginatedRdbListQueryBuilder struct {
 	Rdb    *gorm.DB
 	Logger logger.GooglyLoggerInterface
 }
 
-func NewPaginatedRdbListQueryBuilder(db *gorm.DB, logger logger.GooglyLoggerInterface) *PaginatedRdbListQueryBuilder {
-	return &PaginatedRdbListQueryBuilder{Rdb: db, Logger: logger}
-}
-
-func (qb *PaginatedRdbListQueryBuilder) ListQuery(parameters resource.ListQuery) (*gorm.DB, error) {
+func (qb *BasePaginatedRdbListQueryBuilder) ListQuery(parameters resource.ListQuery) (*gorm.DB, error) {
 	return qb.PaginationQuery(parameters), nil
 }
 
-func (qb *PaginatedRdbListQueryBuilder) PaginationQuery(parameters resource.ListQuery) *gorm.DB {
+func (qb *BasePaginatedRdbListQueryBuilder) PaginationQuery(parameters resource.ListQuery) *gorm.DB {
 	query := qb.Rdb
 
 	val := reflect.ValueOf(parameters).Elem()
@@ -96,4 +92,8 @@ func (qb *PaginatedRdbListQueryBuilder) PaginationQuery(parameters resource.List
 	}
 
 	return query
+}
+
+func NewBasePaginatedRdbListQueryBuilder(db *gorm.DB, logger logger.GooglyLoggerInterface) *BasePaginatedRdbListQueryBuilder {
+	return &BasePaginatedRdbListQueryBuilder{Rdb: db, Logger: logger}
 }

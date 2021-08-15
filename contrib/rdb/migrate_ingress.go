@@ -12,6 +12,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// MigrationIngress can be registered with googly and be used to run migrations
+type MigrationIngress struct {
+	*ingress.BaseIngress
+}
+
+// NewMigrationIngress creates a new MigrationIngress
+func NewMigrationIngress(name string, path string, driver database.Driver) *MigrationIngress {
+
+	cmd := NewMigrateCommand(
+		&ingress.CommandConfig{
+			Name:  name,
+			Short: "DB Migrator",
+		},
+		fmt.Sprintf("file://%s", path),
+		"mysql", driver,
+	)
+	ing := ingress.NewBaseIngress(cmd)
+	return &MigrationIngress{ing}
+
+}
+
+// getMigration is a helper function to create a new instance of migrate.Migrate
 func getMigration(path string, driverName string, driver database.Driver) *migrate.Migrate {
 
 	m, err := migrate.NewWithDatabaseInstance(
@@ -25,6 +47,11 @@ func getMigration(path string, driverName string, driver database.Driver) *migra
 	return m
 }
 
+// NewMigrateCommand creates a new MigrateCommand which is a *cobra.Command
+//
+// It also creates 2 sub commands: up & down
+// up can be used to apply all your migrations
+// down can be used to rollback all your migrations
 func NewMigrateCommand(config *ingress.CommandConfig, path string, driverName string, driver database.Driver) *cobra.Command {
 
 	var migrateCmd = &cobra.Command{
@@ -61,24 +88,5 @@ func NewMigrateCommand(config *ingress.CommandConfig, path string, driverName st
 	migrateCmd.AddCommand(migrateDownCmd)
 
 	return migrateCmd
-
-}
-
-type MigrationIngress struct {
-	*ingress.BaseIngress
-}
-
-func NewMigrationIngress(name string, path string, driver database.Driver) *MigrationIngress {
-
-	cmd := NewMigrateCommand(
-		&ingress.CommandConfig{
-			Name:  name,
-			Short: "DB Migrator",
-		},
-		fmt.Sprintf("file://%s", path),
-		"mysql", driver,
-	)
-	ing := ingress.NewBaseIngress(cmd)
-	return &MigrationIngress{ing}
 
 }

@@ -16,7 +16,7 @@ type AccountResourceManager struct {
 
 func NewAccountResourceManager(db *gorm.DB, logger logger.GooglyLoggerInterface) AccountResourceManagerInterface {
 	var model Account
-	queryBuilder := rdb.NewPaginatedRdbListQueryBuilder(db, logger)
+	queryBuilder := rdb.NewBasePaginatedRdbListQueryBuilder(db, logger)
 	rm := rdb.NewRdbResourceManager(db, logger, model, queryBuilder)
 	return &AccountResourceManager{rm}
 }
