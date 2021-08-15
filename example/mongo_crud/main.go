@@ -11,7 +11,7 @@ import (
 	"github.com/theNullP0inter/googly/ingress"
 )
 
-var INSTALLED_APPS = []googly.AppInterface{
+var INSTALLED_APPS = []googly.App{
 	&accounts.AccountsApp{},
 }
 
@@ -37,8 +37,8 @@ func (a *MainGooglyInterface) Inject(builder *di.Builder) {
 	})
 }
 
-func (a *MainGooglyInterface) GetIngressPoints(cnt di.Container) []ingress.IngressInterface {
-	return []ingress.IngressInterface{
+func (a *MainGooglyInterface) GetIngressPoints(cnt di.Container) []ingress.Ingress {
+	return []ingress.Ingress{
 		NewMainGinIngress(cnt, 8080),
 	}
 

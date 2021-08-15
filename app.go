@@ -4,9 +4,9 @@ import (
 	"github.com/sarulabs/di/v2"
 )
 
-// AppInterface should be implemented by sub-apps
+// App is any thing that Builds. build happens through inject its components into googlys builder
 //
 // Build(*di.Builder) is where you should inject dependencies for the sub-app
-type AppInterface interface {
+type App interface {
 	Build(*di.Builder)
 }

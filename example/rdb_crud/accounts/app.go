@@ -10,7 +10,7 @@ import (
 )
 
 type AccountsAppInterface interface {
-	googly.AppInterface
+	googly.App
 }
 
 type AccountsApp struct {

@@ -21,13 +21,13 @@ type GrpcIngressConnector interface {
 //
 // Connects to your application via GrpcIngressConnector
 type GrpcIngressInterface interface {
-	ingress.IngressInterface
+	ingress.Ingress
 	GrpcIngressConnector
 }
 
 // GrpcIngress is a basic ingress implementation for Grpc
 type GrpcIngress struct {
-	ingress.IngressInterface
+	ingress.Ingress
 	GrpcIngressConnector
 }
 
@@ -75,6 +75,6 @@ func NewGrpcIngress(name string, cnt di.Container, port int, connector GrpcIngre
 		port,
 		connector,
 	)
-	ingress := ingress.NewIngress(cmd)
-	return &GrpcIngress{ingress, connector}
+	ing := ingress.NewBaseIngress(cmd)
+	return &GrpcIngress{ing, connector}
 }

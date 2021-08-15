@@ -20,13 +20,13 @@ type GinIngressConnector interface {
 //
 // Connects to your application via GinIngressConnector
 type GinIngressInterface interface {
-	ingress.IngressInterface
+	ingress.Ingress
 	GinIngressConnector
 }
 
 // GinIngress is a basic ingress implementation for github.com/gin-gonic/gin
 type GinIngress struct {
-	*ingress.Ingress
+	*ingress.BaseIngress
 	Connector GinIngressConnector
 }
 
@@ -59,6 +59,6 @@ func NewGinIngress(name string, cnt di.Container, port int, connector GinIngress
 		port,
 		connector,
 	)
-	ingress := ingress.NewIngress(cmd)
-	return &GinIngress{ingress, connector}
+	ing := ingress.NewBaseIngress(cmd)
+	return &GinIngress{ing, connector}
 }

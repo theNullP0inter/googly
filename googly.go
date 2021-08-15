@@ -16,7 +16,7 @@ import (
 // Ingress can be registered using GetIngressPoints()
 type GooglyInterface interface {
 	Inject(builder *di.Builder)
-	GetIngressPoints(di.Container) []ingress.IngressInterface
+	GetIngressPoints(di.Container) []ingress.Ingress
 }
 
 // Googly manages your application through dependendency injection
@@ -26,7 +26,7 @@ type GooglyInterface interface {
 // InstalledApps maintains a list of all your sub apps.
 type Googly struct {
 	GooglyInterface
-	InstalledApps []AppInterface
+	InstalledApps []App
 }
 
 // Build builds the application and sub-apps

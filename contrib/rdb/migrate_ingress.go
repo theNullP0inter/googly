@@ -65,7 +65,7 @@ func NewMigrateCommand(config *ingress.CommandConfig, path string, driverName st
 }
 
 type MigrationIngress struct {
-	*ingress.Ingress
+	*ingress.BaseIngress
 }
 
 func NewMigrationIngress(name string, path string, driver database.Driver) *MigrationIngress {
@@ -78,7 +78,7 @@ func NewMigrationIngress(name string, path string, driver database.Driver) *Migr
 		fmt.Sprintf("file://%s", path),
 		"mysql", driver,
 	)
-	ingress := ingress.NewIngress(cmd)
-	return &MigrationIngress{ingress}
+	ing := ingress.NewBaseIngress(cmd)
+	return &MigrationIngress{ing}
 
 }
