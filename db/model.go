@@ -1,7 +1,7 @@
 package db
 
-// BaseModelInterface is an empty interface to represent a Model.
+// BaseModel is an empty interface to represent a Model.
 //
 // This is generally referred in ResouceManager
-type BaseModelInterface interface {
+type BaseModel interface {
 }

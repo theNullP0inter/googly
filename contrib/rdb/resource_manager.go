@@ -19,7 +19,7 @@ type RdbResourceManager interface {
 type BaseRdbResourceManager struct {
 	*resource.BaseResourceManager
 	Db               *gorm.DB
-	Model            db.BaseModelInterface
+	Model            db.BaseModel
 	ListQueryBuilder RdbListQueryBuilder
 }
 
@@ -131,7 +131,7 @@ func (s *BaseRdbResourceManager) List(parameters resource.DataInterface) (resour
 func NewRdbResourceManager(
 	db *gorm.DB,
 	logger logger.GooglyLoggerInterface,
-	model db.BaseModelInterface,
+	model db.BaseModel,
 	queryBuilder RdbListQueryBuilder,
 ) *BaseRdbResourceManager {
 	resourceManager := resource.NewBaseResourceManager(logger, model)
