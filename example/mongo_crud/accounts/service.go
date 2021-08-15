@@ -6,16 +6,16 @@ import (
 )
 
 type AccountServiceInterface interface {
-	service.DbCrudServiceInterface
+	service.CrudDbService
 }
 
 type AccountService struct {
-	*service.DbCrudService
+	*service.BaseCrudDbService
 }
 
 func NewAccountService(logger logger.GooglyLoggerInterface, rm AccountResourceManagerInterface) AccountServiceInterface {
-	crudService := service.NewDbCrudService(logger, rm)
+	ser := service.NewBaseCrudDbService(logger, rm)
 	return &AccountService{
-		crudService,
+		ser,
 	}
 }
