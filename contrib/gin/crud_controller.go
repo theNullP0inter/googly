@@ -26,10 +26,10 @@ type BaseGinCrudController struct {
 	Service                 service.CrudService
 	QueryParametersHydrator GinQueryParametersHydrator
 
-	CreateRequest    controller.SerializerInterface
-	UpdateRequest    controller.SerializerInterface
-	ListSerializer   controller.SerializerInterface
-	DetailSerializer controller.SerializerInterface
+	CreateRequest    controller.Serializer
+	UpdateRequest    controller.Serializer
+	ListSerializer   controller.Serializer
+	DetailSerializer controller.Serializer
 
 	// TODO: add more options like allowed_methods, etc in a map. These can be implemented in AddRoutes()
 }
@@ -52,7 +52,7 @@ func (s *BaseGinCrudController) AddRoutes(router *gin.RouterGroup) {
 }
 
 // CopyAndSendSuccess copies data from services's response to a serializer and sends that to the user
-func (s *BaseGinCrudController) CopyAndSendSuccess(c *gin.Context, data service.DataInterface, i controller.SerializerInterface) {
+func (s *BaseGinCrudController) CopyAndSendSuccess(c *gin.Context, data service.DataInterface, i controller.Serializer) {
 	res := reflect.New(reflect.TypeOf(i)).Interface()
 	copier.Copy(res, data)
 	s.HttpReplySuccess(c, res)
@@ -169,10 +169,10 @@ func (s *BaseGinCrudController) Delete(c *gin.Context) {
 func NewBaseGinCrudController(logger logger.GooglyLoggerInterface,
 	service service.CrudService,
 	hydrator GinQueryParametersHydrator,
-	createRequest controller.SerializerInterface,
-	updateRequest controller.SerializerInterface,
-	listSerializer controller.SerializerInterface,
-	detailSerializer controller.SerializerInterface,
+	createRequest controller.Serializer,
+	updateRequest controller.Serializer,
+	listSerializer controller.Serializer,
+	detailSerializer controller.Serializer,
 ) *BaseGinCrudController {
 	ginController := NewBaseGinController(logger)
 

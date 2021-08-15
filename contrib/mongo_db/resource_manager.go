@@ -14,6 +14,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// initContext creates a new Context with 60 sec timeout
+//
+// This is used by mongodb queries
 func initContext() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	return ctx, cancel
