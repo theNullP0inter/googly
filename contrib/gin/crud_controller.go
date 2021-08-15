@@ -1,10 +1,11 @@
-package controller
+package gin
 
 import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
+	"github.com/theNullP0inter/googly/controller"
 	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/service"
 )
@@ -23,10 +24,10 @@ type GinCrudController struct {
 	Service                 service.CrudServiceInterface
 	QueryParametersHydrator GinQueryParametersHydratorInterface
 
-	CreateRequest    SerializerInterface
-	UpdateRequest    SerializerInterface
-	ListSerializer   SerializerInterface
-	DetailSerializer SerializerInterface
+	CreateRequest    controller.SerializerInterface
+	UpdateRequest    controller.SerializerInterface
+	ListSerializer   controller.SerializerInterface
+	DetailSerializer controller.SerializerInterface
 
 	// TODO: add more options like allowed_methods, etc in a map. These can be implemented in AddRoutes()
 }
@@ -45,7 +46,7 @@ func (s *GinCrudController) AddRoutes(router *gin.RouterGroup) {
 	router.DELETE("/:id", s.Delete)
 }
 
-func (s *GinCrudController) CopyAndSendSuccess(c *gin.Context, data, i SerializerInterface) {
+func (s *GinCrudController) CopyAndSendSuccess(c *gin.Context, data, i controller.SerializerInterface) {
 	res := reflect.New(reflect.TypeOf(i)).Interface()
 	copier.Copy(res, data)
 	s.HttpReplySuccess(c, res)
@@ -150,10 +151,10 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 func NewGinCrudController(logger logger.GooglyLoggerInterface,
 	service service.CrudServiceInterface,
 	hydrator GinQueryParametersHydratorInterface,
-	createRequest SerializerInterface,
-	updateRequest SerializerInterface,
-	listSerializer SerializerInterface,
-	detailSerializer SerializerInterface,
+	createRequest controller.SerializerInterface,
+	updateRequest controller.SerializerInterface,
+	listSerializer controller.SerializerInterface,
+	detailSerializer controller.SerializerInterface,
 ) *GinCrudController {
 	ginController := NewGinController(logger)
 

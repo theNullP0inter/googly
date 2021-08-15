@@ -1,4 +1,4 @@
-package resource
+package rdb
 
 import (
 	"errors"
@@ -6,34 +6,35 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/copier"
-	"github.com/theNullP0inter/googly/db/model"
+	"github.com/theNullP0inter/googly/db"
 	"github.com/theNullP0inter/googly/logger"
+	"github.com/theNullP0inter/googly/resource"
 	"gorm.io/gorm"
 )
 
 type RdbResourceManager struct {
-	*ResourceManager
+	*resource.ResourceManager
 	Db           *gorm.DB
-	Model        model.BaseModelInterface
+	Model        db.BaseModelInterface
 	QueryBuilder RdbListQueryBuilderInterface
 }
 
 func handleGormError(err error) error {
 
 	if err == gorm.ErrRecordNotFound {
-		return ErrResourceNotFound
+		return resource.ErrResourceNotFound
 	} else if err == gorm.ErrInvalidTransaction {
-		return ErrInvalidTransaction
+		return resource.ErrInvalidTransaction
 	}
 
 	var mysqlErr *mysql.MySQLError
 	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
-		return ErrUniqueConstraint
+		return resource.ErrUniqueConstraint
 	}
-	return ErrInvalidQuery
+	return resource.ErrInvalidQuery
 }
 
-func (s RdbResourceManager) Create(m DataInterface) (DataInterface, error) {
+func (s *RdbResourceManager) Create(m resource.DataInterface) (resource.DataInterface, error) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
 	result := s.Db.Create(item)
@@ -44,19 +45,19 @@ func (s RdbResourceManager) Create(m DataInterface) (DataInterface, error) {
 	return item, nil
 }
 
-func (s RdbResourceManager) GetResource() Resource {
+func (s *RdbResourceManager) GetResource() resource.Resource {
 	return s.Model
 }
 
-func (s RdbResourceManager) GetModel() DataInterface {
+func (s *RdbResourceManager) GetModel() resource.DataInterface {
 	return s.Model
 }
-func (s RdbResourceManager) Get(id DataInterface) (DataInterface, error) {
+func (s *RdbResourceManager) Get(id resource.DataInterface) (resource.DataInterface, error) {
 	strId := id.(string)
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
-	binId, err := model.StringToBinID(strId)
+	binId, err := StringToBinID(strId)
 	if err != nil {
-		return nil, ErrInvalidFormat
+		return nil, resource.ErrInvalidFormat
 	}
 	bId, _ := binId.MarshalBinary()
 	err = s.Db.Where("id = ?", bId).First(item).Error
@@ -66,13 +67,13 @@ func (s RdbResourceManager) Get(id DataInterface) (DataInterface, error) {
 	return item, nil
 }
 
-func (s RdbResourceManager) Update(id DataInterface, data DataInterface) error {
+func (s *RdbResourceManager) Update(id resource.DataInterface, data resource.DataInterface) error {
 
 	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	strId := id.(string)
-	binId, err := model.StringToBinID(strId)
+	binId, err := StringToBinID(strId)
 	if err != nil {
-		return ErrInvalidFormat
+		return resource.ErrInvalidFormat
 	}
 	bId, _ := binId.MarshalBinary()
 
@@ -86,7 +87,7 @@ func (s RdbResourceManager) Update(id DataInterface, data DataInterface) error {
 
 	return nil
 }
-func (s RdbResourceManager) Delete(id DataInterface) error {
+func (s *RdbResourceManager) Delete(id resource.DataInterface) error {
 	item, err := s.Get(id)
 	if err != nil {
 		return err
@@ -95,12 +96,12 @@ func (s RdbResourceManager) Delete(id DataInterface) error {
 	return nil
 }
 
-func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, error) {
+func (s *RdbResourceManager) List(parameters resource.DataInterface) (resource.DataInterface, error) {
 
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
 	result, err := s.QueryBuilder.ListQuery(parameters)
 	if err != nil {
-		return nil, ErrInternal
+		return nil, resource.ErrInternal
 	}
 	result = result.Find(items)
 	if result.Error != nil {
@@ -113,12 +114,12 @@ func (s RdbResourceManager) List(parameters DataInterface) (DataInterface, error
 func NewRdbResourceManager(
 	db *gorm.DB,
 	logger logger.GooglyLoggerInterface,
-	model model.BaseModelInterface,
+	model db.BaseModelInterface,
 	queryBuilder PaginatedRdbListQueryBuilderInterface,
-) DbResourceManagerIntereface {
-	resourceManager := NewResourceManager(logger, model)
+) *RdbResourceManager {
+	resourceManager := resource.NewResourceManager(logger, model)
 	return &RdbResourceManager{
-		ResourceManager: resourceManager.(*ResourceManager),
+		ResourceManager: resourceManager,
 		Db:              db,
 		Model:           model,
 		QueryBuilder:    queryBuilder,

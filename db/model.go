@@ -1,4 +1,4 @@
-package model
+package db
 
 // BaseModelInterface is an empty interface to represent a Model.
 //

@@ -1,4 +1,4 @@
-package model
+package rdb
 
 import (
 	"database/sql/driver"

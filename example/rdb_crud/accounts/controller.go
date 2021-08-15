@@ -1,14 +1,15 @@
 package accounts
 
 import (
-	"github.com/theNullP0inter/googly/controller"
-	"github.com/theNullP0inter/googly/db/model"
 	"github.com/theNullP0inter/googly/logger"
+
+	gin_contrib "github.com/theNullP0inter/googly/contrib/gin"
+	"github.com/theNullP0inter/googly/contrib/rdb"
 )
 
 type AccountSerializer struct {
-	ID       model.BinID `copier:"must" json:"id"`
-	Username string      `copier:"must" json:"username"`
+	ID       rdb.BinID `copier:"must" json:"id"`
+	Username string    `copier:"must" json:"username"`
 }
 
 type AccountCreateRequestSerializer struct {
@@ -16,11 +17,11 @@ type AccountCreateRequestSerializer struct {
 }
 
 type AccountController struct {
-	*controller.GinCrudController
+	*gin_contrib.GinCrudController
 }
 
 func NewAccountController(s AccountServiceInterface, logger logger.GooglyLoggerInterface) *AccountController {
-	hydrator := controller.NewGinPaginatedQueryParametersHydrator(logger)
+	hydrator := gin_contrib.NewGinPaginatedQueryParametersHydrator(logger)
 
 	// Add these to customize your GET response.
 	//
@@ -32,7 +33,7 @@ func NewAccountController(s AccountServiceInterface, logger logger.GooglyLoggerI
 	var updateRequest AccountCreateRequestSerializer
 	var createRequest AccountCreateRequestSerializer
 
-	controller := controller.NewGinCrudController(
+	controller := gin_contrib.NewGinCrudController(
 		logger, s, hydrator,
 
 		createRequest, updateRequest, nil, nil,

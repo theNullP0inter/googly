@@ -1,4 +1,4 @@
-package ingress
+package rdb
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/database"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
+	"github.com/theNullP0inter/googly/ingress"
 
 	"github.com/spf13/cobra"
 )
@@ -24,7 +25,7 @@ func getMigration(path string, driverName string, driver database.Driver) *migra
 	return m
 }
 
-func NewMigrateCommand(config *CommandConfig, path string, driverName string, driver database.Driver) *cobra.Command {
+func NewMigrateCommand(config *ingress.CommandConfig, path string, driverName string, driver database.Driver) *cobra.Command {
 
 	var migrateCmd = &cobra.Command{
 		Use:   "migrate",
@@ -64,20 +65,20 @@ func NewMigrateCommand(config *CommandConfig, path string, driverName string, dr
 }
 
 type MigrationIngress struct {
-	*Ingress
+	*ingress.Ingress
 }
 
 func NewMigrationIngress(name string, path string, driver database.Driver) *MigrationIngress {
 
 	cmd := NewMigrateCommand(
-		&CommandConfig{
+		&ingress.CommandConfig{
 			Name:  name,
 			Short: "DB Migrator",
 		},
 		fmt.Sprintf("file://%s", path),
 		"mysql", driver,
 	)
-	ingress := NewIngress(cmd)
+	ingress := ingress.NewIngress(cmd)
 	return &MigrationIngress{ingress}
 
 }

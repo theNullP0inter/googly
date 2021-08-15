@@ -1,7 +1,8 @@
-package logger
+package logrus
 
 import (
 	"github.com/sirupsen/logrus"
+	"github.com/theNullP0inter/googly/logger"
 )
 
 // GooglyLogrusLogger is a GogglyLogger binding on  logrus.Logger
@@ -10,7 +11,7 @@ type GooglyLogrusLogger struct {
 }
 
 // WithData adds extra info to your logs
-func (l *GooglyLogrusLogger) WithData(data map[string]interface{}) LoggerInterface {
+func (l *GooglyLogrusLogger) WithData(data map[string]interface{}) logger.LoggerInterface {
 	return l.Logger.WithFields(data)
 }
 

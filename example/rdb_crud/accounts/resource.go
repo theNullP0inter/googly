@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"github.com/theNullP0inter/googly/contrib/rdb"
 	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/resource"
 	"gorm.io/gorm"
@@ -11,12 +12,12 @@ type AccountResourceManagerInterface interface {
 }
 
 type AccountResourceManager struct {
-	*resource.RdbResourceManager
+	*rdb.RdbResourceManager
 }
 
-func NewAccountResourceManager(rdb *gorm.DB, logger logger.GooglyLoggerInterface) AccountResourceManagerInterface {
+func NewAccountResourceManager(db *gorm.DB, logger logger.GooglyLoggerInterface) AccountResourceManagerInterface {
 	var model Account
-	queryBuilder := resource.NewPaginatedRdbListQueryBuilder(rdb, logger)
-	rm := resource.NewRdbResourceManager(rdb, logger, model, queryBuilder).(*resource.RdbResourceManager)
+	queryBuilder := rdb.NewPaginatedRdbListQueryBuilder(db, logger)
+	rm := rdb.NewRdbResourceManager(db, logger, model, queryBuilder)
 	return &AccountResourceManager{rm}
 }

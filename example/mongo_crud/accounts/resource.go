@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"github.com/theNullP0inter/googly/contrib/mongo_db"
 	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/resource"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,12 +12,12 @@ type AccountResourceManagerInterface interface {
 }
 
 type AccountResourceManager struct {
-	*resource.MongoResourceManager
+	*mongo_db.MongoResourceManager
 }
 
 func NewAccountResourceManager(db *mongo.Database, logger logger.GooglyLoggerInterface) AccountResourceManagerInterface {
 	var model Account
-	listQueryBuilder := resource.NewPaginatedMongoListQueryBuilder(logger)
-	rm := resource.NewMongoResourceManager(db, "accounts", logger, model, listQueryBuilder).(*resource.MongoResourceManager)
+	listQueryBuilder := mongo_db.NewPaginatedMongoListQueryBuilder(logger)
+	rm := mongo_db.NewMongoResourceManager(db, "accounts", logger, model, listQueryBuilder)
 	return &AccountResourceManager{rm}
 }

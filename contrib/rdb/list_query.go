@@ -1,44 +1,48 @@
-package resource
+package rdb
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/theNullP0inter/googly/logger"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/theNullP0inter/googly/resource"
+	"gorm.io/gorm"
 )
 
-type MongoListQueryBuilderInterface interface {
-	ListQuery(parameters QueryParameters) (bson.M, *options.FindOptions)
+const DefaultPageSize = 30
+
+type RdbListQueryBuilderInterface interface {
+	ListQuery(parameters resource.QueryParameters) (*gorm.DB, error)
 }
-type PaginatedMongoListQueryBuilderInterface interface {
-	MongoListQueryBuilderInterface
-	PaginationQuery(parameters QueryParameters) (bson.M, *options.FindOptions)
+type PaginatedRdbListQueryBuilderInterface interface {
+	RdbListQueryBuilderInterface
+	PaginationQuery(parameters resource.QueryParameters) *gorm.DB
 }
 
-type PaginatedMongoListQueryBuilder struct {
+type PaginatedRdbListQueryBuilder struct {
+	Rdb    *gorm.DB
 	Logger logger.GooglyLoggerInterface
-	PaginatedMongoListQueryBuilderInterface
+	PaginatedRdbListQueryBuilderInterface
 }
 
-func NewPaginatedMongoListQueryBuilder(logger logger.GooglyLoggerInterface) *PaginatedMongoListQueryBuilder {
-	return &PaginatedMongoListQueryBuilder{Logger: logger}
+func NewPaginatedRdbListQueryBuilder(db *gorm.DB, logger logger.GooglyLoggerInterface) *PaginatedRdbListQueryBuilder {
+	return &PaginatedRdbListQueryBuilder{Rdb: db, Logger: logger}
 }
 
 // modify for a new type of query builder
-func (c PaginatedMongoListQueryBuilder) ListQuery(parameters QueryParameters) (bson.M, *options.FindOptions) {
-	return c.PaginationQuery(parameters)
+func (c PaginatedRdbListQueryBuilder) ListQuery(parameters resource.QueryParameters) (*gorm.DB, error) {
+	return c.PaginationQuery(parameters), nil
 }
 
-func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParameters) (bson.M, *options.FindOptions) {
-	query := bson.M{}
-	queryOptions := options.Find()
+func (c PaginatedRdbListQueryBuilder) PaginationQuery(parameters resource.QueryParameters) *gorm.DB {
+	query := c.Rdb
 
 	val := reflect.ValueOf(parameters).Elem()
 	if val.Kind() != reflect.Struct {
 		c.Logger.Errorf("Unexpected type of parameters for PaginationQuery")
-		return query, queryOptions
+		return query
 	}
+
 	paginationParameters := val.FieldByName("PaginationQueryParameters")
 	hasPaginationParams := paginationParameters.IsValid() && !paginationParameters.IsNil()
 
@@ -66,11 +70,9 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParamete
 
 	limit := pageSize
 	offset := page * pageSize
+	query = query.Offset(int(offset)).Limit(int(limit))
 
-	queryOptions.SetSkip(offset)
-	queryOptions.SetLimit(limit)
-
-	var orderBy = "_id"
+	var orderBy string
 	if hasPaginationParams {
 		orderByValue := val.FieldByName("OrderBy")
 		if orderByValue.IsValid() && orderByValue.Kind() == reflect.String {
@@ -88,11 +90,11 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters QueryParamete
 
 	if len(orderBy) > 0 {
 		if orderDesc {
-			queryOptions.SetSort(bson.M{orderBy: -1})
+			query = query.Order(fmt.Sprintf("%s DESC", orderBy))
 		} else {
-			queryOptions.SetSort(bson.M{orderBy: 1})
+			query = query.Order(fmt.Sprintf("%s ASC", orderBy))
 		}
 	}
 
-	return query, queryOptions
+	return query
 }

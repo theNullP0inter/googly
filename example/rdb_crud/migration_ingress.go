@@ -6,10 +6,10 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/viper"
-	"github.com/theNullP0inter/googly/ingress"
+	"github.com/theNullP0inter/googly/contrib/rdb"
 )
 
-func NewMainMigrationIngress(cnt di.Container) *ingress.MigrationIngress {
+func NewMainMigrationIngress(cnt di.Container) *rdb.MigrationIngress {
 	// Migrations
 	db, err := sql.Open("mysql", viper.GetString("RDB_URL"))
 	if err != nil {
@@ -19,7 +19,7 @@ func NewMainMigrationIngress(cnt di.Container) *ingress.MigrationIngress {
 	if err != nil {
 		panic(err)
 	}
-	return ingress.NewMigrationIngress(
+	return rdb.NewMigrationIngress(
 		"migrate",
 		"/migrations",
 		driver,

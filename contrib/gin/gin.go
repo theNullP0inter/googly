@@ -1,4 +1,4 @@
-package ingress
+package gin
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
+	"github.com/theNullP0inter/googly/ingress"
 )
 
 // GinIngressConnector acts connector between GinIngress and your application
@@ -19,20 +20,20 @@ type GinIngressConnector interface {
 //
 // Connects to your application via GinIngressConnector
 type GinIngressInterface interface {
-	IngressInterface
+	ingress.IngressInterface
 	GinIngressConnector
 }
 
 // GinIngress is a basic ingress implementation for github.com/gin-gonic/gin
 type GinIngress struct {
-	*Ingress
+	*ingress.Ingress
 	Connector GinIngressConnector
 }
 
 // NewGinServerCommand creates a new cobra command that runs a gin server.
 //
 // This is invoked while creating a new GinIngress
-func NewGinServerCommand(config *CommandConfig, cnt di.Container, port int, connector GinIngressConnector) *cobra.Command {
+func NewGinServerCommand(config *ingress.CommandConfig, cnt di.Container, port int, connector GinIngressConnector) *cobra.Command {
 
 	var ginServerCmd = &cobra.Command{
 		Use:   config.Name,
@@ -50,7 +51,7 @@ func NewGinServerCommand(config *CommandConfig, cnt di.Container, port int, conn
 // NewGinIngress creates a new GinIngress
 func NewGinIngress(name string, cnt di.Container, port int, connector GinIngressConnector) *GinIngress {
 	cmd := NewGinServerCommand(
-		&CommandConfig{
+		&ingress.CommandConfig{
 			Name:  name,
 			Short: fmt.Sprintf("%s Ingress", name),
 		},
@@ -58,6 +59,6 @@ func NewGinIngress(name string, cnt di.Container, port int, connector GinIngress
 		port,
 		connector,
 	)
-	ingress := NewIngress(cmd)
+	ingress := ingress.NewIngress(cmd)
 	return &GinIngress{ingress, connector}
 }

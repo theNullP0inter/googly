@@ -1,4 +1,4 @@
-package ingress
+package grpc
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/cobra"
+	"github.com/theNullP0inter/googly/ingress"
 	"google.golang.org/grpc"
 )
 
@@ -20,20 +21,20 @@ type GrpcIngressConnector interface {
 //
 // Connects to your application via GrpcIngressConnector
 type GrpcIngressInterface interface {
-	IngressInterface
+	ingress.IngressInterface
 	GrpcIngressConnector
 }
 
 // GrpcIngress is a basic ingress implementation for Grpc
 type GrpcIngress struct {
-	*Ingress
-	Connector GrpcIngressConnector
+	ingress.IngressInterface
+	GrpcIngressConnector
 }
 
 // NewGrpcServerCommand creates a new cobra command that runs a Grpc server.
 //
 // This is invoked while creating a new GrpcIngress
-func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, connector GrpcIngressConnector) *cobra.Command {
+func NewGrpcServerCommand(config *ingress.CommandConfig, cnt di.Container, port int, connector GrpcIngressConnector) *cobra.Command {
 
 	var grpcServerCmd = &cobra.Command{
 		Use:   config.Name,
@@ -66,7 +67,7 @@ func NewGrpcServerCommand(config *CommandConfig, cnt di.Container, port int, con
 func NewGrpcIngress(name string, cnt di.Container, port int, connector GrpcIngressConnector) *GrpcIngress {
 
 	cmd := NewGrpcServerCommand(
-		&CommandConfig{
+		&ingress.CommandConfig{
 			Name:  name,
 			Short: fmt.Sprintf("%s Ingress", name),
 		},
@@ -74,6 +75,6 @@ func NewGrpcIngress(name string, cnt di.Container, port int, connector GrpcIngre
 		port,
 		connector,
 	)
-	ingress := NewIngress(cmd)
+	ingress := ingress.NewIngress(cmd)
 	return &GrpcIngress{ingress, connector}
 }

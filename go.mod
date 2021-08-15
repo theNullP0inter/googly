@@ -46,8 +46,6 @@ replace github.com/theNullP0inter/googly/logger => ./logger
 
 replace github.com/theNullP0inter/googly/db => ./db
 
-replace github.com/theNullP0inter/googly/db/model => ./db/model
-
 replace github.com/theNullP0inter/googly/route => ./route
 
 replace github.com/theNullP0inter/googly/service => ./service
@@ -57,6 +55,16 @@ replace github.com/theNullP0inter/googly/resource => ./resource
 replace github.com/theNullP0inter/googly/controller => ./controller
 
 replace github.com/theNullP0inter/googly/ingress => ./ingress
+
+replace github.com/theNullP0inter/googly/contrib/gin => ./contrib/gin
+
+replace github.com/theNullP0inter/googly/contrib/grpc => ./contrib/grpc
+
+replace github.com/theNullP0inter/googly/contrib/rdb => ./contrib/rdb
+
+replace github.com/theNullP0inter/googly/contrib/mongo_db => ./contrib/mongo_db
+
+replace github.com/theNullP0inter/googly/contrib/logrus => ./contrib/logrus
 
 // example/rdb_crud
 

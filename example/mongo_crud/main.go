@@ -4,11 +4,11 @@ import (
 	"github.com/sarulabs/di/v2"
 	"github.com/spf13/viper"
 	"github.com/theNullP0inter/googly"
-	googly_db "github.com/theNullP0inter/googly/db"
+	googly_logrus "github.com/theNullP0inter/googly/contrib/logrus"
+	"github.com/theNullP0inter/googly/contrib/mongo_db"
 	"github.com/theNullP0inter/googly/example/mongo_crud/accounts"
 	"github.com/theNullP0inter/googly/example/mongo_crud/consts"
 	"github.com/theNullP0inter/googly/ingress"
-	"github.com/theNullP0inter/googly/logger"
 )
 
 var INSTALLED_APPS = []googly.AppInterface{
@@ -21,7 +21,7 @@ func (a *MainGooglyInterface) Inject(builder *di.Builder) {
 	builder.Add(di.Def{
 		Name: consts.Logger,
 		Build: func(ctn di.Container) (interface{}, error) {
-			l := logger.NewGooglyLogrusLogger()
+			l := googly_logrus.NewGooglyLogrusLogger()
 			return l, nil
 		},
 	})
@@ -31,7 +31,7 @@ func (a *MainGooglyInterface) Inject(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			dbUrl := viper.GetString("MONGO_URL")
 			dbName := viper.GetString("MONGO_DB_NAME")
-			db := googly_db.NewMongoDatabase(dbUrl, dbName)
+			db := mongo_db.NewMongoDatabase(dbUrl, dbName)
 			return db, nil
 		},
 	})
