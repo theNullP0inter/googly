@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/sarulabs/di/v2"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/theNullP0inter/googly"
 	googly_logrus "github.com/theNullP0inter/googly/contrib/logrus"
@@ -23,6 +24,7 @@ func (a *MainGooglyInterface) Inject(builder *di.Builder) {
 		Name: consts.Logger,
 		Build: func(ctn di.Container) (interface{}, error) {
 			l := googly_logrus.NewGooglyLogrusLogger()
+			l.SetLevel(logrus.DebugLevel)
 			return l, nil
 		},
 	})

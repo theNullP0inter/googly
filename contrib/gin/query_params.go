@@ -3,21 +3,23 @@ package gin
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/theNullP0inter/googly/controller"
-	"github.com/theNullP0inter/googly/logger"
-	"github.com/theNullP0inter/googly/resource"
 )
 
-type GinQueryParametersHydratorInterface interface {
-	Hydrate(context *gin.Context) (resource.QueryParameters, error)
+// GinQueryParametersHydrator extracts QueryParameters from gin context
+//
+// // Hydrate will extract query params from gin context and bind them to any struct
+type GinQueryParametersHydrator interface {
+	Hydrate(context *gin.Context) (controller.QueryParameters, error)
 }
 
-type GinPaginatedQueryParametersHydrator struct {
-	Logger logger.GooglyLoggerInterface
-	GinQueryParametersHydratorInterface
+// PaginatedGinQueryParametersHydrator is an implementation of GinQueryParametersHydrator
+// that can hydrate to pagination parameters defined in controller.PaginationQueryParameters
+type PaginatedGinQueryParametersHydrator struct {
 }
 
-func (c GinPaginatedQueryParametersHydrator) Hydrate(context *gin.Context) (resource.QueryParameters, error) {
-	var parameters controller.ListPaginationQueryParameters
+// Hydrate will extract query params from gin context and bind them to controller.PaginationQueryParameters
+func (c PaginatedGinQueryParametersHydrator) Hydrate(context *gin.Context) (controller.QueryParameters, error) {
+	var parameters controller.PaginationQueryParameters
 	err := context.ShouldBindQuery(&parameters)
 	if err != nil {
 		return nil, err
@@ -25,6 +27,7 @@ func (c GinPaginatedQueryParametersHydrator) Hydrate(context *gin.Context) (reso
 	return &parameters, nil
 }
 
-func NewGinPaginatedQueryParametersHydrator(logger logger.GooglyLoggerInterface) *GinPaginatedQueryParametersHydrator {
-	return &GinPaginatedQueryParametersHydrator{Logger: logger}
+// NewPaginatedGinQueryParametersHydrator will create a new PaginatedGinQueryParametersHydrator
+func NewPaginatedGinQueryParametersHydrator() *PaginatedGinQueryParametersHydrator {
+	return &PaginatedGinQueryParametersHydrator{}
 }

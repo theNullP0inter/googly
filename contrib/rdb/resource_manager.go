@@ -18,9 +18,9 @@ type RdbResourceManagerInterface interface {
 
 type RdbResourceManager struct {
 	*resource.BaseResourceManager
-	Db           *gorm.DB
-	Model        db.BaseModelInterface
-	QueryBuilder RdbListQueryBuilderInterface
+	Db               *gorm.DB
+	Model            db.BaseModelInterface
+	ListQueryBuilder RdbListQueryBuilderInterface
 }
 
 func handleGormError(err error) error {
@@ -103,7 +103,7 @@ func (s *RdbResourceManager) Delete(id resource.DataInterface) error {
 func (s *RdbResourceManager) List(parameters resource.DataInterface) (resource.DataInterface, error) {
 
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
-	result, err := s.QueryBuilder.ListQuery(parameters)
+	result, err := s.ListQueryBuilder.ListQuery(parameters)
 	if err != nil {
 		return nil, resource.ErrInternal
 	}
@@ -126,7 +126,7 @@ func NewRdbResourceManager(
 		BaseResourceManager: resourceManager,
 		Db:                  db,
 		Model:               model,
-		QueryBuilder:        queryBuilder,
+		ListQueryBuilder:    queryBuilder,
 	}
 
 }

@@ -12,11 +12,11 @@ import (
 const DefaultPageSize = 30
 
 type MongoListQueryBuilderInterface interface {
-	ListQuery(parameters resource.QueryParameters) (bson.M, *options.FindOptions)
+	ListQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions)
 }
 type PaginatedMongoListQueryBuilderInterface interface {
 	MongoListQueryBuilderInterface
-	PaginationQuery(parameters resource.QueryParameters) (bson.M, *options.FindOptions)
+	PaginationQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions)
 }
 
 type PaginatedMongoListQueryBuilder struct {
@@ -29,11 +29,11 @@ func NewPaginatedMongoListQueryBuilder(logger logger.GooglyLoggerInterface) *Pag
 }
 
 // modify for a new type of query builder
-func (c PaginatedMongoListQueryBuilder) ListQuery(parameters resource.QueryParameters) (bson.M, *options.FindOptions) {
+func (c PaginatedMongoListQueryBuilder) ListQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
 	return c.PaginationQuery(parameters)
 }
 
-func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.QueryParameters) (bson.M, *options.FindOptions) {
+func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
 	query := bson.M{}
 	queryOptions := options.Find()
 
@@ -42,7 +42,7 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.Quer
 		c.Logger.Errorf("Unexpected type of parameters for PaginationQuery")
 		return query, queryOptions
 	}
-	paginationParameters := val.FieldByName("PaginationQueryParameters")
+	paginationParameters := val.FieldByName("PaginatedListQuery")
 	hasPaginationParams := paginationParameters.IsValid() && !paginationParameters.IsNil()
 
 	var page int64
