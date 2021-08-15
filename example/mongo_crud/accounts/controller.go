@@ -16,7 +16,7 @@ type AccountCreateRequestSerializer struct {
 }
 
 type AccountController struct {
-	*gin_contrib.GinCrudController
+	*gin_contrib.BaseGinCrudController
 }
 
 func NewAccountController(s AccountServiceInterface, logger logger.GooglyLoggerInterface) *AccountController {
@@ -32,7 +32,7 @@ func NewAccountController(s AccountServiceInterface, logger logger.GooglyLoggerI
 	var updateRequest AccountCreateRequestSerializer
 	var createRequest AccountCreateRequestSerializer
 
-	controller := gin_contrib.NewGinCrudController(
+	controller := gin_contrib.NewBaseGinCrudController(
 		logger, s, hydrator,
 
 		createRequest, updateRequest, nil, nil,

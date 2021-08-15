@@ -10,8 +10,9 @@ import (
 	"github.com/theNullP0inter/googly/service"
 )
 
-type GinCrudControllerInterface interface {
-	GinControllerInterface
+// GinCrudController is a GinController that implements CRUD
+type GinCrudController interface {
+	GinController
 	Create(context *gin.Context)
 	Get(context *gin.Context)
 	List(context *gin.Context)
@@ -19,8 +20,9 @@ type GinCrudControllerInterface interface {
 	Delete(context *gin.Context)
 }
 
-type GinCrudController struct {
-	*GinController
+// BaseGinCrudController is a basic implementation of GinCrudController
+type BaseGinCrudController struct {
+	*BaseGinController
 	Service                 service.CrudService
 	QueryParametersHydrator GinQueryParametersHydrator
 
@@ -32,7 +34,10 @@ type GinCrudController struct {
 	// TODO: add more options like allowed_methods, etc in a map. These can be implemented in AddRoutes()
 }
 
-func (s *GinCrudController) AddRoutes(router *gin.RouterGroup) {
+// AddRoutes is required to be implemented by GinControllerIngress.
+//
+// This will be used by your ingress to Connect
+func (s *BaseGinCrudController) AddRoutes(router *gin.RouterGroup) {
 	if s.CreateRequest != nil {
 		router.POST("/", s.Create)
 	}
@@ -46,13 +51,16 @@ func (s *GinCrudController) AddRoutes(router *gin.RouterGroup) {
 	router.DELETE("/:id", s.Delete)
 }
 
-func (s *GinCrudController) CopyAndSendSuccess(c *gin.Context, data, i controller.SerializerInterface) {
+// CopyAndSendSuccess copies data from services's response to a serializer and sends that to the user
+func (s *BaseGinCrudController) CopyAndSendSuccess(c *gin.Context, data service.DataInterface, i controller.SerializerInterface) {
 	res := reflect.New(reflect.TypeOf(i)).Interface()
 	copier.Copy(res, data)
 	s.HttpReplySuccess(c, res)
 }
 
-func (s *GinCrudController) Create(c *gin.Context) {
+// Create will call the services' Create method.
+// This will be added to routes only if  s.CreateRequest !=nil
+func (s *BaseGinCrudController) Create(c *gin.Context) {
 	serializer := reflect.New(reflect.TypeOf(s.CreateRequest)).Interface()
 
 	if err := c.ShouldBindJSON(serializer); err != nil {
@@ -74,7 +82,9 @@ func (s *GinCrudController) Create(c *gin.Context) {
 	s.HttpReplySuccess(c, data)
 }
 
-func (s *GinCrudController) Get(c *gin.Context) {
+// Get will call the services' Get method.
+// it needs a path param `id` to be passed in
+func (s *BaseGinCrudController) Get(c *gin.Context) {
 	id := c.Param("id")
 
 	data, serr := s.Service.GetItem(id)
@@ -92,7 +102,9 @@ func (s *GinCrudController) Get(c *gin.Context) {
 
 }
 
-func (s *GinCrudController) List(c *gin.Context) {
+// List will call the services' List method
+// query params will be binded via s.QueryParametersHydrator is
+func (s *BaseGinCrudController) List(c *gin.Context) {
 	queryParams, err := s.QueryParametersHydrator.Hydrate(c)
 	if err != nil {
 		s.HttpReplyGinBindError(c, err)
@@ -115,7 +127,10 @@ func (s *GinCrudController) List(c *gin.Context) {
 
 }
 
-func (s *GinCrudController) Update(c *gin.Context) {
+// Update will call the services' Update method
+// This will be added to routes only if  s.UpdateRequest !=nil
+// it needs a path param `id` to be passed in
+func (s *BaseGinCrudController) Update(c *gin.Context) {
 	id := c.Param("id")
 
 	serializer := reflect.New(reflect.TypeOf(s.UpdateRequest)).Interface()
@@ -135,7 +150,9 @@ func (s *GinCrudController) Update(c *gin.Context) {
 
 }
 
-func (s *GinCrudController) Delete(c *gin.Context) {
+// Delete will call the services' Delete method
+// it needs a path param `id` to be passed in
+func (s *BaseGinCrudController) Delete(c *gin.Context) {
 	id := c.Param("id")
 
 	serr := s.Service.Delete(id)
@@ -148,18 +165,19 @@ func (s *GinCrudController) Delete(c *gin.Context) {
 
 }
 
-func NewGinCrudController(logger logger.GooglyLoggerInterface,
+// NewBaseGinCrudController creates a new BaseGinCrudController
+func NewBaseGinCrudController(logger logger.GooglyLoggerInterface,
 	service service.CrudService,
 	hydrator GinQueryParametersHydrator,
 	createRequest controller.SerializerInterface,
 	updateRequest controller.SerializerInterface,
 	listSerializer controller.SerializerInterface,
 	detailSerializer controller.SerializerInterface,
-) *GinCrudController {
-	ginController := NewGinController(logger)
+) *BaseGinCrudController {
+	ginController := NewBaseGinController(logger)
 
-	return &GinCrudController{
-		GinController:           ginController,
+	return &BaseGinCrudController{
+		BaseGinController:       ginController,
 		Service:                 service,
 		QueryParametersHydrator: hydrator,
 
