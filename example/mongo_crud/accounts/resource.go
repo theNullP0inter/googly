@@ -17,7 +17,7 @@ type AccountResourceManager struct {
 
 func NewAccountResourceManager(db *mongo.Database, logger logger.GooglyLoggerInterface) AccountResourceManagerInterface {
 	var model Account
-	listQueryBuilder := mongo_db.NewPaginatedMongoListQueryBuilder(logger)
+	listQueryBuilder := mongo_db.NewBasePaginatedMongoListQueryBuilder(logger)
 	rm := mongo_db.NewMongoResourceManager(db, "accounts", logger, model, listQueryBuilder)
 	return &AccountResourceManager{rm}
 }

@@ -11,57 +11,61 @@ import (
 
 const DefaultPageSize = 30
 
-type MongoListQueryBuilderInterface interface {
+// MongoListQueryBuilderInterface converts resource.ListQuery to filters needed for mongo
+// ListQuery() should facilitate this
+type MongoListQueryBuilder interface {
 	ListQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions)
 }
-type PaginatedMongoListQueryBuilderInterface interface {
-	MongoListQueryBuilderInterface
+
+// PaginatedMongoListQueryBuilder is a pagination implementation for MongoListQueryBuilder
+type PaginatedMongoListQueryBuilder interface {
+	MongoListQueryBuilder
 	PaginationQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions)
 }
 
-type PaginatedMongoListQueryBuilder struct {
+// BasePaginatedMongoListQueryBuilder is a base implementation for PaginatedMongoListQueryBuilder
+type BasePaginatedMongoListQueryBuilder struct {
 	Logger logger.GooglyLoggerInterface
-	PaginatedMongoListQueryBuilderInterface
 }
 
-func NewPaginatedMongoListQueryBuilder(logger logger.GooglyLoggerInterface) *PaginatedMongoListQueryBuilder {
-	return &PaginatedMongoListQueryBuilder{Logger: logger}
-}
-
-// modify for a new type of query builder
-func (c PaginatedMongoListQueryBuilder) ListQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
+// ListQuery should be implemented for MongoListQueryBuilder.
+func (c *BasePaginatedMongoListQueryBuilder) ListQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
 	return c.PaginationQuery(parameters)
 }
 
-func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
+// PaginationQuery Converts resource.ListQuery to pagination filters needed for mongo
+func (c *BasePaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
 	query := bson.M{}
 	queryOptions := options.Find()
 
+	// if params donot match the reqquired format, log and return empty filter
 	val := reflect.ValueOf(parameters).Elem()
 	if val.Kind() != reflect.Struct {
-		c.Logger.Errorf("Unexpected type of parameters for PaginationQuery")
+		c.Logger.Error("Unexpected type of parameters for PaginationQuery")
 		return query, queryOptions
 	}
 	paginationParameters := val.FieldByName("PaginatedListQuery")
 	hasPaginationParams := paginationParameters.IsValid() && !paginationParameters.IsNil()
 
+	// Parsing page number
 	var page int64
 	page = 0
 	if hasPaginationParams {
 		pageValue := val.FieldByName("Page")
 		if !pageValue.IsValid() || pageValue.Kind() != reflect.Int {
-			c.Logger.Errorf("Page is not specified correctly in listQuery")
+			c.Logger.Info("Page in in invalid format, Using default value")
 		} else {
 			page = pageValue.Int()
 		}
 	}
 
+	// Parsing Page Size
 	var pageSize int64
 	pageSize = DefaultPageSize
 	if hasPaginationParams {
 		pageSizeValue := val.FieldByName("PageSize")
 		if !pageSizeValue.IsValid() || pageSizeValue.Kind() != reflect.Int {
-			c.Logger.Errorf("PageSize is not specified in listQuery")
+			c.Logger.Info("PageSize in in invalid format, Using default value")
 		} else {
 			pageSize = pageSizeValue.Int()
 		}
@@ -73,7 +77,8 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.List
 	queryOptions.SetSkip(offset)
 	queryOptions.SetLimit(limit)
 
-	var orderBy = "_id"
+	// Parsing orderBy
+	var orderBy = ""
 	if hasPaginationParams {
 		orderByValue := val.FieldByName("OrderBy")
 		if orderByValue.IsValid() && orderByValue.Kind() == reflect.String {
@@ -81,10 +86,18 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.List
 		}
 	}
 
+	// Return if order by is not present
+	if orderBy == "" {
+		return query, queryOptions
+	}
+
+	// Parsing Order descending
 	var orderDesc = false
 	if hasPaginationParams {
 		orderDescValue := val.FieldByName("OrderDesc")
-		if orderDescValue.IsValid() && orderDescValue.Kind() == reflect.Bool {
+		if !orderDescValue.IsValid() || orderDescValue.Kind() != reflect.Bool {
+			c.Logger.Info("OrderDesc in in invalid format, Using default value")
+		} else {
 			orderDesc = orderDescValue.Bool()
 		}
 	}
@@ -98,4 +111,9 @@ func (c PaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.List
 	}
 
 	return query, queryOptions
+}
+
+// NewBasePaginatedMongoListQueryBuilder creates a new BasePaginatedMongoListQueryBuilder
+func NewBasePaginatedMongoListQueryBuilder(logger logger.GooglyLoggerInterface) *BasePaginatedMongoListQueryBuilder {
+	return &BasePaginatedMongoListQueryBuilder{Logger: logger}
 }

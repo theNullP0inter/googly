@@ -28,7 +28,7 @@ type MongoResourceManager struct {
 	Db             *mongo.Database
 	CollectionName string
 	Model          db.BaseModelInterface
-	QueryBuilder   MongoListQueryBuilderInterface
+	QueryBuilder   MongoListQueryBuilder
 }
 
 func (s MongoResourceManager) GetResource() resource.Resource {
@@ -167,7 +167,7 @@ func NewMongoResourceManager(
 	collectionName string,
 	logger logger.GooglyLoggerInterface,
 	model db.BaseModelInterface,
-	queryBuilder MongoListQueryBuilderInterface,
+	queryBuilder MongoListQueryBuilder,
 ) *MongoResourceManager {
 	resourceManager := resource.NewBaseResourceManager(logger, model)
 	return &MongoResourceManager{
