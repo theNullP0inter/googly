@@ -29,19 +29,19 @@ type BasePaginatedMongoListQueryBuilder struct {
 }
 
 // ListQuery should be implemented for MongoListQueryBuilder.
-func (c *BasePaginatedMongoListQueryBuilder) ListQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
-	return c.PaginationQuery(parameters)
+func (qb *BasePaginatedMongoListQueryBuilder) ListQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
+	return qb.PaginationQuery(parameters)
 }
 
 // PaginationQuery Converts resource.ListQuery to pagination filters needed for mongo
-func (c *BasePaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
+func (qb *BasePaginatedMongoListQueryBuilder) PaginationQuery(parameters resource.ListQuery) (bson.M, *options.FindOptions) {
 	query := bson.M{}
 	queryOptions := options.Find()
 
-	// if params donot match the reqquired format, log and return empty filter
+	// if params do not match the required format, log and return empty filter
 	val := reflect.ValueOf(parameters).Elem()
 	if val.Kind() != reflect.Struct {
-		c.Logger.Error("Unexpected type of parameters for PaginationQuery")
+		qb.Logger.Error("Unexpected type of parameters for PaginationQuery")
 		return query, queryOptions
 	}
 	paginationParameters := val.FieldByName("PaginatedListQuery")
@@ -53,24 +53,25 @@ func (c *BasePaginatedMongoListQueryBuilder) PaginationQuery(parameters resource
 	if hasPaginationParams {
 		pageValue := val.FieldByName("Page")
 		if !pageValue.IsValid() || pageValue.Kind() != reflect.Int {
-			c.Logger.Info("Page in in invalid format, Using default value")
+			qb.Logger.Info("Page in in invalid format, Using default value")
 		} else {
 			page = pageValue.Int()
 		}
 	}
 
-	// Parsing Page Size
+	// Parsing page size
 	var pageSize int64
 	pageSize = DefaultPageSize
 	if hasPaginationParams {
 		pageSizeValue := val.FieldByName("PageSize")
 		if !pageSizeValue.IsValid() || pageSizeValue.Kind() != reflect.Int {
-			c.Logger.Info("PageSize in in invalid format, Using default value")
+			qb.Logger.Info("PageSize in in invalid format, Using default value")
 		} else {
 			pageSize = pageSizeValue.Int()
 		}
 	}
 
+	// Applying Pagination to query
 	limit := pageSize
 	offset := page * pageSize
 
@@ -91,17 +92,18 @@ func (c *BasePaginatedMongoListQueryBuilder) PaginationQuery(parameters resource
 		return query, queryOptions
 	}
 
-	// Parsing Order descending
+	// Parsing orderBy descending or ascending
 	var orderDesc = false
 	if hasPaginationParams {
 		orderDescValue := val.FieldByName("OrderDesc")
 		if !orderDescValue.IsValid() || orderDescValue.Kind() != reflect.Bool {
-			c.Logger.Info("OrderDesc in in invalid format, Using default value")
+			qb.Logger.Info("OrderDesc in in invalid format, Using default value")
 		} else {
 			orderDesc = orderDescValue.Bool()
 		}
 	}
 
+	// Adding sort to query
 	if len(orderBy) > 0 {
 		if orderDesc {
 			queryOptions.SetSort(bson.M{orderBy: -1})

@@ -23,6 +23,7 @@ type BaseRdbResourceManager struct {
 	ListQueryBuilder RdbListQueryBuilder
 }
 
+// handleGormError converts gorm Errors to ResourceErrors
 func handleGormError(err error) error {
 
 	if err == gorm.ErrRecordNotFound {
@@ -38,6 +39,17 @@ func handleGormError(err error) error {
 	return resource.ErrInvalidQuery
 }
 
+// GetModel will get you the model resource
+func (s *BaseRdbResourceManager) GetResource() resource.Resource {
+	return s.Model
+}
+
+// GetModel will get you the model resource
+func (s *BaseRdbResourceManager) GetModel() resource.Resource {
+	return s.Model
+}
+
+// Create creates an entry in with given data
 func (s *BaseRdbResourceManager) Create(m resource.DataInterface) (resource.DataInterface, error) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
@@ -49,13 +61,7 @@ func (s *BaseRdbResourceManager) Create(m resource.DataInterface) (resource.Data
 	return item, nil
 }
 
-func (s *BaseRdbResourceManager) GetResource() resource.Resource {
-	return s.Model
-}
-
-func (s *BaseRdbResourceManager) GetModel() resource.Resource {
-	return s.Model
-}
+// Get gets 1 item with given id
 func (s *BaseRdbResourceManager) Get(id resource.DataInterface) (resource.DataInterface, error) {
 	strId := id.(string)
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
@@ -71,6 +77,7 @@ func (s *BaseRdbResourceManager) Get(id resource.DataInterface) (resource.DataIn
 	return item, nil
 }
 
+// Update updates 1 item with given id & given data/update_set
 func (s *BaseRdbResourceManager) Update(id resource.DataInterface, data resource.DataInterface) error {
 
 	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
@@ -91,6 +98,8 @@ func (s *BaseRdbResourceManager) Update(id resource.DataInterface, data resource
 
 	return nil
 }
+
+// Delete will delete 1 item with given _id
 func (s *BaseRdbResourceManager) Delete(id resource.DataInterface) error {
 	item, err := s.Get(id)
 	if err != nil {
@@ -100,6 +109,9 @@ func (s *BaseRdbResourceManager) Delete(id resource.DataInterface) error {
 	return nil
 }
 
+// List will get you a list of items
+//
+// it uses QueryBuilder.ListQuery() to filter the throuh rows
 func (s *BaseRdbResourceManager) List(parameters resource.DataInterface) (resource.DataInterface, error) {
 
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
@@ -115,6 +127,7 @@ func (s *BaseRdbResourceManager) List(parameters resource.DataInterface) (resour
 	return items, nil
 }
 
+// NewRdbResourceManager creates a new RdbResourceManager
 func NewRdbResourceManager(
 	db *gorm.DB,
 	logger logger.GooglyLoggerInterface,
