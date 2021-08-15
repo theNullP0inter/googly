@@ -12,8 +12,12 @@ import (
 	"gorm.io/gorm"
 )
 
+type RdbResourceManagerInterface interface {
+	resource.DbResourceManagerIntereface
+}
+
 type RdbResourceManager struct {
-	*resource.ResourceManager
+	*resource.BaseResourceManager
 	Db           *gorm.DB
 	Model        db.BaseModelInterface
 	QueryBuilder RdbListQueryBuilderInterface
@@ -49,7 +53,7 @@ func (s *RdbResourceManager) GetResource() resource.Resource {
 	return s.Model
 }
 
-func (s *RdbResourceManager) GetModel() resource.DataInterface {
+func (s *RdbResourceManager) GetModel() resource.Resource {
 	return s.Model
 }
 func (s *RdbResourceManager) Get(id resource.DataInterface) (resource.DataInterface, error) {
@@ -117,12 +121,12 @@ func NewRdbResourceManager(
 	model db.BaseModelInterface,
 	queryBuilder PaginatedRdbListQueryBuilderInterface,
 ) *RdbResourceManager {
-	resourceManager := resource.NewResourceManager(logger, model)
+	resourceManager := resource.NewBaseResourceManager(logger, model)
 	return &RdbResourceManager{
-		ResourceManager: resourceManager,
-		Db:              db,
-		Model:           model,
-		QueryBuilder:    queryBuilder,
+		BaseResourceManager: resourceManager,
+		Db:                  db,
+		Model:               model,
+		QueryBuilder:        queryBuilder,
 	}
 
 }

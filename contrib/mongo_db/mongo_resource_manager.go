@@ -19,8 +19,12 @@ func initContext() (context.Context, context.CancelFunc) {
 	return ctx, cancel
 }
 
+type MongoResourceManagerInterface interface {
+	resource.DbResourceManagerIntereface
+}
+
 type MongoResourceManager struct {
-	*resource.ResourceManager
+	*resource.BaseResourceManager
 	Db             *mongo.Database
 	CollectionName string
 	Model          db.BaseModelInterface
@@ -31,7 +35,7 @@ func (s MongoResourceManager) GetResource() resource.Resource {
 	return s.Model
 }
 
-func (s MongoResourceManager) GetModel() resource.DataInterface {
+func (s MongoResourceManager) GetModel() resource.Resource {
 	return s.Model
 }
 
@@ -49,7 +53,7 @@ func (s MongoResourceManager) Create(m resource.DataInterface) (resource.DataInt
 
 	itemBit, err := bson.Marshal(item)
 	if err != nil {
-		return nil, resource.ErrParseBson
+		return nil, ErrParseBson
 	}
 	itemMap := bson.M{}
 	bson.Unmarshal(itemBit, itemMap)
@@ -98,7 +102,7 @@ func (s MongoResourceManager) Update(id resource.DataInterface, data resource.Da
 	req, err := bson.Marshal(data)
 
 	if err != nil {
-		return resource.ErrParseBson
+		return ErrParseBson
 	}
 
 	reqDoc := bson.M{}
@@ -165,13 +169,13 @@ func NewMongoResourceManager(
 	model db.BaseModelInterface,
 	queryBuilder MongoListQueryBuilderInterface,
 ) *MongoResourceManager {
-	resourceManager := resource.NewResourceManager(logger, model)
+	resourceManager := resource.NewBaseResourceManager(logger, model)
 	return &MongoResourceManager{
-		ResourceManager: resourceManager,
-		Db:              mongoDb,
-		CollectionName:  collectionName,
-		Model:           model,
-		QueryBuilder:    queryBuilder,
+		BaseResourceManager: resourceManager,
+		Db:                  mongoDb,
+		CollectionName:      collectionName,
+		Model:               model,
+		QueryBuilder:        queryBuilder,
 	}
 
 }
