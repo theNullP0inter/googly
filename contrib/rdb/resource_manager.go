@@ -12,11 +12,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type RdbResourceManagerInterface interface {
-	resource.DbResourceManagerIntereface
+type RdbResourceManager interface {
+	resource.DbResourceManager
 }
 
-type RdbResourceManager struct {
+type BaseRdbResourceManager struct {
 	*resource.BaseResourceManager
 	Db               *gorm.DB
 	Model            db.BaseModelInterface
@@ -38,7 +38,7 @@ func handleGormError(err error) error {
 	return resource.ErrInvalidQuery
 }
 
-func (s *RdbResourceManager) Create(m resource.DataInterface) (resource.DataInterface, error) {
+func (s *BaseRdbResourceManager) Create(m resource.DataInterface) (resource.DataInterface, error) {
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	copier.Copy(item, m)
 	result := s.Db.Create(item)
@@ -49,14 +49,14 @@ func (s *RdbResourceManager) Create(m resource.DataInterface) (resource.DataInte
 	return item, nil
 }
 
-func (s *RdbResourceManager) GetResource() resource.Resource {
+func (s *BaseRdbResourceManager) GetResource() resource.Resource {
 	return s.Model
 }
 
-func (s *RdbResourceManager) GetModel() resource.Resource {
+func (s *BaseRdbResourceManager) GetModel() resource.Resource {
 	return s.Model
 }
-func (s *RdbResourceManager) Get(id resource.DataInterface) (resource.DataInterface, error) {
+func (s *BaseRdbResourceManager) Get(id resource.DataInterface) (resource.DataInterface, error) {
 	strId := id.(string)
 	item := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	binId, err := StringToBinID(strId)
@@ -71,7 +71,7 @@ func (s *RdbResourceManager) Get(id resource.DataInterface) (resource.DataInterf
 	return item, nil
 }
 
-func (s *RdbResourceManager) Update(id resource.DataInterface, data resource.DataInterface) error {
+func (s *BaseRdbResourceManager) Update(id resource.DataInterface, data resource.DataInterface) error {
 
 	m := reflect.New(reflect.TypeOf(s.GetModel())).Interface()
 	strId := id.(string)
@@ -91,7 +91,7 @@ func (s *RdbResourceManager) Update(id resource.DataInterface, data resource.Dat
 
 	return nil
 }
-func (s *RdbResourceManager) Delete(id resource.DataInterface) error {
+func (s *BaseRdbResourceManager) Delete(id resource.DataInterface) error {
 	item, err := s.Get(id)
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ func (s *RdbResourceManager) Delete(id resource.DataInterface) error {
 	return nil
 }
 
-func (s *RdbResourceManager) List(parameters resource.DataInterface) (resource.DataInterface, error) {
+func (s *BaseRdbResourceManager) List(parameters resource.DataInterface) (resource.DataInterface, error) {
 
 	items := reflect.New(reflect.SliceOf(reflect.TypeOf(s.GetModel()))).Interface()
 	result, err := s.ListQueryBuilder.ListQuery(parameters)
@@ -120,9 +120,9 @@ func NewRdbResourceManager(
 	logger logger.GooglyLoggerInterface,
 	model db.BaseModelInterface,
 	queryBuilder PaginatedRdbListQueryBuilderInterface,
-) *RdbResourceManager {
+) *BaseRdbResourceManager {
 	resourceManager := resource.NewBaseResourceManager(logger, model)
-	return &RdbResourceManager{
+	return &BaseRdbResourceManager{
 		BaseResourceManager: resourceManager,
 		Db:                  db,
 		Model:               model,

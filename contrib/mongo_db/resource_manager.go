@@ -19,11 +19,13 @@ func initContext() (context.Context, context.CancelFunc) {
 	return ctx, cancel
 }
 
-type MongoResourceManagerInterface interface {
-	resource.DbResourceManagerIntereface
+// MongoResourceManager is a DbResourcemanager connected to mongo_db
+type MongoResourceManager interface {
+	resource.DbResourceManager
 }
 
-type MongoResourceManager struct {
+// BaseMongoResourceManager is a base impelementation of MongoResourceManager
+type BaseMongoResourceManager struct {
 	*resource.BaseResourceManager
 	Db             *mongo.Database
 	CollectionName string
@@ -31,15 +33,18 @@ type MongoResourceManager struct {
 	QueryBuilder   MongoListQueryBuilder
 }
 
-func (s MongoResourceManager) GetResource() resource.Resource {
+// GetResource will get you the model resource
+func (s *BaseMongoResourceManager) GetResource() resource.Resource {
 	return s.Model
 }
 
-func (s MongoResourceManager) GetModel() resource.Resource {
+// GetModel will get you the model resource
+func (s *BaseMongoResourceManager) GetModel() resource.Resource {
 	return s.Model
 }
 
-func (s MongoResourceManager) Create(m resource.DataInterface) (resource.DataInterface, error) {
+// Create creates an entry in with given data
+func (s *BaseMongoResourceManager) Create(m resource.DataInterface) (resource.DataInterface, error) {
 	ctx, cancel := initContext()
 	defer cancel()
 
@@ -63,7 +68,8 @@ func (s MongoResourceManager) Create(m resource.DataInterface) (resource.DataInt
 	return item, nil
 }
 
-func (s MongoResourceManager) Get(id resource.DataInterface) (resource.DataInterface, error) {
+// Get gets 1 item with given _id
+func (s *BaseMongoResourceManager) Get(id resource.DataInterface) (resource.DataInterface, error) {
 	ctx, cancel := initContext()
 	defer cancel()
 
@@ -90,7 +96,8 @@ func (s MongoResourceManager) Get(id resource.DataInterface) (resource.DataInter
 
 }
 
-func (s MongoResourceManager) Update(id resource.DataInterface, data resource.DataInterface) error {
+// Update updates 1 item with given _id & given data/update_set
+func (s *BaseMongoResourceManager) Update(id resource.DataInterface, data resource.DataInterface) error {
 	ctx, cancel := initContext()
 	defer cancel()
 
@@ -120,7 +127,8 @@ func (s MongoResourceManager) Update(id resource.DataInterface, data resource.Da
 	return nil
 }
 
-func (s MongoResourceManager) Delete(id resource.DataInterface) error {
+// Delete will delete 1 item with given _id
+func (s *BaseMongoResourceManager) Delete(id resource.DataInterface) error {
 	ctx, cancel := initContext()
 	defer cancel()
 
@@ -143,7 +151,10 @@ func (s MongoResourceManager) Delete(id resource.DataInterface) error {
 
 }
 
-func (s MongoResourceManager) List(parameters resource.DataInterface) (resource.DataInterface, error) {
+// List will get you a list of items
+//
+// it uses QueryBuilder.ListQuery() to filter the documents
+func (s *BaseMongoResourceManager) List(parameters resource.DataInterface) (resource.DataInterface, error) {
 
 	ctx, cancel := initContext()
 	defer cancel()
@@ -162,15 +173,16 @@ func (s MongoResourceManager) List(parameters resource.DataInterface) (resource.
 	return items, nil
 }
 
+// NewMongoResourceManager creates a new MongoResourceManager
 func NewMongoResourceManager(
 	mongoDb *mongo.Database,
 	collectionName string,
 	logger logger.GooglyLoggerInterface,
 	model db.BaseModelInterface,
 	queryBuilder MongoListQueryBuilder,
-) *MongoResourceManager {
+) *BaseMongoResourceManager {
 	resourceManager := resource.NewBaseResourceManager(logger, model)
-	return &MongoResourceManager{
+	return &BaseMongoResourceManager{
 		BaseResourceManager: resourceManager,
 		Db:                  mongoDb,
 		CollectionName:      collectionName,

@@ -3,16 +3,15 @@ package accounts
 import (
 	"github.com/theNullP0inter/googly/contrib/rdb"
 	"github.com/theNullP0inter/googly/logger"
-	"github.com/theNullP0inter/googly/resource"
 	"gorm.io/gorm"
 )
 
 type AccountResourceManagerInterface interface {
-	resource.DbResourceManagerIntereface
+	rdb.RdbResourceManager
 }
 
 type AccountResourceManager struct {
-	*rdb.RdbResourceManager
+	*rdb.BaseRdbResourceManager
 }
 
 func NewAccountResourceManager(db *gorm.DB, logger logger.GooglyLoggerInterface) AccountResourceManagerInterface {

@@ -18,7 +18,7 @@ type CrudImplementorInterface interface {
 // CrudResourceManagerInterface should be implemented by any resource manager that intends to provide CRUD functionality.
 //
 // generally a db manager
-type CrudResourceManagerInterface interface {
+type CrudResourceManager interface {
 	ResourceManagerInterface
 	CrudImplementorInterface
 }

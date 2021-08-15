@@ -11,7 +11,6 @@ import (
 
 const DefaultPageSize = 30
 
-// RdbListQueryBuilderInterface
 type RdbListQueryBuilderInterface interface {
 	ListQuery(resource.ListQuery) (*gorm.DB, error)
 }
