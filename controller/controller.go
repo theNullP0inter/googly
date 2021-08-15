@@ -4,13 +4,18 @@ import (
 	"github.com/theNullP0inter/googly/logger"
 )
 
-type ControllerInterface interface {
+// Controller is an empty interface.
+//
+// Controller can controll anything ( also nothing )
+type Controller interface {
 }
 
-type Controller struct {
+// BaseController is a Controller with just a Logger
+type BaseController struct {
 	Logger logger.GooglyLoggerInterface
 }
 
-func NewController(logger logger.GooglyLoggerInterface) *Controller {
-	return &Controller{logger}
+// NewBaseController creates a new BaseController
+func NewBaseController(logger logger.GooglyLoggerInterface) *BaseController {
+	return &BaseController{logger}
 }

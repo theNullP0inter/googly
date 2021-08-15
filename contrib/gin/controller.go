@@ -15,14 +15,14 @@ type GinControllerIngress interface {
 }
 
 type GinControllerInterface interface {
-	controller.ControllerInterface
+	controller.Controller
 	HttpResponse(*gin.Context, interface{}, int)
 	HttpReplySuccess(*gin.Context, interface{})
 	HttpReplyServiceError(*gin.Context, *service.ServiceError)
 }
 
 type GinController struct {
-	*controller.Controller
+	*controller.BaseController
 }
 
 func HandleHttpError(c *gin.Context, e *controller.HttpError) {
@@ -93,8 +93,8 @@ func (c *GinController) HttpReplyServiceError(context *gin.Context, err *service
 }
 
 func NewGinController(logger logger.GooglyLoggerInterface) *GinController {
-	controller := controller.NewController(logger)
+	con := controller.NewBaseController(logger)
 	return &GinController{
-		controller,
+		con,
 	}
 }
