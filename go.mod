@@ -19,7 +19,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/google/uuid v1.3.0
 	github.com/jinzhu/copier v0.3.2
-	github.com/jinzhu/gorm v1.9.16
+	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/lib/pq v1.10.2
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -29,7 +29,6 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
-	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.7.0 // indirect
 	github.com/thedevsaddam/govalidator v1.9.10 // indirect
 	github.com/ugorji/go v1.2.6 // indirect
@@ -43,13 +42,9 @@ require (
 	gorm.io/gorm v1.21.12
 )
 
-replace github.com/theNullP0inter/googly/command => ./command
-
 replace github.com/theNullP0inter/googly/logger => ./logger
 
-replace github.com/theNullP0inter/googly/model => ./model
-
-replace github.com/theNullP0inter/googly/rdb => ./rdb
+replace github.com/theNullP0inter/googly/db => ./db
 
 replace github.com/theNullP0inter/googly/route => ./route
 
@@ -59,14 +54,24 @@ replace github.com/theNullP0inter/googly/resource => ./resource
 
 replace github.com/theNullP0inter/googly/controller => ./controller
 
-replace github.com/theNullP0inter/googly/app => ./app
-
-replace github.com/theNullP0inter/googly/app_repository => ./app_repository
-
 replace github.com/theNullP0inter/googly/ingress => ./ingress
+
+replace github.com/theNullP0inter/googly/contrib/gin => ./contrib/gin
+
+replace github.com/theNullP0inter/googly/contrib/grpc => ./contrib/grpc
+
+replace github.com/theNullP0inter/googly/contrib/rdb => ./contrib/rdb
+
+replace github.com/theNullP0inter/googly/contrib/mongo_db => ./contrib/mongo_db
+
+replace github.com/theNullP0inter/googly/contrib/logrus => ./contrib/logrus
 
 // example/rdb_crud
 
 replace github.com/theNullP0inter/googly/example/rdb_crud => ./example/rdb_crud
 
 replace github.com/theNullP0inter/googly/example/rdb_crud/accounts => ./example/rdb_crud/accounts
+
+replace github.com/theNullP0inter/googly/example/mongo_crud => ./example/mongo_crud
+
+replace github.com/theNullP0inter/googly/example/mongo_crud/accounts => ./example/mongo_crud/accounts

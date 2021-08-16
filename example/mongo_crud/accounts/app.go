@@ -2,7 +2,7 @@ package accounts
 
 import (
 	"github.com/sarulabs/di/v2"
-	"github.com/theNullP0inter/googly/app"
+	"github.com/theNullP0inter/googly"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/theNullP0inter/googly/example/mongo_crud/consts"
@@ -10,7 +10,7 @@ import (
 )
 
 type AccountsAppInterface interface {
-	app.AppInterface
+	googly.App
 }
 
 type AccountsApp struct {
@@ -27,7 +27,7 @@ func (a *AccountsApp) Build(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountResourceManager(
 				ctn.Get(consts.MongoDb).(*mongo.Database),
-				ctn.Get(consts.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.Logger).(logger.GooglyLoggerInterface),
 			), nil
 		},
 	})
@@ -36,7 +36,7 @@ func (a *AccountsApp) Build(builder *di.Builder) {
 		Name: consts.AccountsServiceName,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountService(
-				ctn.Get(consts.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.Logger).(logger.GooglyLoggerInterface),
 				ctn.Get(consts.AccountsResourceManagerName).(AccountResourceManagerInterface),
 			), nil
 		},
@@ -47,7 +47,7 @@ func (a *AccountsApp) Build(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			return NewAccountController(
 				ctn.Get(consts.AccountsServiceName).(AccountServiceInterface),
-				ctn.Get(consts.Logger).(logger.LoggerInterface),
+				ctn.Get(consts.Logger).(logger.GooglyLoggerInterface),
 			), nil
 		},
 	})

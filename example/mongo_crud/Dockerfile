@@ -29,17 +29,10 @@ RUN cd ./example/mongo_crud && go build \
     -installsuffix 'static' \
     -o /app
 
-RUN go get github.com/go-swagger/go-swagger/cmd/swagger
-RUN mkdir /doc
-RUN swagger generate spec -o /doc/swagger.json
-
-RUN mkdir /migrations
-
 FROM scratch AS final
 COPY --from=builder /user/group /user/passwd /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app /app
-COPY --from=builder /doc /doc
 
 EXPOSE 8080
 

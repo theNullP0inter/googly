@@ -1,33 +1,16 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/theNullP0inter/googly/logger"
 	"github.com/theNullP0inter/googly/resource"
 )
 
-type CrudListPaginationQueryParameters struct {
-	*resource.PaginationQueryParameters
+// QueryParameters is any thing that controller receives in GET request or on similar lines
+type QueryParameters interface {
 }
 
-type GinQueryParametersHydratorInterface interface {
-	Hydrate(context *gin.Context) (resource.QueryParameters, error)
-}
-
-type GinPaginatedQueryParametersHydrator struct {
-	Logger logger.LoggerInterface
-	GinQueryParametersHydratorInterface
-}
-
-func (c GinPaginatedQueryParametersHydrator) Hydrate(context *gin.Context) (resource.QueryParameters, error) {
-	var parameters CrudListPaginationQueryParameters
-	err := context.ShouldBindQuery(&parameters)
-	if err != nil {
-		return nil, err
-	}
-	return &parameters, nil
-}
-
-func NewGinPaginatedQueryParametersHydrator(logger logger.LoggerInterface) *GinPaginatedQueryParametersHydrator {
-	return &GinPaginatedQueryParametersHydrator{Logger: logger}
+// PaginationQueryParameters is the set of query params that should be used to get pagination
+//
+// To make it easier, it is set to pagination params accepted by DbResourceManager for a PaginatedListQuery
+type PaginationQueryParameters struct {
+	*resource.PaginatedListQuery
 }

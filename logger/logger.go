@@ -1,75 +1,36 @@
 package logger
 
-import (
-	"fmt"
-	"os"
-	"time"
-
-	"github.com/evalphobia/logrus_sentry"
-	"github.com/getsentry/sentry-go"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
-)
-
+// LoggerInterface is a sub interface implemented by GooglyLoggerInterface
 type LoggerInterface interface {
+	Debugf(format string, args ...interface{})
+	Debug(args ...interface{})
+
+	Infof(format string, args ...interface{})
+	Info(args ...interface{})
+
+	Warnf(format string, args ...interface{})
+	Warn(args ...interface{})
+
+	Errorf(format string, args ...interface{})
 	Error(args ...interface{})
+
+	Fatalf(format string, args ...interface{})
+	Fatal(args ...interface{})
+
+	Panicf(format string, args ...interface{})
+	Panic(args ...interface{})
 }
 
-func NewLogger() LoggerInterface {
-	logger := logrus.Logger{
-		Out:       os.Stdout,
-		Formatter: &logrus.TextFormatter{ForceColors: true},
-		Hooks:     make(logrus.LevelHooks),
-		Level:     logrus.InfoLevel,
-	}
-	dsn := viper.Get("SENTRY_DSN")
-	if dsn == nil {
-		return &logger
-	}
-
-	if dsn != nil {
-		hook, err := logrus_sentry.NewSentryHook(dsn.(string), []logrus.Level{
-			logrus.PanicLevel,
-			logrus.FatalLevel,
-			logrus.ErrorLevel,
-		})
-		timeout := viper.GetInt("SENTRY_TIMEOUT")
-		hook.Timeout = time.Duration(timeout) * time.Second
-		hook.StacktraceConfiguration.Enable = true
-
-		if err == nil {
-			logger.Hooks.Add(hook)
-		}
-	}
-
-	return &logger
-}
-
-func AddSentryHookToLogrus(logger *logrus.Logger, dsn string, timeout int) LoggerInterface {
-	hook, err := logrus_sentry.NewSentryHook(dsn, []logrus.Level{
-		logrus.PanicLevel,
-		logrus.FatalLevel,
-		logrus.ErrorLevel,
-	})
-	hook.Timeout = time.Duration(timeout) * time.Second
-	hook.StacktraceConfiguration.Enable = true
-
-	if err == nil {
-		logger.Hooks.Add(hook)
-	}
-
-	return logger
-}
-
-func NewSentryClient(dsn string) *sentry.Client {
-
-	client, err := sentry.NewClient(sentry.ClientOptions{
-		Dsn:   dsn,
-		Debug: true,
-	})
-	if err != nil {
-		fmt.Println("Fatal")
-		fmt.Println(err)
-	}
-	return client
+// GooglyLoggerInterface is the logger interface implemented in all services for logging
+//
+// Any logger that implements this interface becomes a GooglyLogger.
+//
+// If the logger of your choice that doesnt implement this interface,
+// you have to write a simple binding
+//
+// WithData can be used to log extra data along with log string.
+// it adds extra info to your logs
+type GooglyLoggerInterface interface {
+	LoggerInterface
+	WithData(map[string]interface{}) LoggerInterface
 }

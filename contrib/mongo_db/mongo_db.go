@@ -1,4 +1,4 @@
-package db
+package mongo_db
 
 import (
 	"context"
@@ -9,9 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func NewMongoDatabase(mongo_uri string, database_name string) *mongo.Database {
+// NewMongoDatabase creates a new instance of mongo db
+func NewMongoDatabase(mongoUri string, databaseName string) *mongo.Database {
 
-	client, err := mongo.NewClient(options.Client().ApplyURI(mongo_uri))
+	client, err := mongo.NewClient(options.Client().ApplyURI(mongoUri))
 
 	if err != nil {
 		fmt.Printf("MongoDB Client Init Error: %v", err)
@@ -26,6 +27,6 @@ func NewMongoDatabase(mongo_uri string, database_name string) *mongo.Database {
 		fmt.Printf("MongoDB Client Failed to Connect: %v", err)
 		panic(err)
 	}
-	return client.Database(database_name)
+	return client.Database(databaseName)
 
 }

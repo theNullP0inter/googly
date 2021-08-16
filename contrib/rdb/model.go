@@ -1,4 +1,4 @@
-package model
+package rdb
 
 import (
 	"time"
@@ -7,24 +7,24 @@ import (
 	"gorm.io/gorm"
 )
 
-type BaseModelInterface interface {
-}
-
+// BaseModel for rdb models
 type BaseModel struct {
-	ID        BinID     `gorm:"primaryKey; default: (UUID_TO_BIN(UUID()))" json:"id"`
+	ID        BinID     `gorm:"primaryKey" json:"id"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
+
+// BaseModel for rdb models with soft delete
+//
+// Refer: https://gorm.io/docs/delete.html#Soft-Delete
 type RdbSoftDeleteBaseModel struct {
 	BaseModel
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
-type Pagination struct {
-	Limit int    `json:"limit"`
-	Page  int    `json:"page"`
-	Sort  string `json:"sort"`
-}
 
+// Setting uuid before creation
+//
+// Refer: https://gorm.io/docs/hooks.html#Creating-an-object
 func (b *BaseModel) BeforeCreate(tx *gorm.DB) error {
 	id, err := uuid.NewRandom()
 	b.ID = BinID(id)
