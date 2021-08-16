@@ -1,6 +1,6 @@
 # Googly
 
-Googly is just a toolkit that has diverse tools to get microservices up & running as quick as possible
+Googly is just a toolkit that has diverse tools that are set to work together to get microservices up & running as with minimal effort
 
 ## Tools available
 ***
@@ -95,3 +95,15 @@ RDB CRUD
 ```
 docker-compose -f example/rdb_crud/docker-compose.yaml up --build
 ```
+
+
+## Pending tasks
+* Unit Tests
+* Better documentation
+* Add CI/CD pipeline
+* Add Grpc example
+
+
+## More tools to be added
+* Kafka
+* pushpin integration for websockets
