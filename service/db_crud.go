@@ -75,7 +75,7 @@ func (s *BaseCrudDbService) Update(id DataInterface, update DataInterface) *Serv
 }
 
 // NewBaseCrudDbService creates a new BaseCrudDbService
-func NewBaseCrudDbService(logger logger.GooglyLoggerInterface, rm resource.DbResourceManager) *BaseCrudDbService {
+func NewBaseCrudDbService(logger logger.GooglyLogger, rm resource.DbResourceManager) *BaseCrudDbService {
 	ser := NewBaseDbService(logger, rm)
 	return &BaseCrudDbService{ser}
 }

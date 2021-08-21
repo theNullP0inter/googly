@@ -19,7 +19,7 @@ type CrudImplementorInterface interface {
 //
 // generally a db manager
 type CrudResourceManager interface {
-	ResourceManagerInterface
+	ResourceManager
 	CrudImplementorInterface
 }
 
@@ -30,7 +30,7 @@ type BaseCrudResourceManager struct {
 }
 
 // NewBaseCrudResourceManager creates a new BaseCrudResourceManager with a given crudImplementor
-func NewBaseCrudResourceManager(logger logger.GooglyLoggerInterface,
+func NewBaseCrudResourceManager(logger logger.GooglyLogger,
 	resource Resource,
 	crudImplementor CrudImplementorInterface,
 ) *BaseCrudResourceManager {

@@ -1,7 +1,7 @@
 package logger
 
-// LoggerInterface is a sub interface implemented by GooglyLoggerInterface
-type LoggerInterface interface {
+// Logger is a sub interface implemented by GooglyLogger
+type Logger interface {
 	Debugf(format string, args ...interface{})
 	Debug(args ...interface{})
 
@@ -21,7 +21,7 @@ type LoggerInterface interface {
 	Panic(args ...interface{})
 }
 
-// GooglyLoggerInterface is the logger interface implemented in all services for logging
+// GooglyLogger is the logger interface implemented in all services for logging
 //
 // Any logger that implements this interface becomes a GooglyLogger.
 //
@@ -30,7 +30,7 @@ type LoggerInterface interface {
 //
 // WithData can be used to log extra data along with log string.
 // it adds extra info to your logs
-type GooglyLoggerInterface interface {
-	LoggerInterface
-	WithData(map[string]interface{}) LoggerInterface
+type GooglyLogger interface {
+	Logger
+	WithData(map[string]interface{}) Logger
 }
