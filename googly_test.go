@@ -10,38 +10,38 @@ import (
 // TestRun tests the Run() function
 func TestRun(t *testing.T) {
 
-	mock_googly := &MockGoogly{}
+	mockGoogly := new(MockGoogly)
 
-	mock_googly.On("Build").Return()
-	mock_googly.On("RegisterIngressPoints").Return(mock.AnythingOfType("cobra.Command"), mock.AnythingOfType("di.Container"))
+	mockGoogly.On("Build").Return()
+	mockGoogly.On("RegisterIngressPoints").Return(mock.AnythingOfType("cobra.Command"), mock.AnythingOfType("di.Container"))
 
-	Run(mock_googly)
+	Run(mockGoogly)
 
-	mock_googly.AssertExpectations(t)
+	mockGoogly.AssertExpectations(t)
 
 }
 
 // TestGoogly Creates a new &Googly{} with a MockApp and test its internal methods
 func TestGoogly(t *testing.T) {
-	mock_app := new(MockApp)
-	mock_runner := new(MockGooglyRunner)
-	base_googly := &Googly{
-		GooglyRunner: mock_runner,
+	mockApp := new(MockApp)
+	mockRunner := new(MockGooglyRunner)
+	baseGoogly := &Googly{
+		GooglyRunner: mockRunner,
 		InstalledApps: []App{
-			mock_app,
+			mockApp,
 		}}
 
 	// Test Googly.Build
 
-	mock_app.On("Build", mock.Anything).Return()
-	mock_runner.On("Inject").Return()
-	builder := base_googly.Build()
-	mock_app.AssertExpectations(t)
-	mock_runner.AssertExpectations(t)
+	mockApp.On("Build", mock.Anything).Return()
+	mockRunner.On("Inject").Return()
+	builder := baseGoogly.Build()
+	mockApp.AssertExpectations(t)
+	mockRunner.AssertExpectations(t)
 
 	// Test Googly.RegisterIngressPoints
-	mock_runner.On("GetIngressPoints", mock.Anything).Return()
+	mockRunner.On("GetIngressPoints", mock.Anything).Return()
 
-	base_googly.RegisterIngressPoints(new(cobra.Command), builder.Build())
-	mock_app.AssertExpectations(t)
+	baseGoogly.RegisterIngressPoints(new(cobra.Command), builder.Build())
+	mockApp.AssertExpectations(t)
 }
