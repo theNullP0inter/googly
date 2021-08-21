@@ -13,7 +13,7 @@ func (s *BaseResourceManager) GetResource() Resource {
 	return s.Resource
 }
 
-// NewResourceManager creates a new ResourceManager and checks the implementation with ResourceManagerInterface
+// NewResourceManager creates a new ResourceManager
 func NewBaseResourceManager(logger logger.GooglyLoggerInterface, r Resource) *BaseResourceManager {
 	return &BaseResourceManager{logger, r}
 }
