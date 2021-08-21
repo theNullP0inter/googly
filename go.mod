@@ -44,8 +44,6 @@ require (
 
 replace github.com/theNullP0inter/googly/logger => ./logger
 
-replace github.com/theNullP0inter/googly/db => ./db
-
 replace github.com/theNullP0inter/googly/route => ./route
 
 replace github.com/theNullP0inter/googly/service => ./service
