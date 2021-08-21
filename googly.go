@@ -10,11 +10,11 @@ import (
 	"github.com/theNullP0inter/googly/ingress"
 )
 
-// GooglyInterface Connects googly to your application.
+// GooglyRunner Connects googly to your application.
 //
 // Dependencies should be injected using Inject() Method
 // Ingress can be registered using GetIngressPoints()
-type GooglyInterface interface {
+type GooglyRunner interface {
 	Inject(builder *di.Builder)
 	GetIngressPoints(di.Container) []ingress.Ingress
 }
@@ -22,10 +22,10 @@ type GooglyInterface interface {
 // Googly manages your application through dependendency injection
 // and runs it using Ingress
 //
-// GooglyInterface can be used to register Global dependencies
+// GooglyRunner can be used to register Global dependencies
 // InstalledApps maintains a list of all your sub apps.
 type Googly struct {
-	GooglyInterface
+	GooglyRunner
 	InstalledApps []App
 }
 
