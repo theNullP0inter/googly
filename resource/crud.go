@@ -4,14 +4,12 @@ import (
 	"github.com/theNullP0inter/googly/logger"
 )
 
-// CrudImplementorInterface is a GEneric crud definition interface
+// CrudImplementorInterface is a Generic crud definition interface
 type CrudImplementorInterface interface {
 	Create(m DataInterface) (DataInterface, error)
 	List(parameters DataInterface) (DataInterface, error)
 	Get(id DataInterface) (DataInterface, error)
-
 	Update(id DataInterface, item DataInterface) error
-
 	Delete(id DataInterface) error
 }
 
