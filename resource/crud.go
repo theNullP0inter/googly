@@ -4,8 +4,8 @@ import (
 	"github.com/theNullP0inter/googly/logger"
 )
 
-// CrudImplementorInterface is a Generic crud definition interface
-type CrudImplementorInterface interface {
+// CrudImplementor is a Generic crud definition interface
+type CrudImplementor interface {
 	Create(m DataInterface) (DataInterface, error)
 	List(parameters DataInterface) (DataInterface, error)
 	Get(id DataInterface) (DataInterface, error)
@@ -18,19 +18,19 @@ type CrudImplementorInterface interface {
 // generally a db manager
 type CrudResourceManager interface {
 	ResourceManager
-	CrudImplementorInterface
+	CrudImplementor
 }
 
 // BaseCrudResourceManager  is a a basic CrudResourceManager.
 type BaseCrudResourceManager struct {
 	*BaseResourceManager
-	CrudImplementorInterface
+	CrudImplementor
 }
 
 // NewBaseCrudResourceManager creates a new BaseCrudResourceManager with a given crudImplementor
 func NewBaseCrudResourceManager(logger logger.GooglyLogger,
 	resource Resource,
-	crudImplementor CrudImplementorInterface,
+	crudImplementor CrudImplementor,
 ) *BaseCrudResourceManager {
 	rm := NewBaseResourceManager(logger, resource)
 
