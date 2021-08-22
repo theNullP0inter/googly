@@ -24,7 +24,7 @@ func NewServiceError(code int, message string, err error, errs interface{}) *Ser
 	return &ServiceError{
 		Code:    code,
 		Message: message,
-		Err:     nil,
+		Err:     err,
 		Errors:  errs,
 	}
 }
