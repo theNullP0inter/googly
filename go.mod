@@ -8,6 +8,7 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
+	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55 // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
@@ -23,3 +24,5 @@ replace github.com/theNullP0inter/googly/resource => ./resource
 replace github.com/theNullP0inter/googly/controller => ./controller
 
 replace github.com/theNullP0inter/googly/ingress => ./ingress
+
+replace github.com/theNullP0inter/googly/tests => ./tests

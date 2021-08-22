@@ -19,6 +19,20 @@ type GooglyRunner interface {
 	GetIngressPoints(di.Container) []ingress.Ingress
 }
 
+// GooglyInterface is implemented by Googly
+type GooglyInterface interface {
+	GooglyRunner
+	Build() *di.Builder
+	RegisterIngressPoints(rootCmd *cobra.Command, cnt di.Container)
+}
+
+// App is any thing that Builds. build happens through inject its components into googlys builder
+//
+// Build(*di.Builder) is where you should inject dependencies for the sub-app
+type App interface {
+	Build(*di.Builder)
+}
+
 // Googly manages your application through dependendency injection
 // and runs it using Ingress
 //
@@ -58,7 +72,7 @@ func (g *Googly) RegisterIngressPoints(rootCmd *cobra.Command, cnt di.Container)
 // Builds the sub-apps
 // Registers ingress points
 // Runs root command
-func Run(g *Googly) {
+func Run(g GooglyInterface) {
 
 	// setup env
 	viper.AutomaticEnv()

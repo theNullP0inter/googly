@@ -9,11 +9,11 @@ package resource
 type Resource interface {
 }
 
-// ResourceManagerInterface is a base interface for a resource manager
+// ResourceManager is a base interface for a resource manager
 //
 // ResourceManager acts like a proxy between the service and ORM( or mongo-driver).
 // i.e, if you want to migrate your service from mongo to rdb, it'll expose similar APIs
-type ResourceManagerInterface interface {
+type ResourceManager interface {
 	GetResource() Resource
 }
 

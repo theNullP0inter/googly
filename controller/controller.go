@@ -12,10 +12,10 @@ type Controller interface {
 
 // BaseController is a Controller with just a Logger
 type BaseController struct {
-	Logger logger.GooglyLoggerInterface
+	Logger logger.GooglyLogger
 }
 
 // NewBaseController creates a new BaseController
-func NewBaseController(logger logger.GooglyLoggerInterface) *BaseController {
+func NewBaseController(logger logger.GooglyLogger) *BaseController {
 	return &BaseController{logger}
 }
