@@ -10,5 +10,5 @@ import (
 func TestNewBaseService(t *testing.T) {
 	l := new(logger.MockGooglyLogger)
 	s := NewBaseService(l)
-	assert.Equal(t, l, s.Logger)
+	assert.Equal(t, l, s.Logger, "Not the same Logger")
 }
