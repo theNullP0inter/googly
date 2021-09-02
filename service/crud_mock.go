@@ -29,7 +29,7 @@ func (s *MockCrudService) Update(id DataInterface, update DataInterface) *Servic
 	return nil
 }
 
-func (s *MockCrudService) Delete(id DataInterface, update DataInterface) *ServiceError {
+func (s *MockCrudService) Delete(id DataInterface) *ServiceError {
 	s.Called()
 	return nil
 }
