@@ -42,13 +42,13 @@ func handleResourceErrors(err error) *ServiceError {
 
 }
 
-// Delete will delete the item with given id using the resource manager
+// Delete will delete the item with given id using the resource_manager
 func (s *BaseCrudDbService) Delete(id DataInterface) *ServiceError {
 	err := s.ResourceManager.Delete(id)
 	return handleResourceErrors(err)
 }
 
-// GetItem will get item with given id using the resource manager
+// GetItem will get item with given id using the resource_manager
 func (s *BaseCrudDbService) GetItem(id DataInterface) (DataInterface, *ServiceError) {
 	data, err := s.ResourceManager.Get(id)
 	return data, handleResourceErrors(err)
