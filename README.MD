@@ -95,7 +95,7 @@ There is a binding for logrus available.
 
 
 
-Note: Resource, Service & Controller for a MVC pattern
+Note: Resource, Service & Controller form MVC pattern
 
 ## Usage
 ***
