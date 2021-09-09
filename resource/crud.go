@@ -28,7 +28,7 @@ type BaseCrudResourceManager struct {
 }
 
 // NewBaseCrudResourceManager creates a new BaseCrudResourceManager with a given crudImplementor
-func NewBaseCrudResourceManager(logger logger.GooglyLogger,
+func NewBaseCrudResourceManager(logger *logger.GooglyLogger,
 	resource Resource,
 	crudImplementor CrudImplementor,
 ) *BaseCrudResourceManager {

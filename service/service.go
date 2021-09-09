@@ -16,11 +16,11 @@ type Service interface {
 
 // BaseServcie is a Service with Just a Logger
 type BaseService struct {
-	Logger logger.GooglyLogger
+	Logger *logger.GooglyLogger
 }
 
 // NewBaseService create a new BaseService
-func NewBaseService(logger logger.GooglyLogger) *BaseService {
+func NewBaseService(logger *logger.GooglyLogger) *BaseService {
 	return &BaseService{
 		Logger: logger,
 	}

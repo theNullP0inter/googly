@@ -25,7 +25,7 @@ func (s *BaseDbService) GetDbResourceManager() resource.DbResourceManager {
 }
 
 // NewBaseDbService will create a new BaseDbService
-func NewBaseDbService(logger logger.GooglyLogger, rm resource.DbResourceManager) *BaseDbService {
+func NewBaseDbService(logger *logger.GooglyLogger, rm resource.DbResourceManager) *BaseDbService {
 	service := NewBaseService(logger)
 	return &BaseDbService{service, rm}
 }

@@ -4,7 +4,7 @@ import "github.com/theNullP0inter/googly/logger"
 
 // BaseResourceManager is  a  base implementation for ResourceManager
 type BaseResourceManager struct {
-	Logger   logger.GooglyLogger
+	Logger   *logger.GooglyLogger
 	Resource Resource
 }
 
@@ -14,6 +14,6 @@ func (s *BaseResourceManager) GetResource() Resource {
 }
 
 // NewResourceManager creates a new ResourceManager
-func NewBaseResourceManager(logger logger.GooglyLogger, r Resource) *BaseResourceManager {
+func NewBaseResourceManager(logger *logger.GooglyLogger, r Resource) *BaseResourceManager {
 	return &BaseResourceManager{logger, r}
 }

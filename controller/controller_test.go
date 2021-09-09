@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewBaseController(t *testing.T) {
-	l := new(logger.MockGooglyLogger)
+	l := logger.NewGooglyLogger()
 	ctl := NewBaseController(l)
 
 	assert.Equal(t, l, ctl.Logger)

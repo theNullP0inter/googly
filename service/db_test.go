@@ -9,7 +9,7 @@ import (
 )
 
 func TestBaseDbService(t *testing.T) {
-	l := new(logger.MockGooglyLogger)
+	l := logger.NewGooglyLogger()
 	rm := new(resource.MockDbResourceManager)
 	s := NewBaseDbService(l, rm)
 	assert.Equal(t, s.ResourceManager, rm)

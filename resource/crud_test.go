@@ -10,7 +10,7 @@ import (
 func TestNewBaseCrudResourceManager(t *testing.T) {
 	r := new(MockResource)
 	c := new(MockCrudImplementor)
-	l := new(logger.MockGooglyLogger)
+	l := logger.NewGooglyLogger()
 	rm := NewBaseCrudResourceManager(l, r, c)
 
 	assert.Equal(t, rm.CrudImplementor, c)

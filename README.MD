@@ -13,8 +13,6 @@ https://github.com/theNullP0inter/gly_mongo
 
 https://github.com/theNullP0inter/gly_gorm
 
-https://github.com/theNullP0inter/gly_logrus
-
 https://github.com/theNullP0inter/gly_gin
 
 https://github.com/theNullP0inter/gly_grpc
@@ -27,6 +25,8 @@ CLI: https://github.com/spf13/cobra
 Env management: https://github.com/spf13/viper
 
 Dependency Injection: https://github.com/sarulabs/di (v2)
+
+Logger: 
 
 
 ## Examples
@@ -89,10 +89,8 @@ There are bindings for Gorm & MongoDB available.
 
 ### Logger
 
-Googly provides a simple logger interface which is referenced in service and controllers. If logger of your choice doesnt implement the interface, you can write a binding with your logger.
-
-There is a binding for logrus available.
-
+Googly provides a simple logger interface which is referenced in service and controllers. 
+GooglyLogger is just a binding for logrus.
 
 
 Note: Resource, Service & Controller form MVC pattern

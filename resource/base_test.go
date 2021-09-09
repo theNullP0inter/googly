@@ -11,7 +11,7 @@ import (
 // using NewBaseResourceManager() and tests its methods
 func TestBaseResourceManager(t *testing.T) {
 	r := new(MockResource)
-	l := new(logger.MockGooglyLogger)
+	l := logger.NewGooglyLogger()
 	rm := NewBaseResourceManager(l, r)
 	assert.Same(t, r, rm.GetResource())
 }

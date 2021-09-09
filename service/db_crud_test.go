@@ -11,7 +11,7 @@ import (
 // TODO: Test handleResourceErrors()
 
 func TestBaseCrudDbService(t *testing.T) {
-	l := new(logger.MockGooglyLogger)
+	l := logger.NewGooglyLogger()
 	r := new(resource.MockResource)
 	c := new(resource.MockCrudImplementor)
 
